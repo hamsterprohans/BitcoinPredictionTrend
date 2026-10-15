@@ -121,3 +121,39 @@ def test_demo_flag_is_passed_through_latest(paths):
     assert c.get("/api/prediction/latest").json()["demo"] is True
     seed_live_dir(live, content)                                            # data nyata tidak punya bendera demo
     assert "demo" not in c.get("/api/prediction/latest").json()
+
+
+def test_retro_series_and_day_endpoints(paths):
+    from tests.factories import seed_retro
+    live, content, static = paths
+    seed_retro(content)
+    c = TestClient(create_app(live, content, static, now=lambda: NOW))
+    s = c.get("/api/retro/series").json()
+    assert s["n"] == len(s["date"]) > 25 and [r["level"] for r in s["reliability"]] == ["rendah", "sedang", "tinggi"]
+    day = c.get(f"/api/retro/day/{s['date'][0]}").json()
+    assert day["date"] == s["date"][0] and len(day["contributions"]) == 13 and day["narrative"]["source"] == "llm"
+    assert c.get(f"/api/retro/day/{s['date'][10]}").json()["narrative"] is None
+
+
+def test_retro_day_rejects_bad_dates_and_traversal(paths):
+    from tests.factories import seed_retro
+    live, content, static = paths
+    seed_retro(content)
+    c = TestClient(create_app(live, content, static, now=lambda: NOW))
+    assert c.get("/api/retro/day/2020-01-01").status_code == 404                       # format benar, tidak ada
+    for bad in ("..%2F..%2Fseries", "abc", "2025-1-1", "2025-03-01.json", "..", "%2e%2e", "2025-03-01%2F..%2F..%2Fseries"):
+        assert c.get(f"/api/retro/day/{bad}").status_code == 404, bad
+
+
+def test_retro_missing_is_404_not_500(paths):
+    live, content, static = paths
+    c = TestClient(create_app(live, content, static, now=lambda: NOW))
+    assert c.get("/api/retro/series").status_code == 404
+    assert c.get("/api/retro/day/2025-03-01").status_code == 404
+
+
+def test_retrospektif_page_route(paths):
+    live, content, static = paths
+    (static / "retrospektif.html").write_text("<h1>retro</h1>")
+    r = TestClient(create_app(live, content, static, now=lambda: NOW)).get("/retrospektif")
+    assert r.status_code == 200 and "retro" in r.text
