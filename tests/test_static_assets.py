@@ -44,3 +44,11 @@ def test_profile_photo_keeps_white_background_in_card():
     assert struct.unpack(">B", data[25:26])[0] == 2                 # RGB tanpa alfa: latar putih asli
     rule = (S / "css" / "app.css").read_text().split(".about-photo{", 1)[1].split("}", 1)[0]
     assert "background:#fff" in rule
+
+
+def test_app_config_has_supabase_url_and_only_a_publishable_key():
+    import re
+    text = (S / "js" / "app-config.js").read_text()
+    assert re.search(r'supabaseUrl: "https://[a-z0-9]{20}\.supabase\.co"', text)
+    assert re.search(r'supabaseAnonKey: "sb_publishable_[A-Za-z0-9_-]{20,}"', text)
+    assert "sb_secret" not in text and "service_role" not in text and "eyJ" not in text
