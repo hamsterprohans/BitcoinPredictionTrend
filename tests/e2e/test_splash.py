@@ -74,3 +74,22 @@ def test_splash_without_webgl_and_reduced_motion_still_waits_and_shows_symbol(br
 def test_other_pages_have_no_splash(page, server):
     page.goto(server + "/riset")
     assert page.locator("#splash").count() == 0
+
+
+def test_bitcoin_mark_has_ring_that_encloses_the_symbol(browser, server):
+    ctx, page = _fresh(browser)
+    page.goto(server + "/")
+    r = page.evaluate("""async () => {
+      const m = await import('/static/js/splash-scene.js');
+      const sym = await m.sampleBitcoin(3000, 3.6);
+      const R = m.ringRadiusFor(sym), T = 0.16;
+      const ring = m.ringPoints(1500, R, T);
+      const dist = ([x, y]) => Math.hypot(x, y - m.CENTER_Y);
+      return { R, T, n: ring.length, symMax: Math.max(...sym.map(dist)),
+               ringMin: Math.min(...ring.map(dist)), ringMax: Math.max(...ring.map(dist)) };
+    }""")
+    assert r["n"] == 1500
+    assert r["symMax"] < r["R"] - r["T"] / 2                       # ring melingkupi seluruh simbol
+    assert r["R"] - r["T"] / 2 - 1e-6 <= r["ringMin"] and r["ringMax"] <= r["R"] + r["T"] / 2 + 1e-6   # titik berada pada pita cincin
+    page.wait_for_function("document.getElementById('splash').dataset.ring === '1'", timeout=5000)
+    ctx.close()
