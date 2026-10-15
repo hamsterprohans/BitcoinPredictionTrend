@@ -78,3 +78,107 @@ def test_parity_pass_and_fail_messages():
 def test_metrics_values():
     m = metrics(np.array([1, 0, 1, 1]), np.array([1, 0, 0, 1]))
     assert m["Accuracy"] == pytest.approx(0.75) and 0.0 <= m["F1-Weighted"] <= 1.0
+
+
+import json  # noqa: E402
+
+from scripts.build_retro import build_outputs, fill_narratives, train_stats, write_outputs  # noqa: E402
+from tests.test_narrative import FakeLLM  # noqa: E402
+
+THR = 0.5
+
+
+def outputs(**kw):
+    sc = fit_scaler(IN)
+    return build_outputs(IN["prices"], IN["sent3"], IN["news"], IN["fg"], sc, FakeRetroModel(), THR,
+                         start=IN["start"], end=IN["end"], allow_mismatch=True, **kw)
+
+
+def test_build_outputs_series_days_and_reliability():
+    out = outputs()
+    s, days = out["series"], out["days"]
+    n = len(s["date"])
+    assert n == len(days) > 25 and len(s["prob"]) == len(s["pred"]) == len(s["actual"]) == len(s["correct"]) == n
+    assert s["threshold"] == THR and 0.0 <= s["auc"] <= 1.0 and len(s["level_cuts"]) == 2
+    assert [r["level"] for r in s["reliability"]] == ["rendah", "sedang", "tinggi"]
+    assert sum(r["n"] for r in s["reliability"]) == n and s["parity"]["verified"] is False
+    d = days[s["date"][5]]
+    assert d["direction"] in ("NAIK", "TURUN") and d["actual"] in ("NAIK", "TURUN") and d["correct"] == (d["direction"] == d["actual"])
+    assert d["target_date"] == (pd.Timestamp(d["date"]) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    assert len(d["features"]) == 13 and len(d["contributions"]) == 13 and d["narrative"] is None
+    deltas = [abs(c["delta_pp"]) for c in d["contributions"]]
+    assert deltas == sorted(deltas, reverse=True)
+    firsts = [dd["contributions"][0] for dd in days.values()]                  # model uji hanya bergantung pada Fear & Greed
+    assert all(f["feature"] == "fear_greed_index_scaled" or f["delta_pp"] == 0 for f in firsts)
+    assert any(f["delta_pp"] != 0 for f in firsts)
+
+
+def test_headlines_are_first_five_in_file_order_and_missing_news_is_honest():
+    out = outputs()
+    days = out["days"]
+    no_news_dates = {pd.Timestamp(IN["dates"][i]) for i in IN["no_news"]}
+    with_news = next(k for k in days if pd.Timestamp(k) not in no_news_dates)
+    assert [h["title"] for h in days[with_news]["headlines"]] == \
+        IN["news"][IN["news"]["date"] == pd.Timestamp(with_news)]["title"].head(5).tolist()
+    assert days[with_news]["sentiment"]["has_news"] is True and days[with_news]["sentiment"]["scores"] is not None
+    missing = next(k for k in days if pd.Timestamp(k) in no_news_dates)
+    sent = days[missing]["sentiment"]
+    assert sent["has_news"] is False and sent["scores"] is None and days[missing]["headlines"] == []
+
+
+def test_parity_failure_raises_and_writes_nothing(tmp_path):
+    sc = fit_scaler(IN)
+    with pytest.raises(ParityError):
+        build_outputs(IN["prices"], IN["sent3"], IN["news"], IN["fg"], sc, FakeRetroModel(), THR,
+                      start=IN["start"], end=IN["end"], expected={"Accuracy": 0.99, "F1-Weighted": 0.99})
+    with pytest.raises(ParityError):                                          # tanpa tabel notebook juga ditolak
+        build_outputs(IN["prices"], IN["sent3"], IN["news"], IN["fg"], sc, FakeRetroModel(), THR,
+                      start=IN["start"], end=IN["end"], expected=None)
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_parity_verified_when_expected_matches():
+    base = outputs()["series"]
+    got = base["parity"]["got"]
+    sc = fit_scaler(IN)
+    out = build_outputs(IN["prices"], IN["sent3"], IN["news"], IN["fg"], sc, FakeRetroModel(), THR,
+                        start=IN["start"], end=IN["end"], expected={k: round(v, 4) for k, v in got.items()})
+    assert out["series"]["parity"]["verified"] is True
+
+
+def test_train_stats_has_101_quantiles_for_13_features():
+    t = table()
+    tr, _, _ = split_table(t, IN["start"], IN["end"])
+    st = train_stats(tr)
+    assert len(st["quantiles"]) == 13 and all(len(v) == 101 for v in st["quantiles"].values())
+    assert st["quantiles"]["RSI14"][0] == pytest.approx(tr["RSI14"].min())
+
+
+def test_write_outputs_and_resumable_narratives(tmp_path):
+    out = outputs()
+    write_outputs(tmp_path, out)
+    assert (tmp_path / "series.json").exists() and (tmp_path / "train_stats.json").exists()
+    days = sorted((tmp_path / "days").glob("*.json"))
+    assert len(days) == len(out["days"])
+    from app.explain import build_facts, template_narrative
+    first = json.loads(days[0].read_text())
+    good = template_narrative(build_facts(first, auc=out["series"]["auc"]))
+    llm = FakeLLM([good] * (3 * len(days)))       # hari selain pertama ditolak validator -> 3 percobaan lalu template
+    assert fill_narratives(tmp_path, llm) == len(days)
+    again = FakeLLM([])
+    assert fill_narratives(tmp_path, again) == 0 and again.calls == []          # dapat dilanjutkan: tidak memanggil ulang
+    data = json.loads(days[0].read_text())
+    assert data["narrative"]["source"] == "llm" and "bukan saran investasi" in data["narrative"]["text"]
+
+
+def test_main_reports_missing_artifacts_without_traceback(monkeypatch):
+    from app.inference import ArtifactsMissing, Predictor
+    from scripts.build_retro import main
+
+    def boom(*a, **k):
+        raise ArtifactsMissing("Artefak model belum lengkap di X. Belum ada: threshold_beku.json.")
+
+    monkeypatch.setattr(Predictor, "from_artifacts", classmethod(lambda cls, *a, **k: boom()))
+    with pytest.raises(SystemExit) as e:
+        main([])
+    assert "Artefak model belum lengkap" in str(e.value)
