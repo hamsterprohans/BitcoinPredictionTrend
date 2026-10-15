@@ -1,0 +1,61 @@
+name: Pembaruan harian
+
+on:
+  schedule:
+    - cron: "30 2 * * *"      # 02:30 UTC (09:30 WIB): penutupan harian UTC sudah tersedia
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pembaruan-harian
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: webapp
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: webapp/requirements.txt
+
+      - name: Pasang dependensi
+        run: pip install -r requirements.txt
+
+      - name: Job harian (model, berita, sentimen)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          COINDESK_API_KEY: ${{ secrets.COINDESK_API_KEY }}
+          ARTIFACTS_DIR: ${{ github.workspace }}/webapp/deploy_artifacts
+          SEED_PRICE_TSV: ${{ github.workspace }}/webapp/deploy_artifacts/coin_metrics.tsv
+        run: python -m app.jobs
+
+      - name: Ekspor situs statis
+        run: python -m scripts.export_static --base "/${{ github.event.repository.name }}" --out dist
+
+      - name: Simpan keadaan terbaru (data/live)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live
+          git diff --cached --quiet || git commit -m "data: pembaruan harian $(date -u +%F)"
+          git pull --rebase --autostash
+          git push
+
+      - name: Publikasi ke gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: webapp/dist
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: "Publikasi situs statis (otomatis)"

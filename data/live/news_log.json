@@ -1,0 +1,332 @@
+{
+ "2026-09-23": {
+  "titles": [
+   "Fed raises rate to 4%, Bitcoin climbs above $86,000 as Lee predicts rally",
+   "‘AI Will Take Everyone’s Jobs’: Why Bitcoin Bull Tim Draper Is Hiring More",
+   "Coinbase Loses UK Finance Membership in Setback for Bitcoin (BTC) Banking Access",
+   "Coinbase Builds Post-Quantum Bitcoin Custody Plan for $250B in Assets",
+   "Trump's Ethics Filing Shows Up to $100K Strategy Stock Purchase Tied to Bitcoin (BTC)"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 2,
+   "bullbear": 4,
+   "mean": 3.0
+  }
+ },
+ "2026-09-24": {
+  "titles": [
+   "Robert Kiyosaki, Bitcoin Holder Since 2012, Says 3 Phrases Keep People Poor",
+   "Microsoft Copilot AI Predicts Bitcoin Will Do Something Incredible in Q4 2026",
+   "Strategy Keeps ATM Financing Available For Future Bitcoin Purchases",
+   "JPMorgan Explains Why $85K Level Is Crucial for Bitcoin (BTC)",
+   "Crypto’s Latest Rally Shows Bitcoin Still Rules the Market"
+  ],
+  "scores": {
+   "pemahaman": 7,
+   "detail": 4,
+   "bullbear": 5,
+   "mean": 5.333333333333333
+  }
+ },
+ "2026-09-25": {
+  "titles": [
+   "Bitcoin (BTC) Drifts to $84K as RWA Tokens Post Double-Digit Gains",
+   "Sequans Sells Final 314 BTC to Clear Corporate Debt",
+   "CFTC offers ‘regulatory clarity for crypto’ without approving BTC or ETH investments",
+   "Bitcoin (BTC) Lobby Shakeup: Blockchain Association CEO Mersinger Exits Oct. 16",
+   "Tether’s USDT is returning to Bitcoin — What the latest signal means"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 2,
+   "bullbear": 2,
+   "mean": 0.6666666666666666
+  }
+ },
+ "2026-09-26": {
+  "titles": [
+   "Researchers Propose Zcash-Style Privacy for Bitcoin Without a Soft Fork",
+   "Crypto Recovery Trust returns 20 bitcoin after Coldcard exploit, adviser says",
+   "Morgan Stanley Pins $300 Price Target on SpaceX as Bitcoin (BTC) Steadies",
+   "Trump and Xi Open Cold War-Style AI Hotline as Bitcoin (BTC) Holds $84K",
+   "Bitcoin – BTC to $300K? Fidelity says THIS level comes first"
+  ],
+  "scores": {
+   "pemahaman": 2,
+   "detail": 4,
+   "bullbear": 4,
+   "mean": 3.3333333333333335
+  }
+ },
+ "2026-09-27": {
+  "titles": [
+   "Micron's Sept 30 Q4 Earnings to Test AI Demand as Bitcoin (BTC) Waits",
+   "Crypto Weekly: BCH and NEAR Surge 34% as Altcoins Outpace Bitcoin",
+   "SEC Staff Clears Bitcoin (BTC) Token Buybacks on Functional Networks in New FAQ",
+   "We Asked 8 AI Chatbots to Predict Bitcoin’s Price, Here’s the Verdict",
+   "US Spot Bitcoin (BTC) ETFs Draw $3 Billion Over 7 Straight Days"
+  ],
+  "scores": {
+   "pemahaman": 6,
+   "detail": 5,
+   "bullbear": 5,
+   "mean": 5.333333333333333
+  }
+ },
+ "2026-09-28": {
+  "titles": [
+   "Analyst Sees 75% Chance Crypto Cycle Has Turned as Bitcoin Pulls Back",
+   "Kiyosaki Warns Millions of Boomers Could Be Homeless, Says Buy Bitcoin",
+   "IRS Notice 2026-62 Flags Bitcoin (BTC) ETF Tax Maneuver With Retroactive Reach",
+   "40,000 BTC leave exchanges – How Bitcoin’s Q4 rally setup is taking shape",
+   "UK finance minister criticizes Farage for crypto ties and Bitcoin donations"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": -1,
+   "bullbear": 2,
+   "mean": -0.3333333333333333
+  }
+ },
+ "2026-09-29": {
+  "titles": [
+   "Bitcoin Was the Asset. Now Institutions Are Building Around It",
+   "Fed's Williams Damps October Rate-Hike Odds Below 50% in Boost for Bitcoin (BTC)",
+   "Cboe Extends S&P 500 Options License to 2051 in Tokenization Shift Beyond Bitcoin (BTC)",
+   "BlackRock Paper Deems Bitcoin (BTC) Machine-Native Money, Cites $11T Stablecoin Volume",
+   "US 18-29 Card Delinquencies Hit 10.1% in Q2 2026, a Bitcoin (BTC) Risk Warning"
+  ],
+  "scores": {
+   "pemahaman": 5,
+   "detail": 4,
+   "bullbear": 5,
+   "mean": 4.666666666666667
+  }
+ },
+ "2026-09-30": {
+  "titles": [
+   "Saylor Says Rival Strive's Bitcoin (BTC) Buys Would Lift MicroStrategy's 847,666 Holdings",
+   "MSCI Rule Puts Strategy at Risk, Says Bitcoin Policy Institute Paper",
+   "The midterm elections are one month away – Bitcoin’s history says, watch out!",
+   "EigenLayer Unveils Dual-Staking Extension For Bitcoin Asset Security",
+   "US crypto funds secure $3.55 billion weekly inflows, Bitcoin leads"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 2,
+   "bullbear": 4,
+   "mean": 1.3333333333333333
+  }
+ },
+ "2026-10-01": {
+  "titles": [
+   "Bitcoin (BTC) Spot ETFs Drew $6.34 Billion in Q3 Net Inflows",
+   "Bitcoin Core Dev Peter Todd to Oversee MARA’s Private Mempool Service",
+   "Darius Dale sees Bitcoin volatility near term, potential rally if liquidity returns in 2027",
+   "Bitcoin to reshape $4 trillion private equity sector, says Ego Death Capital partner",
+   "Frank Holmes Sees $100 Trillion of Money Printing Favoring Bitcoin (BTC)"
+  ],
+  "scores": {
+   "pemahaman": 8,
+   "detail": 6,
+   "bullbear": 6,
+   "mean": 6.666666666666667
+  }
+ },
+ "2026-10-02": {
+  "titles": [
+   "If Bitcoin (BTC) Repeats Its 13-Year October Record, CNBC Host Sees Bull Market Setup",
+   "Bitcoin (BTC) Trades Near $84,500 After 0.3% Korean Session Dip",
+   "ICBA Sues OCC Over Crypto Trust Charters, a Test for Bitcoin (BTC) Banking Access",
+   "IMF approves $139 million for El Salvador, urges reduction of Bitcoin activities",
+   "Novogratz sees Bitcoin finishing 2026 near $100,000, highlights $80,000 support"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 2,
+   "bullbear": 3,
+   "mean": 2.6666666666666665
+  }
+ },
+ "2026-10-03": {
+  "titles": [
+   "Bitcoin’s $87K breakout fails – Why $1.05B in profits could pressure BTC",
+   "Claude Opus 5.5 Sees Bitcoin (BTC) at $91,500 by December 31",
+   "Jordi Visser: Bitcoin (BTC) Above $82,000 Would Confirm Bull Trend",
+   "Bitcoin Price at $85K as Bettors Eye $100K, ChatGPT Calls $94K",
+   "Bitcoin stalls near $84,700 as jobs data misses estimates, institutional inflows rise"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 2,
+   "bullbear": 4,
+   "mean": 3.0
+  }
+ },
+ "2026-10-04": {
+  "titles": [
+   "Darkfost: Bitcoin (BTC) Spot Volume Recovered From 3-Year Lows After July Bottom",
+   "Crypto Weekly: ZEC Plunges as Bitcoin and Ether Hold Key Support Levels",
+   "Bitcoin (BTC) ETFs Swing to $985 Million Net Inflow for 2026",
+   "Former SEC boss made AI Czar, Bitcoin may hit $600K this cycle: Hodler’s Digest",
+   "Binance, Deribit, Gate.io see Bitcoin open interest fall as BTC nears $87,000"
+  ],
+  "scores": {
+   "pemahaman": 6,
+   "detail": 4,
+   "bullbear": 4,
+   "mean": 4.666666666666667
+  }
+ },
+ "2026-10-05": {
+  "titles": [
+   "Bitcoin Bulls Descend on Singapore in Search of the Next Bet",
+   "TD Cowen sets $132k Bitcoin price target for 2027, institutional interest grows",
+   "Coinbase chief says big banks increasing Bitcoin ETF exposure",
+   "Coinbase executive says CFTC approval paves way for institutional Bitcoin adoption",
+   "Strive Adds $169M Bitcoin in Its Biggest Buy in Four Months"
+  ],
+  "scores": {
+   "pemahaman": 8,
+   "detail": 7,
+   "bullbear": 7,
+   "mean": 7.333333333333333
+  }
+ },
+ "2026-10-06": {
+  "titles": [
+   "US Government Moves $71M Bitcoin Stash After 6-Week Silence",
+   "Analyst Dennis Liu Sees No Altcoin Season Yet as Bitcoin (BTC) Dominance Holds 58%",
+   "Bitcoin privacy advocate Amir Taaki deported from Singapore after police questioning",
+   "Leon Wankum predicts Bitcoin will erode real estate’s $300T monetary premium",
+   "St. Cloud Financial becomes first US credit union to offer Bitcoin custody"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 1,
+   "bullbear": 2,
+   "mean": 0.3333333333333333
+  }
+ },
+ "2026-10-07": {
+  "titles": [
+   "Engineer Who Sabotaged Employer for Bitcoin Ransom Gets Prison Time",
+   "24K BTC leaves exchanges as Bitcoin struggles below $87K – Bullish or bearish?",
+   "US Government Moves $565.87 Million in Seized Bitcoin to Coinbase Prime",
+   "Ali Martinez Flags Bitcoin (BTC) Buy Signal at $83,000 Support After 24-Hour Correction",
+   "BlackRock's ETHA drives a sixth straight day of ether ETF outflows as bitcoin funds add $119M"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": -2,
+   "bullbear": 3,
+   "mean": -0.3333333333333333
+  }
+ },
+ "2026-10-08": {
+  "titles": [
+   "Citrini Research Ranks 15 Tokens Over Bitcoin (BTC) Bets in 79-Page AI Finance Report",
+   "JPMorgan Puts 2026 Crypto Inflows at $50 Billion as Bitcoin ETF Flows Recover",
+   "Bitcoin (BTC) Long Liquidations Hit $930 Million in 90-Day High Forced-Close Cascade",
+   "PowerCompute Mines 8.1 Bitcoin In September After Using BTC To Slash Debt",
+   "Claude AI Predicts Bitcoin Could Hit $250K by 2027"
+  ],
+  "scores": {
+   "pemahaman": 2,
+   "detail": 2,
+   "bullbear": 2,
+   "mean": 2.0
+  }
+ },
+ "2026-10-09": {
+  "titles": [
+   "Metaplanet's Bitcoin (BTC) Holdings Reach 44,000, Second Only to Strategy",
+   "Cake Wallet COO warns one Bitcoin transaction can compromise privacy",
+   "Bitcoin (BTC) Miner Selling Pressure Eases as Daily Revenue Hits $48 Million",
+   "Ajay Shinjin Jailed 2.5 Years Over £200,000 Bitcoin (BTC) SIM-Swap Theft",
+   "Citrini Research leaves Bitcoin out of crypto investment strategy, focusing on blockchain infrastructure"
+  ],
+  "scores": {
+   "pemahaman": -1,
+   "detail": 2,
+   "bullbear": 2,
+   "mean": 1.0
+  }
+ },
+ "2026-10-10": {
+  "titles": [
+   "Bitcoin defends $80K — Relief bounce or deeper $77K test next?",
+   "Bitcoin Could Reach $30 Trillion Like Gold, Bitwise CIO Says",
+   "Bitcoin ETFs’ momentum could ‘not last too long’ — Ecoinometrics",
+   "Robinhood Adds BTC To Balance Sheet, ‘Bunker Mode’ Kicks Off, And More – Weekly Recap",
+   "Bitcoin Price Analysis: Is BTC’s Recovery Over as US Demand Turns Negative?"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 2,
+   "bullbear": 4,
+   "mean": 1.3333333333333333
+  }
+ },
+ "2026-10-11": {
+  "titles": [
+   "Saylor Signals More Bitcoin (BTC) Buying at $70.48 Billion Treasury Milestone",
+   "Bots Execute 96% of Binance-Bithumb Bitcoin (BTC) Arbitrage Within Five Minutes",
+   "Expert Analyst Issues Warning on Bitcoin – “Seller Exhaustion Indicator Sounds the Alarm”",
+   "Bitcoin (BTC) Trades at 1.31% Kimchi Premium on Korean Exchanges",
+   "Strategy’s Bitcoin holdings reach 848,000 BTC after $28.7 million purchase"
+  ],
+  "scores": {
+   "pemahaman": 6,
+   "detail": 4,
+   "bullbear": 6,
+   "mean": 5.333333333333333
+  }
+ },
+ "2026-10-12": {
+  "titles": [
+   "Bitcoin Price Falls Below $82K as $406M in Longs Get Liquidated",
+   "Bitcoin (BTC) Holds Above $81,800 Support After Tech-Led Slide",
+   "Moscow Exchange to start Bitcoin trading tests, launch planned for December",
+   "Killa Favors Bitcoin (BTC) Path to $90,000 Before Early $80,000s Correction",
+   "UK Bitcoin Treasury Firm Smarter Web Closes £10M Share Offering"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": -1,
+   "bullbear": -2,
+   "mean": -1.6666666666666667
+  }
+ },
+ "2026-10-13": {
+  "titles": [
+   "Polymarket Puts Bitcoin (BTC) $100,000 Odds at 27% for 2026",
+   "Bitcoin Price Odds on Prediction Markets Give $100K Just 27%",
+   "Bitcoin (BTC) Rallies 3% to $84,074 Within Monday's Session",
+   "Strive raising $500 million to buy additional bitcoin with new preferred share class",
+   "Strive Announces 15% SATS Preferred Stock IPO to Fund Bitcoin Acquisition"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 5,
+   "bullbear": 5,
+   "mean": 4.333333333333333
+  }
+ },
+ "2026-10-14": {
+  "titles": [
+   "Bitcoin (BTC) Faces $81,000 Test That Decides Its Next Leg",
+   "Sam Altman ChatGPT AI Predicts that BTC Could Hit $1.8M by 2027",
+   "Bitcoin (BTC) Hashrate Rebounds Past 1 Zettahash From February Low",
+   "Bitcoin slips under $82k as hot CPI data fuels an uptick in Fed rate hike bets",
+   "China seeks to confiscate $5 billion in Bitcoin tied to record crypto fraud case"
+  ],
+  "scores": {
+   "pemahaman": 2,
+   "detail": -1,
+   "bullbear": 2,
+   "mean": 1.0
+  }
+ }
+}

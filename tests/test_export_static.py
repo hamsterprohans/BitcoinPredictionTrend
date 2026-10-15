@@ -24,7 +24,7 @@ def build(tmp_path, base="/sub"):
 
 def test_exports_pages_api_and_assets(tmp_path):
     out, _ = build(tmp_path)
-    for f in ("index.html", "riset.html", "retrospektif.html", "tentang.html", "latar-belakang.html", "metodologi.html",
+    for f in ("index.html", "riset.html", "retrospektif.html", "tentang.html", "latar-belakang.html", "metodologi.html", "kuesioner.html",
               "api/prediction/latest.json", "api/prediction/history.json", "api/prices__D.json", "api/prices__W.json",
               "api/prices__M.json", "api/retro/status.json", "api/retro/series.json", "api/research/ablation.json",
               "static/js/common.js", "static/vendor/three.module.min.js", "static/fonts/Geist-Variable.woff2", ".nojekyll"):
@@ -50,4 +50,4 @@ def test_root_base_keeps_paths_and_latest_has_as_of(tmp_path):
     assert 'window.__STATIC_BASE__=""' in (out / "index.html").read_text()
     assert 'href="/riset"' in (out / "index.html").read_text()
     assert json.loads((out / "api/prediction/latest.json").read_text())["as_of"]
-    assert report["pages"] == 6 and report["api_files"] > 5
+    assert report["pages"] == 7 and report["api_files"] > 5

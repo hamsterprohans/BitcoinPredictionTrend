@@ -13,7 +13,7 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 
 PAGES = {"index.html": "/", "latar-belakang.html": "/latar-belakang", "retrospektif.html": "/retrospektif",
-         "riset.html": "/riset", "metodologi.html": "/metodologi", "tentang.html": "/tentang"}
+         "riset.html": "/riset", "metodologi.html": "/metodologi", "kuesioner.html": "/kuesioner", "tentang.html": "/tentang"}
 
 
 def _rebase_html(text: str, base: str) -> str:

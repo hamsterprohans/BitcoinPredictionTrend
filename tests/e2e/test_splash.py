@@ -21,6 +21,8 @@ def test_splash_waits_for_user_and_button_enters(browser, server):
     page.goto(server + "/")
     page.wait_for_selector("#splash:not([hidden])")
     assert page.inner_text("#splash-enter") == "Lanjutkan ke Dashboard Prediksi"
+    assert page.inner_text(".splash-author") == "Oleh Hans Christian Cakrawangsa"      # di bawah tagline
+    assert page.evaluate("document.querySelector('.splash-tag').nextElementSibling.className") == "splash-author"
     page.wait_for_timeout(4500)                                          # tidak boleh tertutup sendiri
     assert page.is_visible("#splash")
     page.click("#splash", position={"x": 20, "y": 20})                   # klik di area kosong tidak melanjutkan

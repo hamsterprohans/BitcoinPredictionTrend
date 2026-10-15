@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kuesioner — Bitcoin Trend</title>
+  <meta name="description" content="Kuesioner dan masukan pengguna untuk pengembangan situs prediksi tren harga Bitcoin.">
+  <link rel="preload" href="/static/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <script src="/static/js/app-config.js"></script>
+</head>
+<body class="page-survey no-webgl">
+  <header class="topbar">
+    <a class="brand" href="/">Bitcoin&nbsp;Trend</a>
+    <nav aria-label="Utama"><a href="/">Prediksi</a><a href="/latar-belakang">Latar Belakang</a><a href="/retrospektif">Retrospektif</a><a href="/riset">Riset</a><a href="/metodologi">Metodologi</a><a href="/kuesioner" aria-current="page">Kuesioner</a><a href="/tentang">Tentang</a></nav>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Ganti tema terang/gelap">◐</button>
+  </header>
+  <main>
+    <article class="prose">
+      <h1 style="font-size:clamp(1.8rem,6vw,2.6rem)">Kuesioner</h1>
+      <p>Bantu saya menilai apakah informasi di situs ini berguna dan apa yang perlu ditingkatkan. Sekitar 5 menit, tanpa nama,
+      dan Anda hanya perlu mengisi sekali. Setelah Ya/Netral/Tidak, soal teks bersifat opsional.</p>
+      <div id="survey-root"><p class="muted">Memuat kuesioner…</p></div>
+    </article>
+  </main>
+  <footer class="footer"><p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir.</p></footer>
+  <script type="module" src="/static/js/kuesioner.js"></script>
+</body>
+</html>
