@@ -91,3 +91,38 @@ def test_generate_survives_api_errors_and_never_returns_unvalidated_text():
     llm = FakeLLM([RuntimeError("500"), RuntimeError("500"), RuntimeError("500")])
     out = generate_narrative(llm, FACTS)
     assert out["source"] == "template" and validate(out["text"], FACTS) == []
+
+
+@pytest.mark.parametrize("mutate,expected", [
+    (lambda t: t.replace("probabilitas naik 0,5193 terhadap ambang keputusan 0,4557",
+                         "probabilitas naik 0,4557 terhadap ambang keputusan 0,5193"), "skor_disebut"),
+    (lambda t: t.replace("(-2,1 poin", "(+2,1 poin"), "tanda_pengaruh"),
+    (lambda t: t + " Namun harga diperkirakan akan turun.", "label_benar"),
+    (lambda t: t.replace("prediksinya naik", "prediksinya bukan naik, melainkan turun"), "label_benar"),
+    (lambda t: t + " Pembelian aset ini wajar.", "kata_terlarang"),
+    (lambda t: t + " Penjualan bisa dipertimbangkan.", "kata_terlarang"),
+    (lambda t: t + " Ambil posisi hold.", "kata_terlarang"),
+    (lambda t: t + " Disarankan menunggu.", "kata_terlarang"),
+    (lambda t: t + " Harga naik karena RSI.", "kata_terlarang"),
+    (lambda t: t + " Peluangnya lima puluh persen.", "angka_valid"),
+    (lambda t: t + " Pada 17 Oktober harga bergerak.", "tanggal_valid"),
+    (lambda t: "Tidak benar bahwa model belum terbukti lebih baik dari tebakan acak. "
+               + t.replace("Model belum terbukti lebih baik dari tebakan acak", "Model cukup baik"), "keterbatasan"),
+    (lambda t: t.replace("Ini bukan saran investasi.", "Kami tidak bilang ini bukan saran investasi."), "disclaimer"),
+])
+def test_validator_catches_lenient_cases_found_in_review(mutate, expected):
+    assert expected in validate(mutate(GOOD), FACTS)
+
+
+def test_feature_mention_counts_whole_labels_only():
+    # "Sinyal MACD" tidak boleh sekaligus dihitung sebagai "MACD"
+    stats = {"quantiles": {f: np.round(np.linspace(0, 10, 101), 6).tolist() for f in FEATURE_ORDER}}
+    deltas = np.zeros(13)
+    deltas[FEATURE_ORDER.index("MACD")], deltas[FEATURE_ORDER.index("MACD_Signal")] = 3.0, 2.0
+    deltas[FEATURE_ORDER.index("RSI14")] = 1.0
+    rec = {"date": "2026-02-16", "target_date": "2026-02-17", "prob": 0.5193, "threshold": 0.4557, "level": "tinggi",
+           "features": feature_rows({f: 5.0 for f in FEATURE_ORDER}, stats), "contributions": rank_contributions(deltas)}
+    f = build_facts(rec)
+    text = template_narrative(f)
+    only_signal = text.replace("MACD (+3,0", "hal").replace("RSI 14 hari", "hal lain")        # hanya "Sinyal MACD" yang tersisa
+    assert "fitur_disebut" in validate(only_signal, f)

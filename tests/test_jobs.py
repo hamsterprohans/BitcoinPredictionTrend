@@ -176,3 +176,17 @@ def test_explainer_failure_never_blocks_the_prediction(tmp_path):
     latest = run_daily(deps)
     assert "explain" not in latest and latest["as_of"] == "2026-10-14"
     assert read_json(deps.live_dir / "latest.json")["as_of"] == "2026-10-14"           # prediksi tetap tertulis
+
+
+def test_prediction_is_published_before_the_explainer_runs(tmp_path):
+    deps, _ = make_deps(tmp_path)
+    seen = {}
+
+    def explainer(ctx):
+        seen["on_disk"] = read_json(deps.live_dir / "latest.json")
+        return {"narrative": None}
+
+    deps.explainer = explainer
+    run_daily(deps)
+    assert seen["on_disk"]["as_of"] == "2026-10-14" and "explain" not in seen["on_disk"]   # prediksi terbit lebih dulu
+    assert read_json(deps.live_dir / "latest.json")["explain"] == {"narrative": None}

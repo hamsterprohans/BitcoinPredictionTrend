@@ -16,6 +16,8 @@ def test_retro_page_updates_every_panel_on_date_change(page, make_server):
     assert page.locator("#panel-reliability tbody tr").count() == 3
     assert page.locator("#chart-retro-price canvas").count() >= 1 and page.locator("#chart-retro-prob canvas").count() >= 1
     assert "belum terverifikasi" in page.inner_text("#parity-note").lower()      # data uji sintetis memakai allow_mismatch
+    assert "belum terverifikasi" in page.inner_text("#panel-reliability").lower()   # peringatan juga di dalam panel keandalan
+    assert "belum tentu sama" in page.inner_text("#panel-news")                  # judul retrospektif: contoh, bukan yang dinilai
 
     page.locator("#day-slider").fill("0")
     page.wait_for_function("document.querySelector('#panel-narrative').textContent.includes('bukan saran investasi')")
@@ -68,3 +70,16 @@ def test_retro_page_without_data_explains_how_to_build(page, make_server):
     page.goto(url + "/retrospektif")
     page.wait_for_selector("#retro-empty:not([hidden])")
     assert "build_retro" in page.inner_text("#retro-empty") and page.is_hidden("#retro-app")
+
+
+def test_retro_day_load_failure_clears_stale_panels(page, make_server):
+    url = make_server(BASE_NOW, retro=True)
+    page.goto(url + "/retrospektif")
+    page.wait_for_selector("#panel-contrib .bar-row")
+    series = page.evaluate("fetch('/api/retro/series').then(r => r.json())")
+    target = series["date"][3]
+    page.route(f"**/api/retro/day/{target}", lambda route: route.fulfill(status=500, body="x"))
+    page.locator("#day-slider").fill("3")
+    page.wait_for_function("document.querySelector('#panel-news').textContent.includes('Gagal memuat')")
+    assert page.locator("#panel-contrib .bar-row").count() == 0                  # tidak ada sisa panel hari sebelumnya
+    assert "Gagal memuat" in page.inner_text("#panel-narrative")

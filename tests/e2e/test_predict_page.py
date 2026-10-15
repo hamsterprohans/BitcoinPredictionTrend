@@ -126,6 +126,7 @@ def test_live_explain_panels_render_from_latest(page, make_server):
     assert "bukan saran investasi" in page.inner_text("#live-narrative")
     page.wait_for_selector("#live-reliability tbody tr")
     assert page.locator("#live-reliability tbody tr").count() == 3
+    assert "belum terverifikasi" in page.inner_text("#live-reliability").lower()      # paritas belum terverifikasi: ada peringatan
     assert [e for e in errs if "404" not in e] == []
 
 

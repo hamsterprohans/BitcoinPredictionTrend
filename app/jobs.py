@@ -140,14 +140,6 @@ def run_daily(deps: Deps, force: bool = False):
         "horizons": {str(h): {**v, "target_date": (as_of + timedelta(days=h)).isoformat()}
                      for h, v in preds.items()},
     }
-    if deps.explainer is not None:
-        try:
-            explained = deps.explainer({"frame": frame, "preds": preds, "as_of": as_of.isoformat(),
-                                        "news": read_news_entry(live, as_of)})
-            if explained is not None:
-                latest["explain"] = explained
-        except Exception as e:  # noqa: BLE001 - penjelasan opsional; prediksi harian tidak boleh gagal karenanya
-            print(f"[explain] dilewati: {e}", flush=True)
     entry = {"date": as_of.isoformat(), "close": round(close, 2),
              "horizons": {str(h): {k: v[k] for k in ("prob", "direction", "threshold")}
                           for h, v in preds.items()}}
@@ -157,6 +149,15 @@ def run_daily(deps: Deps, force: bool = False):
     atomic_write_json(live / "chart.json", frame_to_columns(chart_frame(feats)))
     atomic_write_json(live / "history.json", history)
     atomic_write_json(live / "latest.json", latest)  # terakhir: hanya tertulis jika semua langkah sukses
+    if deps.explainer is not None:                   # penjelasan opsional dan lambat (LLM): prediksi sudah terbit lebih dulu
+        try:
+            explained = deps.explainer({"frame": frame, "preds": preds, "as_of": as_of.isoformat(),
+                                        "news": read_news_entry(live, as_of)})
+            if explained is not None:
+                latest["explain"] = explained
+                atomic_write_json(live / "latest.json", latest)
+        except Exception as e:  # noqa: BLE001 - penjelasan tidak boleh menggagalkan prediksi harian
+            print(f"[explain] dilewati: {e}", flush=True)
     return latest
 
 
@@ -188,7 +189,7 @@ def make_real_deps(patient_mode: bool = False, prices_only: bool = False) -> Dep
     if stats:
         explainer = lambda ctx: explain.build_live_explain(  # noqa: E731
             predictor=pred, frame=ctx["frame"], pred=ctx["preds"][1], news=ctx["news"], as_of=ctx["as_of"],
-            stats=stats, series=series, client=llm)
+            stats=stats, series=series, client=llm.with_options(timeout=30.0, max_retries=0))
     return Deps(
         live_dir=config.LIVE_DIR, seed_tsv=config.SEED_PRICE_TSV,
         fetch_prices=lambda start: sources.fetch_prices(http, start),

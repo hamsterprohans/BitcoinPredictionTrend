@@ -182,3 +182,21 @@ def test_main_reports_missing_artifacts_without_traceback(monkeypatch):
     with pytest.raises(SystemExit) as e:
         main([])
     assert "Artefak model belum lengkap" in str(e.value)
+
+
+def test_rebuild_keeps_unchanged_narratives_and_removes_stale_day_files(tmp_path):
+    from app.store import atomic_write_json
+    write_outputs(tmp_path, outputs())
+    files = sorted((tmp_path / "days").glob("*.json"))
+    rec = json.loads(files[2].read_text())
+    rec["narrative"] = {"text": "x", "source": "llm", "attempts": 1, "temperature": 0.1}
+    atomic_write_json(files[2], rec)
+    (tmp_path / "days" / "2020-01-01.json").write_text("{}")                    # sisa dari build lama
+    write_outputs(tmp_path, outputs())                                          # build ulang dengan fakta yang sama
+    assert json.loads(files[2].read_text())["narrative"]["text"] == "x"
+    assert not (tmp_path / "days" / "2020-01-01.json").exists()
+    sc = fit_scaler(IN)
+    changed = build_outputs(IN["prices"], IN["sent3"], IN["news"], IN["fg"], sc, FakeRetroModel(), 0.45,
+                            start=IN["start"], end=IN["end"], allow_mismatch=True)   # ambang lain -> fakta berubah
+    write_outputs(tmp_path, changed)
+    assert json.loads(files[2].read_text())["narrative"] is None

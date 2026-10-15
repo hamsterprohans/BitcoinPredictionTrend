@@ -106,3 +106,25 @@ def test_build_facts_and_text_are_formatted_in_indonesian():
     txt = facts_text(f)
     assert "probabilitas naik (skor model): 0,5193" in txt and "tingkat keyakinan: tinggi" in txt
     assert build_facts(_rec(prob=0.40))["direction"] == "TURUN"
+
+
+def test_zero_heavy_feature_value_zero_is_not_called_high():
+    q = [0.0] * 44 + [float(x) for x in np.linspace(0.1, 5, 57)]          # 44 titik nol + 57 naik = 101 titik
+    st = stats()
+    st["quantiles"]["news_sentiment"] = q
+    vals = {f: 5.0 for f in FEATURE_ORDER}
+    vals["news_sentiment"] = 0.0
+    row = {r["feature"]: r for r in feature_rows(vals, st)}["news_sentiment"]
+    assert row["category"] != "tinggi" and row["percentile"] < 40         # persentil tengah, bukan batas atas gumpalan nol
+
+
+def test_facts_and_template_flag_days_without_news():
+    from app.explain import template_narrative, validate
+    rec = _rec()
+    rec["sentiment"] = {"has_news": False, "scores": None, "used": 0.0}
+    f = build_facts(rec)
+    assert f["has_news"] is False and "tidak ada berita bersih" in facts_text(f).lower()
+    t = template_narrative(f)
+    assert "tidak ada berita" in t.lower() and validate(t, f) == []
+    f2 = build_facts(_rec())
+    assert f2["has_news"] is True and "tidak ada berita" not in template_narrative(f2).lower()
