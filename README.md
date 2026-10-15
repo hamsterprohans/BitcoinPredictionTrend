@@ -32,6 +32,16 @@ Hanya ingin melihat harga dan grafik asli (tanpa model, tanpa API key): `python 
 Penjadwalan: `RUN_SCHEDULER=1` menjalankan job tiap hari 00.30 UTC di dalam proses web; alternatifnya cron:
 `30 0 * * * cd /path/webapp && .venv/bin/python -m app.jobs`.
 
+## Dashboard retrospektif
+Setelah artefak notebook (10) terpasang di `data/model_artifacts/` (lihat "Ekspor artefak dari notebook (10)"):
+```bash
+python -m scripts.build_retro              # hitung ulang prediksi periode uji + cek paritas dengan tabel notebook
+python -m scripts.build_retro --narratives # narasi Claude Haiku per hari (butuh ANTHROPIC_API_KEY; dapat dilanjutkan)
+```
+Skrip berhenti dengan pesan bila akurasi/F1 hasil hitung ulang berbeda lebih dari 0,002 dari baris Model F di `content/ablation.json`
+(`--allow-mismatch` tetap menulis, tetapi halaman menandai paritas "belum terverifikasi"). Hasilnya di `content/retro/` dan tampil di `/retrospektif`.
+Job harian (`python -m app.jobs`) menyimpan blok `explain` (berita, kontribusi fitur, narasi) pada `latest.json` bila `content/retro/train_stats.json` ada.
+
 ## Tampilan demo (data sintetis)
 `python -m scripts.demo` menjalankan server di http://127.0.0.1:8001 dengan data buatan yang diberi label DEMO.
 Jangan memakai `LIVE_DIR=...` manual untuk demo: itu yang membuat angka palsu terlihat seperti data asli.
