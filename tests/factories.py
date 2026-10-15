@@ -24,13 +24,14 @@ class FakePredictor:
                 3: {"prob": 0.45, "threshold": 0.5, "direction": "TURUN"}}
 
 
-def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14)):
+def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14), demo=False):
     """Isi live_dir dan content_dir dengan data sintetis yang bentuknya sama dengan keluaran job."""
     prices = synthetic_prices(as_of)
     prices.to_csv(live_dir / "prices.csv", index=False)
     feats = compute_features(prices)
     atomic_write_json(live_dir / "chart.json", frame_to_columns(chart_frame(feats)))
     atomic_write_json(live_dir / "latest.json", {
+        **({"demo": True} if demo else {}),
         "as_of": as_of.isoformat(), "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "close": round(float(prices.close.iloc[-1]), 2), "change_pct": -1.33,
         "inputs": {"news_sentiment": 1.67, "news_sentiment_raw": 2.0, "headline_count": 5, "fear_greed_index": 63.0},

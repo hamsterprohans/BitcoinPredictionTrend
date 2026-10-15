@@ -32,7 +32,7 @@ def _serve(app):
 def make_server(tmp_path_factory):
     started = []
 
-    def _make(now, seed=True, chart_only=False, live_price=None):
+    def _make(now, seed=True, chart_only=False, live_price=None, demo=False):
         base = tmp_path_factory.mktemp("e2e")
         live, content = base / "live", base / "content"
         live.mkdir()
@@ -40,7 +40,7 @@ def make_server(tmp_path_factory):
         if chart_only:
             seed_prices_only(live)
         elif seed:
-            seed_live_dir(live, content)
+            seed_live_dir(live, content, demo=demo)
         def fetch_live():                       # tes tidak boleh menyentuh jaringan
             if live_price is None:
                 raise RuntimeError("harga live tidak tersedia")

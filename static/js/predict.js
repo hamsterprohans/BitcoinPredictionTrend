@@ -6,19 +6,24 @@ initTheme();
 markCapabilities();
 initSplash();
 
-const state = { change: null, close: null, closeDate: null, closeText: "", latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null, interval: "D", range: "1Y" };
+const state = { demo: false, change: null, close: null, closeDate: null, closeText: "", latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null, interval: "D", range: "1Y" };
 const INTERVALS = { D: "Harian (D)", W: "Mingguan (W)", M: "Bulanan (M)" };
 const RANGES = ["1M", "3M", "6M", "YTD", "1Y", "5Y", "MAX"];
 const arrow = (dir) => (dir === "NAIK" ? "▲" : "▼");
 const cls = (dir) => (dir === "NAIK" ? "up" : "down");
 
-function showBanner(text) {
+function showBanner(text, kind = "error") {
   const b = $("#banner");
   b.textContent = text;
+  b.className = "banner" + (kind === "demo" ? " demo" : "");
   b.hidden = false;
 }
 
 function renderHeader(d) {
+  state.demo = !!d.demo;
+  if (state.demo) {
+    showBanner("DATA DEMO SINTETIS: angka di halaman ini bukan harga atau prediksi asli. Jalankan server tanpa LIVE_DIR demo untuk melihat data asli.", "demo");
+  }
   state.close = d.close; state.closeDate = d.as_of;
   $("#price").textContent = fmtUSD(d.close);
   state.closeText = $("#price").textContent;
@@ -235,7 +240,7 @@ async function main() {
 
 // ---- Harga live (hanya tampilan; probabilitas tetap resmi harian dari penutupan lengkap) ----
 async function refreshLive() {
-  if (document.hidden || state.close == null) return;
+  if (document.hidden || state.close == null || state.demo) return;   // demo: jangan campur harga live asli dengan patokan palsu
   const badge = $("#live-badge");
   try {
     const { price } = await getJSON("/api/price/live");

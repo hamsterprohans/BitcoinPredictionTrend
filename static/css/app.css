@@ -137,3 +137,5 @@ body.no-webgl #splash-canvas{display:none}
 /* harga live */
 .live-badge{align-self:center;font-size:.8rem;font-weight:600;color:var(--up);border:1px solid color-mix(in srgb,var(--up) 50%,transparent);border-radius:999px;padding:3px 10px;background:color-mix(in srgb,var(--up) 10%,transparent);animation:live-blink 2s infinite}
 @keyframes live-blink{50%{opacity:.55}}
+
+.banner.demo{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent);color:var(--gold);font-weight:600}
