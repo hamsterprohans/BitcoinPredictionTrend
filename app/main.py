@@ -1,6 +1,8 @@
 import asyncio
 import os
 import re
+import threading
+import time
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -11,7 +13,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import config
+from . import config, sources
 import pandas as pd
 
 from .features import chart_frame, compute_features, resample_prices
@@ -20,8 +22,18 @@ from .store import frame_to_columns, read_json
 NAME_RE = re.compile(r"^[a-z0-9_]+$")
 
 
+LIVE_TTL = 20.0   # detik: cache harga live di server agar upstream tidak dibanjiri
+
+
+def _default_fetch_live() -> float:
+    import httpx
+    with httpx.Client(timeout=5, follow_redirects=True) as c:
+        return sources.fetch_spot(c)
+
+
 def create_app(live_dir=config.LIVE_DIR, content_dir=config.CONTENT_DIR,
-               static_dir=config.STATIC_DIR, now=lambda: datetime.now(timezone.utc)) -> FastAPI:
+               static_dir=config.STATIC_DIR, now=lambda: datetime.now(timezone.utc),
+               fetch_live=_default_fetch_live, monotonic=time.monotonic) -> FastAPI:
     live_dir, content_dir, static_dir = Path(live_dir), Path(content_dir), Path(static_dir)
 
     @asynccontextmanager
@@ -65,6 +77,24 @@ def create_app(live_dir=config.LIVE_DIR, content_dir=config.CONTENT_DIR,
             raise HTTPException(404, "Data harga belum tersedia")
         agg = resample_prices(pd.read_csv(csv, parse_dates=["date"]), interval)
         return frame_to_columns(chart_frame(compute_features(agg)))
+
+    live_cache = {"t": None, "v": None}
+    live_lock = threading.Lock()
+
+    @app.get("/api/price/live")
+    def live_price():
+        with live_lock:
+            t = monotonic()
+            if live_cache["v"] is not None and t - live_cache["t"] < LIVE_TTL:
+                return live_cache["v"]
+            try:
+                price = float(fetch_live())
+            except Exception:  # noqa: BLE001 - upstream apa pun gagal: jangan kirim angka lama sebagai "live"
+                raise HTTPException(503, "Harga live tidak tersedia")
+            v = {"price": round(price, 2), "source": "Coinbase",
+                 "fetched_at": now().astimezone(timezone.utc).isoformat(timespec="seconds")}
+            live_cache.update(t=t, v=v)
+            return v
 
     @app.get("/api/research/{name}")
     def research(name: str):

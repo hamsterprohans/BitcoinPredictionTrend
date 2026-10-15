@@ -32,7 +32,7 @@ def _serve(app):
 def make_server(tmp_path_factory):
     started = []
 
-    def _make(now, seed=True, chart_only=False):
+    def _make(now, seed=True, chart_only=False, live_price=None):
         base = tmp_path_factory.mktemp("e2e")
         live, content = base / "live", base / "content"
         live.mkdir()
@@ -41,7 +41,11 @@ def make_server(tmp_path_factory):
             seed_prices_only(live)
         elif seed:
             seed_live_dir(live, content)
-        srv, t, url = _serve(create_app(live, content, config.STATIC_DIR, now=lambda: now))
+        def fetch_live():                       # tes tidak boleh menyentuh jaringan
+            if live_price is None:
+                raise RuntimeError("harga live tidak tersedia")
+            return live_price
+        srv, t, url = _serve(create_app(live, content, config.STATIC_DIR, now=lambda: now, fetch_live=fetch_live))
         started.append((srv, t))
         return url
 
@@ -63,7 +67,8 @@ def browser_type_launch_args(browser_type_launch_args):
 
 def collect_errors(page):
     errs = []
-    page.on("console", lambda m: errs.append(m.text) if m.type == "error" else None)
+    # 503 dari /api/price/live adalah simulasi gangguan yang disengaja pada server e2e (tes tidak boleh menyentuh jaringan)
+    page.on("console", lambda m: errs.append(m.text) if m.type == "error" and "status of 503" not in m.text else None)
     page.on("pageerror", lambda e: errs.append(str(e)))
     return errs
 

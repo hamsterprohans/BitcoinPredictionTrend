@@ -75,3 +75,30 @@ def test_without_prediction_still_shows_real_chart_and_last_close(page, make_ser
     assert page.is_hidden("#sec-pred") and page.is_hidden("#sec-hist")  # tidak ada kartu prediksi kosong
     assert "belum tersedia" in page.inner_text("#banner").lower()
     assert [e for e in errs if "404" not in e] == []                    # 404 /api/prediction/latest memang disengaja
+
+
+def test_live_price_badge_and_change_since_close(page, make_server):
+    url = make_server(BASE_NOW, live_price=81131.45)
+    page.goto(url + "/")
+    page.wait_for_selector("#live-badge:not([hidden])")
+    assert "LIVE" in page.inner_text("#live-badge")
+    assert page.inner_text("#price") == "$81.131,45"
+    close = 38006.74                                                       # penutupan terakhir pada data uji sintetis
+    pct = f"{(81131.45 / close - 1) * 100:+,.2f}".replace(",", "§").replace(".", ",").replace("§", ".")
+    since = page.inner_text("#since-close")
+    assert "sejak penutupan" in since and pct in since and "$38.006,74" in since
+    assert "patokan penutupan" in page.inner_text("#prediction-live")     # prediksi tetap resmi harian
+    assert pct in page.inner_text("#change")                               # perubahan di samping harga live = terhadap penutupan
+    assert page.is_hidden("#asof")                                         # baris penutupan tidak diulang
+
+
+def test_live_price_failure_falls_back_to_last_close(page, make_server):
+    url = make_server(BASE_NOW, live_price=None)
+    errs = collect_errors(page)
+    page.goto(url + "/")
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")
+    page.wait_for_timeout(1200)
+    assert page.is_hidden("#live-badge")
+    assert page.inner_text("#price") == "$38.006,74"                       # harga penutupan, bukan live
+    assert page.is_visible("#asof") and "-1,33%" in page.inner_text("#change")   # perubahan harian penutupan dikembalikan
+    assert errs == []
