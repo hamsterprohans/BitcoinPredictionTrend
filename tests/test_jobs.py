@@ -190,3 +190,13 @@ def test_prediction_is_published_before_the_explainer_runs(tmp_path):
     run_daily(deps)
     assert seen["on_disk"]["as_of"] == "2026-10-14" and "explain" not in seen["on_disk"]   # prediksi terbit lebih dulu
     assert read_json(deps.live_dir / "latest.json")["explain"] == {"narrative": None}
+
+
+def test_headline_source_prefers_cryptocompare_when_key_present():
+    from app.jobs import make_headline_fetcher
+    fetch, name = make_headline_fetcher(http=object(), env={"COINDESK_API_KEY": "k"})
+    assert name == "cryptocompare"
+    fetch2, name2 = make_headline_fetcher(http=object(), env={})
+    assert name2 == "gdelt"
+    _, name3 = make_headline_fetcher(http=object(), env={"CRYPTOCOMPARE_API_KEY": "k2"})
+    assert name3 == "cryptocompare"

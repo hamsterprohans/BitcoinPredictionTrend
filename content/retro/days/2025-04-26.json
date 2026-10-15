@@ -201,5 +201,10 @@
   "scores": null,
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan **turun** pada 27 April 2025 dengan skor probabilitas 0,3948, di bawah ambang keputusan 0,4768. Fitur paling memengaruhi skor adalah rata-rata harga 30 hari senilai US$84.912 (persentil 100, pengaruh -9,2 poin persentase) dan rata-rata harga 7 hari senilai US$91.853 (persentil 100, pengaruh -6,3 poin persentase). Tidak ada berita bersih hari ini. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi. Hasil ini tidak pasti dan bisa keliru.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

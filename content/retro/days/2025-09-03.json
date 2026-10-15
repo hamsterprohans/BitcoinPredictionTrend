@@ -227,5 +227,10 @@
   },
   "used": 3.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Model prediksi untuk 4 September 2025 menunjukkan skor 0,4639, di bawah ambang keputusan 0,4768, mengindikasikan prediksi arah TURUN dengan tingkat keyakinan rendah. Fitur paling memengaruhi skor adalah rata-rata harga 7 hari sebesar US$109.990 dengan pengaruh -6,3 poin persentase, diikuti rata-rata harga 30 hari US$114.562 dengan pengaruh -5,4 poin persentase. Kedua fitur berada pada persentil 100 terhadap data latih, kategori tinggi. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

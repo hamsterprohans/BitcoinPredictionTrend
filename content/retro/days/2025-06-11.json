@@ -227,5 +227,10 @@
   },
   "used": 8.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi arah harga Bitcoin naik pada 12 Juni 2025 dengan probabilitas 0,5342 (tingkat keyakinan sedang). Fitur yang paling memengaruhi skor model adalah Histogram MACD bernilai US$+45,6 dengan pengaruh +4,3 poin persentase, dan Volatilitas 30 hari sebesar 1,68% dengan pengaruh -3,7 poin persentase. Namun, hasil prediksi ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

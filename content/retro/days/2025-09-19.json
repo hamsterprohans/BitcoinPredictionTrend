@@ -227,5 +227,10 @@
   },
   "used": -0.6666666666666666
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 20 September 2025 dengan probabilitas 0,4907, melampaui ambang 0,4768 sebesar 0,0138. Keyakinan tingkat rendah tercermin dari skor AUC historis 0,4871. Sentimen berita dengan nilai -0,67 (persentil 20) dan rata-rata harga 30 hari US$112.873 (persentil 100) paling memengaruhi skor model, masing-masing berkontribusi +10,6 dan +6,7 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

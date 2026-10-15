@@ -227,5 +227,10 @@
   },
   "used": 4.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi harga Bitcoin akan NAIK pada 9 Juli 2025 dengan probabilitas 0,5420, menunjukkan keyakinan sedang. Sentimen berita dan rata-rata harga 30 hari paling memengaruhi skor model, dengan pengaruh masing-masing +19,7 dan +10,3 poin persentase. Sentimen berita mencapai nilai +4,33 (persentil 84), sementara rata-rata harga 30 hari berada di US$106.721 (persentil 100). Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan dapat keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

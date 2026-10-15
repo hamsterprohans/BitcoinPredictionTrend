@@ -227,5 +227,10 @@
   },
   "used": 2.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 24 Oktober 2025, Model F memberi probabilitas naik 0,5176 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 25 Oktober 2025. Tingkat keyakinannya sedang. Fitur yang paling memengaruhi skor adalah Histogram MACD (+8,3 poin persentase), Sentimen berita (+6,6 poin persentase), dan Rata-rata harga 30 hari (-4,4 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

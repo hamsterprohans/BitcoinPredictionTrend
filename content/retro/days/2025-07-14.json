@@ -227,5 +227,10 @@
   },
   "used": 6.666666666666667
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi harga Bitcoin **turun** pada 15 Juli 2025, dengan skor probabilitas 0,4631 dan tingkat keyakinan rendah. Fitur yang paling memengaruhi skor model adalah sentimen berita dengan nilai +6,67 (persentil 98), yang berkontribusi +11,0 poin persentase, serta rata-rata harga 90 hari sebesar US$103.483 (persentil 100) dengan pengaruh -10,2 poin persentase. Hasil prediksi sangat dekat dengan ambang keputusan, sehingga tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

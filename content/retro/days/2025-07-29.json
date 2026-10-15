@@ -227,5 +227,10 @@
   },
   "used": -1.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan **naik** pada 30 Juli 2025 berdasarkan skor 0,4912 (ambang 0,4768), namun dengan tingkat keyakinan rendah. Fitur MACD pada persentil 94 dan rata-rata harga 90 hari di persentil 100 paling memengaruhi skor, masing-masing dengan pengaruh -8,5 dan -8,0 poin persentase, sementara sentimen berita rendah (-1,00) berkontribusi +8,3 poin persentase. Model belum terbukti lebih baik dari tebakan acak—AUC historis hanya 0,4871. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

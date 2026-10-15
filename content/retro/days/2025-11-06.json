@@ -227,5 +227,10 @@
   },
   "used": 7.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi arah TURUN untuk Bitcoin pada 7 November 2025 berdasarkan data 6 November 2025, dengan probabilitas naik 0,4550 dan tingkat keyakinan rendah. Fitur yang paling memengaruhi skor model adalah rata-rata harga 30 hari sebesar US$110.583 dengan pengaruh −10,9 poin persentase, dan rata-rata harga 90 hari sebesar US$113.420 dengan pengaruh +9,5 poin persentase. Namun, hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 3,
+  "temperature": null
+ }
 }

@@ -201,5 +201,10 @@
   "scores": null,
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin bergerak **turun** untuk 29 April 2025, dengan probabilitas naik 0,3865 (di bawah ambang 0,4768). Tingkat keyakinan tinggi, meskipun AUC uji historis 0,4871 menunjukkan daya diskriminasi terbatas. Fitur paling memengaruhi skor adalah rata-rata harga 30 hari (US$85.648, pengaruh -5,5 poin persentase) dan rata-rata harga 7 hari (US$94.198, pengaruh -4,3 poin persentase), keduanya di persentil tertinggi data latih. Hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 3,
+  "temperature": null
+ }
 }

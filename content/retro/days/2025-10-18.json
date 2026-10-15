@@ -227,5 +227,10 @@
   },
   "used": 2.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Model memprediksi Bitcoin mengalami pergerakan NAIK pada 19 Oktober 2025 dengan probabilitas 0,4889, namun tingkat keyakinan rendah. Sentimen berita (+2,33, kategori tinggi) dan histogram MACD (US$-1.530,2, kategori rendah) paling memengaruhi skor model dengan pengaruh +10,9 dan +6,7 poin persentase. Rata-rata harga 90 hari (US$115.046, kategori tinggi) berkontribusi sebesar -4,6 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

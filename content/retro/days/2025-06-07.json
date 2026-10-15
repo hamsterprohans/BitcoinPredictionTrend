@@ -227,5 +227,10 @@
   },
   "used": -3.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 8 Juni 2025 dengan probabilitas 0,5607. Histogram MACD di US$-772,3 dan rata-rata harga 90 hari US$93.203 paling memengaruhi skor model, masing-masing berkontribusi +8,4 dan -4,0 poin persentase. Skor AUC uji historis 0,4871 menunjukkan akurasi terbatas. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

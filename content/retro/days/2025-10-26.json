@@ -227,5 +227,10 @@
   },
   "used": 2.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 27 Oktober 2025 dengan skor 0,5389 (keyakinan sedang). Fitur paling memengaruhi prediksi ialah Histogram MACD pada persentil 88 bernilai US$+284,9 (kategori tinggi, pengaruh +9,0 poin persentase) dan Sentimen berita pada persentil 76 bernilai +2,33 (kategori tinggi, pengaruh +6,6 poin persentase). Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi tidak pasti dan dapat keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

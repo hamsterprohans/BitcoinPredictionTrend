@@ -48,6 +48,20 @@ def patient(fetch, cooldown: int = 900, max_waits: int = 48, sleep=time.sleep):
     return _fetch
 
 
+def make_headline_fetcher(http, env=None, patient_mode: bool = False):
+    """Pilih sumber berita live: CryptoCompare bila ada API key (sumber korpus latih), selain itu GDELT."""
+    from . import sources
+    env = os.environ if env is None else env
+    key = env.get("COINDESK_API_KEY") or env.get("CRYPTOCOMPARE_API_KEY")
+    if key:
+        base = lambda day: sources.fetch_headlines_cryptocompare(http, day, key)  # noqa: E731
+        name = "cryptocompare"
+    else:
+        base = lambda day: sources.fetch_headlines(http, day)  # noqa: E731
+        name = "gdelt"
+    return (patient(base) if patient_mode else base), name
+
+
 def load_prices(live_dir: Path, seed_tsv: Path) -> pd.DataFrame:
     p = live_dir / "prices.csv"
     if p.exists():
@@ -190,11 +204,13 @@ def make_real_deps(patient_mode: bool = False, prices_only: bool = False) -> Dep
         explainer = lambda ctx: explain.build_live_explain(  # noqa: E731
             predictor=pred, frame=ctx["frame"], pred=ctx["preds"][1], news=ctx["news"], as_of=ctx["as_of"],
             stats=stats, series=series, client=llm.with_options(timeout=30.0, max_retries=0))
+    fetch_headlines, source_name = make_headline_fetcher(http, patient_mode=patient_mode)
+    print(f"sumber berita live: {source_name}", flush=True)
     return Deps(
         live_dir=config.LIVE_DIR, seed_tsv=config.SEED_PRICE_TSV,
         fetch_prices=lambda start: sources.fetch_prices(http, start),
         fetch_fear_greed=lambda: sources.fetch_fear_greed(http, limit=60),
-        fetch_headlines=(patient if patient_mode else (lambda f: f))(lambda day: sources.fetch_headlines(http, day)),
+        fetch_headlines=fetch_headlines,
         score=lambda heads: daily_sentiment(llm, heads),
         predictor=pred, now=lambda: datetime.now(timezone.utc),
         score_detail=lambda heads: daily_sentiment_detail(llm, heads), explainer=explainer,

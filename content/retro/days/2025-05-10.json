@@ -201,5 +201,10 @@
   "scores": null,
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin bergerak **turun** pada 11 Mei 2025 dengan probabilitas naik 0,3598, berada 0,1170 di bawah ambang 0,4768. Fitur yang paling memengaruhi skor adalah rata-rata harga 90 hari (US$88.890, pengaruh -15,5 poin persentase) dan histogram MACD (US$+704,9, pengaruh -7,5 poin persentase), keduanya pada level tertinggi historis. Tidak ada berita bersih hari ini. Model belum terbukti lebih baik dari tebakan acak. Prediksi ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

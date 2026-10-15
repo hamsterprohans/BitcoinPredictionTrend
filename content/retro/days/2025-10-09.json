@@ -227,5 +227,10 @@
   },
   "used": 6.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 10 Oktober 2025 dengan probabilitas 0,5049, tingkat keyakinan rendah. Sentimen berita dan rata-rata harga 30 hari paling memengaruhi skor model, masing-masing dengan kontribusi +17,0 dan +8,6 poin persentase. Sentimen berita mencapai nilai +6,33 di persentil 98, sementara rata-rata harga 30 hari US$116.502 berada di persentil 100. Hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

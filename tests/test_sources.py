@@ -127,3 +127,69 @@ def test_fetch_spot_gives_up_after_second_failure():
         raise httpx.ConnectError("mati")
     with pytest.raises(httpx.HTTPError):
         fetch_spot(client(handler))
+
+
+# ---- CryptoCompare (sumber berita korpus latih; butuh API key) ----
+import datetime as _dt  # noqa: E402
+
+
+def _ts(y, m, d, h=0, mi=0):
+    return int(_dt.datetime(y, m, d, h, mi, tzinfo=_dt.timezone.utc).timestamp())
+
+
+def _art(ts, title):
+    return {"published_on": ts, "title": title, "url": "https://x/" + str(ts)}
+
+
+def test_cryptocompare_collects_one_utc_day_newest_first_with_filters_and_paging():
+    from app.sources import fetch_headlines_cryptocompare
+    day = date(2026, 10, 14)
+    pages = [
+        [_art(_ts(2026, 10, 15, 0, 5), "Bitcoin besok"), _art(_ts(2026, 10, 14, 23, 0), "Bitcoin jumps 5%"),
+         _art(_ts(2026, 10, 14, 22, 0), "Ethereum rallies"), _art(_ts(2026, 10, 14, 21, 0), "Best crypto to buy: Bitcoin presale")],
+        [_art(_ts(2026, 10, 14, 12, 0), "BTC holds $100k"), _art(_ts(2026, 10, 14, 11, 0), "Bitcoin jumps 5%"),
+         _art(_ts(2026, 10, 13, 23, 59), "Bitcoin kemarin")],
+    ]
+    seen = []
+
+    def handler(req):
+        seen.append(dict(req.url.params))
+        assert req.headers["authorization"] == "Apikey SECRET"
+        return httpx.Response(200, json={"Type": 100, "Data": pages.pop(0) if pages else []})
+
+    out = fetch_headlines_cryptocompare(client(handler), day, "SECRET", sleep=lambda s: None)
+    assert out == ["Bitcoin jumps 5%", "BTC holds $100k"]                   # hari itu saja, terbaru dulu, tersaring, unik
+    assert seen[0]["lTs"] == str(_ts(2026, 10, 15, 0, 0))                    # mulai dari akhir hari (UTC)
+    assert seen[1]["lTs"] == str(_ts(2026, 10, 14, 21, 0))                   # halaman berikut: mundur dari artikel terlama
+    assert len(seen) == 2                                                    # berhenti setelah melewati awal hari
+
+
+def test_cryptocompare_without_valid_key_raises_clear_error():
+    from app.sources import fetch_headlines_cryptocompare
+    def handler(req):
+        return httpx.Response(401, json={"Err": {"message": "API key required"}})
+    with pytest.raises(SourceError, match="API key"):
+        fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "BAD", sleep=lambda s: None)
+
+
+def test_cryptocompare_retries_429_then_succeeds_and_gives_up_on_empty_pages():
+    from app.sources import fetch_headlines_cryptocompare
+    calls = {"n": 0}
+    def handler(req):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return httpx.Response(429, text="slow")
+        return httpx.Response(200, json={"Data": []})                         # tidak ada artikel lagi
+    waits = []
+    assert fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "K", sleep=waits.append) == []
+    assert calls["n"] == 2 and waits[0] == 15
+
+
+def test_cryptocompare_stops_at_max_pages():
+    from app.sources import fetch_headlines_cryptocompare
+    n = {"i": 0}
+    def handler(req):
+        n["i"] += 1
+        return httpx.Response(200, json={"Data": [_art(_ts(2026, 10, 14, 23, 59) - n["i"], f"Bitcoin {n['i']}")]})
+    out = fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "K", sleep=lambda s: None, max_pages=5)
+    assert n["i"] == 5 and len(out) == 5

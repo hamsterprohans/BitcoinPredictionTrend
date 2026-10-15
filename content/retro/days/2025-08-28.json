@@ -227,5 +227,10 @@
   },
   "used": 4.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan **turun** pada 29 Agustus 2025, berdasarkan data dari 28 Agustus 2025, dengan skor probabilitas 0,4526 (tingkat keyakinan rendah, berada 0,0242 di bawah ambang 0,4768). Fitur teratas yang paling memengaruhi skor adalah rata-rata harga 7 hari sebesar US$113.045 (persentil 100, pengaruh -9,7 poin persentase) dan rata-rata harga 90 hari sebesar US$112.106 (persentil 100, pengaruh -8,9 poin persentase). Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

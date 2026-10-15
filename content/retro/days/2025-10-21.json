@@ -227,5 +227,10 @@
   },
   "used": -2.6666666666666665
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi harga Bitcoin akan **turun** pada 22 Oktober 2025 dengan skor 0,4438 (tingkat keyakinan sedang). Rata-rata harga 90 hari sebesar US$114.734 dan rata-rata harga 7 hari sebesar US$108.688 paling memengaruhi skor model, keduanya berkontribusi negatif sebesar -9,7 dan -9,5 poin persentase. Hasil uji historis menunjukkan AUC 0,4871. Model belum terbukti lebih baik dari tebakan acak. Prediksi ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

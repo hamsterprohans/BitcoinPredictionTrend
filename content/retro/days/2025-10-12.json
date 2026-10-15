@@ -227,5 +227,10 @@
   },
   "used": 5.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model prediksi memprediksi harga Bitcoin akan NAIK pada 13 Oktober 2025 dengan skor probabilitas 0,5382, melampaui ambang keputusan 0,4768. Tingkat keyakinan tergolong sedang. Fitur yang paling memengaruhi skor adalah sentimen berita bernilai +5,00 dengan pengaruh +18,7 poin persentase, dan rata-rata harga 30 hari sebesar US$116.313 dengan pengaruh +13,0 poin persentase. Namun, hasil prediksi ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

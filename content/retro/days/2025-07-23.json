@@ -227,5 +227,10 @@
   },
   "used": 0.6666666666666666
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 24 Juli 2025 berdasarkan data dari 23 Juli 2025, dengan skor probabilitas 0,4813 yang sedikit melampaui ambang 0,4768. Tingkat keyakinan rendah mencerminkan prediksi yang marginal. Fitur sentimen berita (nilai +0,67, pengaruh +10,7 poin persentase) dan MACD (nilai US$+2.870,7, pengaruh -10,5 poin persentase) paling memengaruhi skor model. Performa historis menunjukkan AUC 0,4871, mengindikasikan daya prediktif terbatas. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti, berpotensi keliru, dan bisa berubah dengan data baru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 3,
+  "temperature": null
+ }
 }

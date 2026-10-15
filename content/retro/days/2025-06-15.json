@@ -227,5 +227,10 @@
   },
   "used": 3.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi harga Bitcoin akan **naik** pada 16 Juni 2025 dengan skor probabilitas 0,5426, melampaui ambang 0,4768. Sentimen berita (nilai +3,33, kategori tinggi) dan rata-rata harga 30 hari (US$106.637, kategori tinggi) paling memengaruhi skor model, dengan kontribusi +12,4 dan +4,6 poin persentase. Namun, hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

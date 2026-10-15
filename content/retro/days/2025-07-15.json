@@ -227,5 +227,10 @@
   },
   "used": 4.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi arah turun untuk Bitcoin pada 16 Juli 2025 dengan skor probabilitas 0,4521, berada di bawah ambang 0,4768 dengan tingkat keyakinan rendah. Fitur yang paling memengaruhi skor adalah rata-rata harga 90 hari senilai US$103.856 (persentil 100, pengaruh -10,1 poin persentase) dan histogram MACD sebesar US$+979,1 (persentil 98, pengaruh -7,4 poin persentase), keduanya mendorong skor menurun. Sentimen berita mencapai +4,33 dengan pengaruh berlawanan sebesar +9,8 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

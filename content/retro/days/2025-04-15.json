@@ -201,5 +201,10 @@
   "scores": null,
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model memprediksi Bitcoin turun pada 16 April 2025 dengan probabilitas naik 0,4289, di bawah ambang 0,4768. Keyakinan model berkategori sedang. Fitur paling memengaruhi skor adalah rata-rata harga 30 hari (US$83.526) dan rata-rata harga 7 hari (US$83.248), keduanya pada persentil tertinggi data latih dengan pengaruh negatif masing-masing -11,3 dan -10,7 poin persentase. Tidak ada berita bersih pada 15 April 2025. Model belum terbukti lebih baik dari tebakan acak. Prediksi ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

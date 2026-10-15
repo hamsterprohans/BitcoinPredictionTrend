@@ -201,5 +201,10 @@
   "scores": null,
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin turun pada 14 April 2025 berdasarkan data hingga 13 April dengan probabilitas naik 0,4284 (di bawah ambang 0,4768), tingkat keyakinan sedang. Fitur paling memengaruhi skor: rata-rata harga 30 hari US$83.479 (pengaruh -11,0 poin persentase), rata-rata harga 7 hari US$81.464 (pengaruh -10,4 poin persentase), dan rata-rata harga 90 hari US$91.329 (pengaruh +3,3 poin persentase). Hasil prediksi tidak pasti dan dapat keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

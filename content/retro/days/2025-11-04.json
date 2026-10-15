@@ -227,5 +227,10 @@
   },
   "used": -3.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 5 November 2025 dengan skor 0,4794, melampaui ambang 0,4768 dengan selisih 0,0026. Tingkat keyakinan rendah. Fitur paling memengaruhi: rata-rata harga 90 hari (US$113.743, pengaruh +12,2 poin persentase) dan rata-rata harga 30 hari (US$111.958, pengaruh -5,5 poin persentase) berada di kategori tinggi. Hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

@@ -227,5 +227,10 @@
   },
   "used": 4.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi harga Bitcoin akan bergerak turun pada 19 Juli 2025 dengan probabilitas 0,4551, berada di bawah ambang 0,4768, menunjukkan tingkat keyakinan rendah. Fitur paling memengaruhi skor model adalah rata-rata harga 90 hari sebesar US$104.986 (persentil 100, pengaruh -8,8 poin persentase) dan MACD US$+3.378,2 (persentil 98, pengaruh -7,9 poin persentase), keduanya mendorong prediksi turun. Sentimen berita +4,33 (persentil 84) memberikan pengaruh +8,4 poin persentase berlawanan arah. Model belum terbukti lebih baik dari tebakan acak dengan AUC historis 0,4871. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 3,
+  "temperature": null
+ }
 }
