@@ -13,12 +13,14 @@ function label(text, color) {
   return s;
 }
 
+const SPAN = 11;   // lebar deretan simpul (unit dunia)
+
 export function createHorizonScene(canvas, { onSelect = () => {}, reduced = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-  camera.position.set(0, 1.2, 9.5);
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);   // ortografik: bola tidak gepeng di kanvas lebar
+  camera.position.set(0, 0, 10);
   camera.lookAt(0, 0, 0);
   scene.add(new THREE.AmbientLight(0xffffff, 0.9));
   const key = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -32,20 +34,23 @@ export function createHorizonScene(canvas, { onSelect = () => {}, reduced = fals
   function setHorizons(list) {
     group.clear();
     nodes = [];
-    const n = list.length, span = 11;
+    const n = list.length, span = SPAN;
+    const gap = span / Math.max(1, n - 1);                      // jarak antar simpul
+    const compact = n > 5;                                        // banyak horizon: label ringkas "7h", bukan "7 hari"
     const pts = list.map((_, i) => new THREE.Vector3((i / Math.max(1, n - 1) - 0.5) * span, 0, 0));
     group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),
       new THREE.LineBasicMaterial({ color: new THREE.Color(cssVar("--text-2")) })));
     list.forEach((it, i) => {
       const col = new THREE.Color(cssVar(it.direction === "NAIK" ? "--up" : "--down"));
-      const m = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32),
+      const m = new THREE.Mesh(new THREE.SphereGeometry(Math.min(0.5, gap * 0.28), 32, 32),
         new THREE.MeshStandardMaterial({ color: col, roughness: 0.35, metalness: 0.2 }));
       m.position.copy(pts[i]);
       m.userData.h = String(it.h);
       group.add(m);
       nodes.push(m);
-      const l = label(`${it.h} hari`, cssVar("--text"));
-      l.position.set(pts[i].x, -1.25, 0);
+      const l = label(compact ? `${it.h}h` : `${it.h} hari`, cssVar("--text"));
+      l.scale.set(Math.min(2.6, gap * 0.95), 0.74 * Math.min(1, (gap * 0.95) / 2.6), 1);   // label tidak melebihi jarak simpul
+      l.position.set(pts[i].x, -1.15, 0);
       group.add(l);
     });
     paint();
@@ -78,7 +83,10 @@ export function createHorizonScene(canvas, { onSelect = () => {}, reduced = fals
   function resize() {
     const w = canvas.clientWidth || 600, h = canvas.clientHeight || 180;
     renderer.setSize(w, h, false);
-    camera.aspect = w / h;
+    // seluruh deretan simpul harus muat (lebar) dan label tidak terpotong (tinggi)
+    const halfH = Math.max(2.1, (SPAN + 2.5) / (2 * (w / h)));
+    const halfW = halfH * (w / h);
+    camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
     renderOnce();
   }
