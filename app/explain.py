@@ -155,3 +155,109 @@ def facts_text(f: dict) -> str:
         lines.append(f"{i}. {t['label']}: nilai {t['value_text']}, persentil {t['percentile']} terhadap data latih, "
                      f"kategori {t['category']}, pengaruh {t['delta']} poin persentase")
     return "\n".join(lines)
+
+
+import re  # noqa: E402
+
+MODEL = "claude-haiku-4-5"
+
+_MONTHS_RE = "|".join(MONTHS)
+_DATE_RE = re.compile(rf"\b\d{{1,2}} (?:{_MONTHS_RE}) \d{{4}}\b")
+_ISO_RE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
+_NUM_RE = re.compile(r"\d[\d.,]*\d|\d")
+_FORBIDDEN_RE = re.compile(
+    r"\b(?:beli|membeli|jual|menjual|buy|sell|dijamin|garansi|rekomendasi|sebaiknya)\b|(?<!tidak )\bpasti\b", re.I)
+_UNCERTAIN = ("tidak pasti", "ketidakpastian", "bisa keliru", "dapat keliru", "mungkin keliru")
+
+NARRATIVE_PROMPT = """Anda menulis penjelasan singkat dalam Bahasa Indonesia untuk investor ritel tentang satu prediksi arah harga Bitcoin dari sebuah model penelitian.
+
+ATURAN KETAT:
+- Gunakan HANYA informasi pada BLOK FAKTA. Tulis angka persis seperti tertulis di sana (jangan membulatkan, jangan menghitung ulang, jangan menambah angka baru).
+- Sebut tanggal, probabilitas (skor model), arah prediksi (naik atau turun), dan sedikitnya dua dari tiga fitur teratas.
+- Jangan menyatakan sebab-akibat; fitur hanya "paling memengaruhi skor model".
+- Jangan mengajak membeli atau menjual, dan jangan memakai kata beli, jual, pasti, dijamin, garansi, rekomendasi, sebaiknya.
+- Wajib menulis kalimat persis: "Model belum terbukti lebih baik dari tebakan acak" dan kalimat persis: "Ini bukan saran investasi."
+- Akui bahwa hasil ini tidak pasti dan bisa keliru.
+- Panjang 60 sampai 140 kata, satu paragraf.
+
+BLOK FAKTA:
+{facts}
+{feedback}
+Tulis penjelasannya sekarang."""
+
+
+def validate(text: str, facts: dict) -> list:
+    failed = []
+    low = text.lower()
+    allowed_dates = {facts["date_id"], facts["target_id"]}
+    allowed_iso = {facts["date"], facts["target"]}
+    if any(m not in allowed_dates for m in _DATE_RE.findall(text)) or \
+            any(m not in allowed_iso for m in _ISO_RE.findall(text)):
+        failed.append("tanggal_valid")
+    allowed_nums = set(_NUM_RE.findall(facts_text(facts)))
+    if any(n not in allowed_nums for n in _NUM_RE.findall(text)):
+        failed.append("angka_valid")
+    if facts["prob"] not in text:
+        failed.append("skor_disebut")
+    m = re.search(r"prediksi\w*[^.]*?\b(naik|turun)\b", text, re.I | re.S)
+    if not m or m.group(1).lower() != facts["direction"].lower():
+        failed.append("label_benar")
+    if sum(1 for t in facts["top"] if t["label"].lower() in low) < 2:
+        failed.append("fitur_disebut")
+    if _FORBIDDEN_RE.search(text):
+        failed.append("kata_terlarang")
+    if "bukan saran investasi" not in low:
+        failed.append("disclaimer")
+    if "belum terbukti lebih baik dari tebakan acak" not in low:
+        failed.append("keterbatasan")
+    if not any(u in low for u in _UNCERTAIN):
+        failed.append("ketidakpastian")
+    if not 40 <= len(text.split()) <= 170:
+        failed.append("panjang")
+    return failed
+
+
+def _join(items: list) -> str:
+    if len(items) == 1:
+        return items[0]
+    if len(items) == 2:
+        return " dan ".join(items)
+    return ", ".join(items[:-1]) + ", dan " + items[-1]
+
+
+def template_narrative(f: dict) -> str:
+    parts = [f"Pada {f['date_id']}, Model F memberi probabilitas naik {f['prob']} terhadap ambang keputusan "
+             f"{f['threshold']}, sehingga prediksinya {f['direction'].lower()} untuk {f['target_id']}."]
+    if f.get("level"):
+        parts.append(f"Tingkat keyakinannya {f['level']}.")
+    items = [f"{t['label']} ({t['delta']} poin persentase)" for t in f["top"]]
+    if items:
+        parts.append("Fitur yang paling memengaruhi skor adalah " + _join(items) + ".")
+    parts.append("Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti "
+                 "dan bisa keliru. Ini bukan saran investasi.")
+    return " ".join(parts)
+
+
+def generate_narrative(client, facts: dict, retries: int = 3) -> dict:
+    ftxt, feedback, temperature = facts_text(facts), "", 0.1
+    for attempt in range(1, retries + 1):
+        kw = {"model": MODEL, "max_tokens": 400,
+              "messages": [{"role": "user", "content": NARRATIVE_PROMPT.format(facts=ftxt, feedback=feedback)}]}
+        try:
+            resp = client.messages.create(temperature=temperature, **kw) if temperature is not None \
+                else client.messages.create(**kw)
+        except Exception as e:  # noqa: BLE001
+            if temperature is not None and "temperature" in str(e).lower():
+                temperature = None            # API menolak suhu: lanjut dengan suhu bawaan, statusnya dicatat
+                try:
+                    resp = client.messages.create(**kw)
+                except Exception:  # noqa: BLE001
+                    continue
+            else:
+                continue
+        text = resp.content[0].text.strip()
+        failed = validate(text, facts)
+        if not failed:
+            return {"text": text, "source": "llm", "attempts": attempt, "temperature": temperature}
+        feedback = "\nPERBAIKI: percobaan sebelumnya gagal pada pemeriksaan: " + ", ".join(failed) + "."
+    return {"text": template_narrative(facts), "source": "template", "attempts": retries, "temperature": temperature}

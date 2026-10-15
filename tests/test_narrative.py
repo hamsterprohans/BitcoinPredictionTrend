@@ -1,0 +1,93 @@
+import numpy as np
+import pytest
+
+from app.explain import (build_facts, feature_rows, generate_narrative, rank_contributions, template_narrative,
+                         validate)
+from app.inference import FEATURE_ORDER
+
+
+def _facts():
+    stats = {"quantiles": {f: np.round(np.linspace(0, 10, 101), 6).tolist() for f in FEATURE_ORDER}}
+    deltas = np.zeros(13)
+    deltas[FEATURE_ORDER.index("Vol_30")], deltas[FEATURE_ORDER.index("RSI14")] = 3.24, -2.1
+    deltas[FEATURE_ORDER.index("MACD")] = 1.05
+    rec = {"date": "2026-02-16", "target_date": "2026-02-17", "prob": 0.5193, "threshold": 0.4557, "level": "tinggi",
+           "features": feature_rows({f: 5.0 for f in FEATURE_ORDER}, stats), "contributions": rank_contributions(deltas)}
+    return build_facts(rec, auc=0.52)
+
+
+FACTS = _facts()
+GOOD = template_narrative(FACTS)
+
+
+def test_template_passes_every_check_by_construction():
+    assert validate(GOOD, FACTS) == []
+    assert 40 <= len(GOOD.split()) <= 170
+    assert "belum terbukti lebih baik dari tebakan acak" in GOOD.lower() and "bukan saran investasi" in GOOD.lower()
+
+
+@pytest.mark.parametrize("mutate,expected", [
+    (lambda t: t.replace("16 Februari 2026", "17 Maret 2026"), "tanggal_valid"),
+    (lambda t: t + " Peluangnya 87%.", "angka_valid"),
+    (lambda t: t.replace("0,5193", "nilai tertentu"), "skor_disebut"),
+    (lambda t: t.replace("prediksinya naik", "prediksinya turun"), "label_benar"),
+    (lambda t: t.replace("Volatilitas 30 hari", "satu hal").replace("RSI 14 hari", "hal lain"), "fitur_disebut"),
+    (lambda t: t + " Sebaiknya beli sekarang.", "kata_terlarang"),
+    (lambda t: t.replace("Ini bukan saran investasi.", ""), "disclaimer"),
+    (lambda t: t.replace("belum terbukti lebih baik dari tebakan acak", "cukup baik"), "keterbatasan"),
+    (lambda t: t.replace("tidak pasti dan bisa keliru", "perlu dibaca hati-hati"), "ketidakpastian"),
+    (lambda t: "Terlalu pendek.", "panjang"),
+    (lambda t: t + " " + "kata " * 200, "panjang"),
+])
+def test_each_validator_rule_catches_its_violation(mutate, expected):
+    assert expected in validate(mutate(GOOD), FACTS)
+
+
+def test_tidak_pasti_is_not_flagged_as_forbidden_word():
+    assert "kata_terlarang" not in validate(GOOD, FACTS)       # "tidak pasti" boleh, "pasti" sendirian tidak
+
+
+class _Resp:
+    def __init__(self, text):
+        self.content = [type("B", (), {"text": text})()]
+
+
+class FakeLLM:
+    def __init__(self, replies):
+        self.replies, self.calls = list(replies), []
+        self.messages = self
+
+    def create(self, **kw):
+        self.calls.append(kw)
+        r = self.replies.pop(0)
+        if isinstance(r, Exception):
+            raise r
+        return _Resp(r)
+
+
+def test_generate_retries_with_feedback_then_succeeds():
+    llm = FakeLLM(["Teks pendek.", GOOD])
+    out = generate_narrative(llm, FACTS)
+    assert out["source"] == "llm" and out["attempts"] == 2 and out["text"] == GOOD and out["temperature"] == 0.1
+    assert llm.calls[0]["temperature"] == 0.1 and llm.calls[0]["model"] == "claude-haiku-4-5"
+    assert "PERBAIKI" in llm.calls[1]["messages"][0]["content"] and "panjang" in llm.calls[1]["messages"][0]["content"]
+    assert "0,5193" in llm.calls[0]["messages"][0]["content"]               # blok fakta dikirim
+
+
+def test_generate_falls_back_to_template_after_three_invalid():
+    llm = FakeLLM(["salah", "salah lagi", "tetap salah"])
+    out = generate_narrative(llm, FACTS)
+    assert out["source"] == "template" and out["text"] == template_narrative(FACTS) and len(llm.calls) == 3
+
+
+def test_generate_retries_without_temperature_when_api_rejects_it():
+    llm = FakeLLM([RuntimeError("`temperature` is not supported for this model"), GOOD])
+    out = generate_narrative(llm, FACTS)
+    assert out["source"] == "llm" and out["temperature"] is None
+    assert "temperature" in llm.calls[0] and "temperature" not in llm.calls[1]
+
+
+def test_generate_survives_api_errors_and_never_returns_unvalidated_text():
+    llm = FakeLLM([RuntimeError("500"), RuntimeError("500"), RuntimeError("500")])
+    out = generate_narrative(llm, FACTS)
+    assert out["source"] == "template" and validate(out["text"], FACTS) == []
