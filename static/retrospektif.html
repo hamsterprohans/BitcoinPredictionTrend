@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retrospektif — Bitcoin Trend</title>
+  <meta name="description" content="Ulang-putar periode uji: prediksi Model F per hari beserta berita, kontribusi fitur, dan keandalan historisnya.">
+  <link rel="preload" href="/static/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <script src="/static/vendor/lightweight-charts.standalone.production.js"></script>
+</head>
+<body class="page-retro no-webgl">
+  <header class="topbar">
+    <a class="brand" href="/">Bitcoin&nbsp;Trend</a>
+    <nav aria-label="Utama"><a href="/">Prediksi</a><a href="/latar-belakang">Latar Belakang</a><a href="/retrospektif" aria-current="page">Retrospektif</a><a href="/riset">Riset</a><a href="/metodologi">Metodologi</a><a href="/tentang">Tentang</a></nav>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Ganti tema terang/gelap">◐</button>
+  </header>
+  <main>
+    <h1 style="font-size:clamp(1.8rem,6vw,2.6rem);margin:24px 0 8px">Retrospektif</h1>
+    <div id="retro-banner" class="banner retro" role="note">Simulasi retrospektif: data uji (2 Feb 2025 – 29 Apr 2026), bukan prediksi masa depan. Setiap hari menunjukkan apa yang diprediksi Model F dengan data hari itu dan apakah arahnya benar.</div>
+    <div id="retro-empty" class="card" hidden>
+      <h2>Data retrospektif belum dibangun</h2>
+      <p>Jalankan di folder <code>webapp</code> (setelah artefak notebook (10) dipasang di <code>data/model_artifacts/</code>):</p>
+      <p class="mono">python -m scripts.build_retro<br>python -m scripts.build_retro --narratives</p>
+      <p class="muted">Perintah pertama menghitung ulang prediksi periode uji dan memeriksa kecocokannya dengan tabel notebook; yang kedua membuat narasi penjelas (butuh ANTHROPIC_API_KEY).</p>
+    </div>
+    <div id="retro-app" hidden>
+      <p id="parity-note" class="muted small"></p>
+      <section class="card" aria-labelledby="h-pick">
+        <h2 id="h-pick">Pilih hari</h2>
+        <div class="day-controls">
+          <button id="day-prev" class="range" type="button" aria-label="Hari sebelumnya">◀</button>
+          <input id="day-slider" type="range" min="0" max="0" value="0" aria-label="Hari uji">
+          <button id="day-next" class="range" type="button" aria-label="Hari berikutnya">▶</button>
+          <input id="day-picker" type="date" aria-label="Pilih tanggal">
+        </div>
+        <dl class="day-summary">
+          <div><dt>Tanggal prediksi</dt><dd id="day-date" class="mono">—</dd></div>
+          <div><dt>Penutupan</dt><dd id="day-close" class="mono">—</dd></div>
+          <div><dt>Probabilitas naik</dt><dd id="day-prob" class="mono">—</dd></div>
+          <div><dt>Prediksi</dt><dd id="day-pred" class="mono">—</dd></div>
+          <div><dt>Kenyataan (hari berikutnya)</dt><dd id="day-actual" class="mono">—</dd></div>
+        </dl>
+      </section>
+      <section class="card" aria-labelledby="h-rp">
+        <h2 id="h-rp">Harga dan prediksi</h2>
+        <p class="muted small">Panah menunjukkan arah prediksi; hijau bila benar, merah bila salah. Titik emas = hari terpilih.</p>
+        <div id="chart-retro-price" class="chart mid"></div>
+      </section>
+      <section class="card" aria-labelledby="h-rb">
+        <h2 id="h-rb">Probabilitas terhadap ambang keputusan</h2>
+        <div id="chart-retro-prob" class="chart mid"></div>
+      </section>
+      <div class="grid-2">
+        <section class="card" aria-labelledby="h-news"><h2 id="h-news">Berita dan sentimen hari itu</h2><div id="panel-news"></div></section>
+        <section class="card" aria-labelledby="h-ct"><h2 id="h-ct">Kontribusi fitur</h2><div id="panel-contrib"></div></section>
+        <section class="card" aria-labelledby="h-nr"><h2 id="h-nr">Penjelasan</h2><div id="panel-narrative"></div></section>
+        <section class="card wide" aria-labelledby="h-rl"><h2 id="h-rl">Keandalan historis</h2><div id="panel-reliability"></div></section>
+      </div>
+    </div>
+  </main>
+  <footer class="footer"><p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir; model belum terbukti lebih baik dari tebakan acak.</p><p>Grafik oleh <a href="https://www.tradingview.com/" rel="noopener">TradingView Lightweight Charts™</a>.</p></footer>
+  <script type="module" src="/static/js/retro.js"></script>
+</body>
+</html>

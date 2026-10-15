@@ -40,7 +40,7 @@ def test_reduced_motion_marked_and_no_errors(browser, server):
     ctx.close()
 
 
-@pytest.mark.parametrize("path", ["/", "/riset", "/metodologi"])
+@pytest.mark.parametrize("path", ["/", "/retrospektif", "/riset", "/metodologi"])
 def test_no_horizontal_scroll_on_phone(browser, server, path):
     ctx = browser.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=2)
     page = ctx.new_page()
