@@ -54,4 +54,17 @@ def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14)):
          "Precision": 0.4848, "Recall": 0.3738, "F1-Weighted": 0.4870},
         {"Model": "F", "Deskripsi": "LSTM + Sentimen + F&G", "N Fitur": 13, "Accuracy": 0.51,
          "Precision": 0.5, "Recall": 0.5, "F1-Weighted": 0.5}])
+    atomic_write_json(content_dir / "multiseed.json", [
+        {"Model": "B", "F1 Mean": 0.48732, "F1 Std": 0.051882}, {"Model": "F", "F1 Mean": 0.49, "F1 Std": 0.03}])
+    atomic_write_json(content_dir / "multihorizon.json", [
+        {"H": 3, "n_efektif": 143.3, "AUC_F": 0.5, "CI_lo": 0.431, "CI_hi": 0.567, "p_geser": 0.5035,
+         "p_Holm_m8": 1.0, "signifikan_Holm_m8": False},
+        {"H": 30, "n_efektif": 13.0, "AUC_F": 0.622, "CI_lo": 0.4, "CI_hi": 0.8, "p_geser": 0.1,
+         "p_Holm_m8": 1.0, "signifikan_Holm_m8": False}])
+    atomic_write_json(content_dir / "holding_period.json", [
+        {"H": 7, "subset": "seluruh data", "n_jendela": 5759, "pct_positif": 55.4, "median_pct": 0.9,
+         "p5_pct": -14.7, "p95_pct": 23.4, "terburuk_pct": -70.4}])
+    atomic_write_json(content_dir / "permutation_importance.json", [
+        {"Fitur": "Vol_30", "Baseline F1": 0.49, "Penurunan F1 (Importance)": 0.0287, "Std": 0.0088},
+        {"Fitur": "MACD_Histogram", "Baseline F1": 0.49, "Penurunan F1 (Importance)": 0.0226, "Std": 0.0076}])
     return feats

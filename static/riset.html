@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hasil Riset — Bitcoin Trend</title>
+  <meta name="description" content="Hasil ablation study, uji signifikansi, dan analisis multi-horizon sistem prediksi tren Bitcoin.">
+  <link rel="preload" href="/static/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <script type="importmap">{"imports":{"three":"/static/vendor/three.module.min.js"}}</script>
+</head>
+<body class="page-research">
+  <header class="topbar">
+    <a class="brand" href="/">Bitcoin&nbsp;Trend</a>
+    <nav aria-label="Utama"><a href="/">Prediksi</a><a href="/riset" aria-current="page">Riset</a><a href="/metodologi">Metodologi</a></nav>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Ganti tema terang/gelap">◐</button>
+  </header>
+  <main>
+    <h1 style="font-size:clamp(1.8rem,6vw,2.6rem);margin:24px 0 4px">Hasil riset</h1>
+    <p class="muted">Seluruh angka berasal dari output notebook tugas akhir. Pada data uji, tidak ada horizon prediksi yang terbukti lebih baik dari tebakan acak setelah koreksi pengujian berganda.</p>
+
+    <section class="card" id="sec-ablation" aria-labelledby="h-abl">
+      <h2 id="h-abl">Ablation study (model A–F, data uji)</h2>
+      <canvas id="bars3d-canvas" aria-hidden="true"></canvas>
+      <p class="muted">Grafik batang 3D menunjukkan F1-weighted per model dengan skala dari nol; angka lengkap ada pada tabel.</p>
+    </section>
+    <section class="card" id="sec-multiseed" aria-labelledby="h-ms"><h2 id="h-ms">Validasi multi-seed</h2></section>
+    <section class="card" id="sec-multihorizon" aria-labelledby="h-mh">
+      <h2 id="h-mh">Analisis multi-horizon</h2>
+      <p class="muted">AUC Model F pada label arah kumulatif H hari. Interval kepercayaan memakai block-bootstrap; koreksi Holm memperhitungkan 8 horizon yang diuji sekaligus.</p>
+    </section>
+    <section class="card" id="sec-holding" aria-labelledby="h-hp">
+      <h2 id="h-hp">Pembanding keuangan: distribusi return masa pegang</h2>
+      <p class="muted">Deskriptif, tanpa pelatihan. Persentase positif yang tinggi mencerminkan tren naik historis Bitcoin, bukan kemampuan model.</p>
+    </section>
+    <section class="card" id="sec-perm" aria-labelledby="h-pi"><h2 id="h-pi">Permutation feature importance (Model F)</h2></section>
+    <section class="card" id="sec-backtest" aria-labelledby="h-bt"><h2 id="h-bt">Backtesting</h2></section>
+    <section class="card" id="sec-figs" aria-labelledby="h-fg"><h2 id="h-fg">Grafik dari notebook</h2><div class="figs"></div></section>
+  </main>
+  <footer class="footer"><p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir.</p></footer>
+  <script type="module" src="/static/js/research.js"></script>
+</body>
+</html>
