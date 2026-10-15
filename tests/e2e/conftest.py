@@ -1,0 +1,66 @@
+import socket
+import threading
+import time
+from datetime import datetime, timedelta, timezone
+
+import pytest
+import uvicorn
+
+from app import config
+from app.main import create_app
+from tests.factories import seed_live_dir
+
+BASE_NOW = datetime(2026, 10, 15, 3, 0, tzinfo=timezone.utc)
+
+
+def _serve(app):
+    s = socket.socket()
+    s.bind(("127.0.0.1", 0))
+    port = s.getsockname()[1]
+    s.close()
+    srv = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="warning"))
+    t = threading.Thread(target=srv.run, daemon=True)
+    t.start()
+    for _ in range(100):
+        if srv.started:
+            break
+        time.sleep(0.1)
+    return srv, t, f"http://127.0.0.1:{port}"
+
+
+@pytest.fixture(scope="session")
+def make_server(tmp_path_factory):
+    started = []
+
+    def _make(now, seed=True):
+        base = tmp_path_factory.mktemp("e2e")
+        live, content = base / "live", base / "content"
+        live.mkdir()
+        content.mkdir()
+        if seed:
+            seed_live_dir(live, content)
+        srv, t, url = _serve(create_app(live, content, config.STATIC_DIR, now=lambda: now))
+        started.append((srv, t))
+        return url
+
+    yield _make
+    for srv, t in started:
+        srv.should_exit = True
+        t.join(timeout=5)
+
+
+@pytest.fixture(scope="session")
+def server(make_server):
+    return make_server(BASE_NOW)
+
+
+@pytest.fixture(scope="session")
+def browser_type_launch_args(browser_type_launch_args):
+    return {**browser_type_launch_args, "args": ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"]}
+
+
+def collect_errors(page):
+    errs = []
+    page.on("console", lambda m: errs.append(m.text) if m.type == "error" else None)
+    page.on("pageerror", lambda e: errs.append(str(e)))
+    return errs
