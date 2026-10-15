@@ -1,0 +1,102 @@
+[
+ {
+  "H": 7,
+  "subset": "seluruh data",
+  "n_jendela": 5759,
+  "pct_positif": 55.4,
+  "median_pct": 0.9,
+  "p5_pct": -14.7,
+  "p95_pct": 23.4,
+  "terburuk_pct": -70.4
+ },
+ {
+  "H": 7,
+  "subset": "beli di periode uji",
+  "n_jendela": 446,
+  "pct_positif": 50.2,
+  "median_pct": 0.1,
+  "p5_pct": -10.1,
+  "p95_pct": 8.6,
+  "terburuk_pct": -24.9
+ },
+ {
+  "H": 30,
+  "subset": "seluruh data",
+  "n_jendela": 5736,
+  "pct_positif": 56.7,
+  "median_pct": 3.2,
+  "p5_pct": -27.7,
+  "p95_pct": 75.7,
+  "terburuk_pct": -61.7
+ },
+ {
+  "H": 30,
+  "subset": "beli di periode uji",
+  "n_jendela": 423,
+  "pct_positif": 48.0,
+  "median_pct": -0.5,
+  "p5_pct": -22.9,
+  "p95_pct": 16.2,
+  "terburuk_pct": -32.1
+ },
+ {
+  "H": 90,
+  "subset": "seluruh data",
+  "n_jendela": 5676,
+  "pct_positif": 61.5,
+  "median_pct": 13.9,
+  "p5_pct": -43.1,
+  "p95_pct": 306.6,
+  "terburuk_pct": -83.7
+ },
+ {
+  "H": 90,
+  "subset": "beli di periode uji",
+  "n_jendela": 363,
+  "pct_positif": 43.3,
+  "median_pct": -8.4,
+  "p5_pct": -26.9,
+  "p95_pct": 31.7,
+  "terburuk_pct": -38.6
+ },
+ {
+  "H": 180,
+  "subset": "seluruh data",
+  "n_jendela": 5586,
+  "pct_positif": 66.7,
+  "median_pct": 37.9,
+  "p5_pct": -51.0,
+  "p95_pct": 813.1,
+  "terburuk_pct": -90.1
+ },
+ {
+  "H": 180,
+  "subset": "beli di periode uji",
+  "n_jendela": 273,
+  "pct_positif": 35.9,
+  "median_pct": -16.9,
+  "p5_pct": -42.4,
+  "p95_pct": 38.7,
+  "terburuk_pct": -46.1
+ },
+ {
+  "H": 365,
+  "subset": "seluruh data",
+  "n_jendela": 5401,
+  "pct_positif": 74.6,
+  "median_pct": 102.3,
+  "p5_pct": -61.2,
+  "p95_pct": 2086.0,
+  "terburuk_pct": -83.7
+ },
+ {
+  "H": 365,
+  "subset": "beli di periode uji",
+  "n_jendela": 88,
+  "pct_positif": 0.0,
+  "median_pct": -19.2,
+  "p5_pct": -30.6,
+  "p95_pct": -9.7,
+  "terburuk_pct": -34.2
+ }
+]
