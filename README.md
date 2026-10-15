@@ -12,7 +12,7 @@ Horizon tanpa berkasnya otomatis tidak ditampilkan.
 uv venv --python 3.12 .venv && source .venv/bin/activate
 uv pip install -r requirements-dev.txt && python -m playwright install chromium
 echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env           # tidak ikut git
-python -m app.jobs                                     # job harian pertama (±3 menit: mengisi sentimen 22 hari)
+python -m app.jobs --patient                           # job pertama: mengisi sentimen 22 hari; --patient menunggu bila GDELT memblokir (429)
 uvicorn app.main:app --port 8000                       # buka http://127.0.0.1:8000
 ```
 Penjadwalan: `RUN_SCHEDULER=1` menjalankan job tiap hari 00.30 UTC di dalam proses web; alternatifnya cron:

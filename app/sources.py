@@ -60,7 +60,7 @@ def _is_sponsored(title: str) -> bool:
 
 
 def fetch_headlines(http: httpx.Client, day: date, sleep=time.sleep,
-                    retries: int = 3, min_interval: float = 6.0) -> list:
+                    retries: int = 3, min_interval: float = 10.0) -> list:
     params = {"query": "bitcoin sourcelang:english", "mode": "artlist", "format": "json",
               "maxrecords": "250",
               "startdatetime": day.strftime("%Y%m%d000000"),
