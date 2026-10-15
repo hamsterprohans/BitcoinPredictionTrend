@@ -102,3 +102,15 @@ def test_live_price_failure_falls_back_to_last_close(page, make_server):
     assert page.inner_text("#price") == "$38.006,74"                       # harga penutupan, bukan live
     assert page.is_visible("#asof") and "-1,33%" in page.inner_text("#change")   # perubahan harian penutupan dikembalikan
     assert errs == []
+
+
+def test_demo_data_is_labelled_and_not_mixed_with_live_price(page, make_server):
+    url = make_server(BASE_NOW, live_price=82091.09, demo=True)
+    page.goto(url + "/")
+    page.wait_for_selector("#banner:not([hidden])")
+    banner = page.inner_text("#banner")
+    assert "DEMO" in banner and "bukan harga atau prediksi asli" in banner
+    page.wait_for_timeout(1500)
+    assert page.is_hidden("#live-badge")                                   # harga live asli tidak ditempel pada patokan demo
+    assert "+115" not in page.inner_text("main")                           # tidak ada persentase campuran
+    assert page.inner_text("#price") == "$38.006,74"                       # tetap tampil sebagai angka demo, berlabel

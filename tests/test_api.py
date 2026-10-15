@@ -112,3 +112,12 @@ def test_live_price_cached_then_refreshed_and_503_on_failure(paths):
     assert c.get("/api/price/live").json()["price"] == 81002.0 and len(calls) == 2
     clock["t"] += 30
     assert c.get("/api/price/live").status_code == 503                         # upstream gagal -> 503, bukan angka lama
+
+
+def test_demo_flag_is_passed_through_latest(paths):
+    live, content, static = paths
+    seed_live_dir(live, content, demo=True)
+    c = TestClient(create_app(live, content, static, now=lambda: NOW))
+    assert c.get("/api/prediction/latest").json()["demo"] is True
+    seed_live_dir(live, content)                                            # data nyata tidak punya bendera demo
+    assert "demo" not in c.get("/api/prediction/latest").json()

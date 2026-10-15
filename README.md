@@ -32,6 +32,10 @@ Hanya ingin melihat harga dan grafik asli (tanpa model, tanpa API key): `python 
 Penjadwalan: `RUN_SCHEDULER=1` menjalankan job tiap hari 00.30 UTC di dalam proses web; alternatifnya cron:
 `30 0 * * * cd /path/webapp && .venv/bin/python -m app.jobs`.
 
+## Tampilan demo (data sintetis)
+`python -m scripts.demo` menjalankan server di http://127.0.0.1:8001 dengan data buatan yang diberi label DEMO.
+Jangan memakai `LIVE_DIR=...` manual untuk demo: itu yang membuat angka palsu terlihat seperti data asli.
+
 ## Menyegarkan hasil riset
 `python -m scripts.export_research "<notebook>.ipynb"` (membaca output sel notebook; notebook tidak diubah).
 
