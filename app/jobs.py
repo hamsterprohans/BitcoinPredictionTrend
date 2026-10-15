@@ -4,6 +4,7 @@ Pemakaian: python -m app.jobs [--force]
 """
 import argparse
 import os
+import time
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -13,6 +14,7 @@ import numpy as np
 import pandas as pd
 
 from . import config
+from .sources import SourceError
 from .features import TECH_FEATURES, assemble_frame, chart_frame, compute_features
 from .store import (append_sentiment, atomic_write_json, evaluate_history, frame_to_columns,
                     load_sentiment_log, read_json, upsert_history)
@@ -28,6 +30,20 @@ class Deps:
     score: Callable[[list], Optional[float]]
     predictor: Any
     now: Callable[[], datetime]
+
+
+def patient(fetch, cooldown: int = 900, max_waits: int = 48, sleep=time.sleep):
+    """Bungkus fetch_headlines: bila GDELT memblokir, tunggu lalu ulangi HARI YANG SAMA (tanpa melewati hari)."""
+    def _fetch(day):
+        for i in range(max_waits + 1):
+            try:
+                return fetch(day)
+            except SourceError as e:
+                if i == max_waits:
+                    raise
+                print(f"[{day}] {e}; menunggu {cooldown}s lalu mengulang ({i + 1}/{max_waits})", flush=True)
+                sleep(cooldown)
+    return _fetch
 
 
 def load_prices(live_dir: Path, seed_tsv: Path) -> pd.DataFrame:
@@ -117,7 +133,7 @@ def run_daily(deps: Deps, force: bool = False):
     return latest
 
 
-def make_real_deps() -> Deps:
+def make_real_deps(patient_mode: bool = False) -> Deps:
     import anthropic
     import httpx
 
@@ -134,7 +150,7 @@ def make_real_deps() -> Deps:
         live_dir=config.LIVE_DIR, seed_tsv=config.SEED_PRICE_TSV,
         fetch_prices=lambda start: sources.fetch_prices(http, start),
         fetch_fear_greed=lambda: sources.fetch_fear_greed(http, limit=60),
-        fetch_headlines=lambda day: sources.fetch_headlines(http, day),
+        fetch_headlines=(patient if patient_mode else (lambda f: f))(lambda day: sources.fetch_headlines(http, day)),
         score=lambda heads: daily_sentiment(llm, heads),
         predictor=Predictor.from_artifacts(),
         now=lambda: datetime.now(timezone.utc),
@@ -155,5 +171,8 @@ if __name__ == "__main__":
     _load_dotenv()
     ap = argparse.ArgumentParser()
     ap.add_argument("--force", action="store_true", help="hitung ulang walau sudah mutakhir")
-    result = run_daily(make_real_deps(), force=ap.parse_args().force)
+    ap.add_argument("--patient", action="store_true",
+                    help="bila GDELT memblokir (429), tunggu 15 menit lalu ulangi hari yang sama (untuk backfill pertama)")
+    args = ap.parse_args()
+    result = run_daily(make_real_deps(patient_mode=args.patient), force=args.force)
     print("sudah mutakhir" if result is None else f"as_of={result['as_of']} horizons={list(result['horizons'])}")

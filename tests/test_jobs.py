@@ -98,3 +98,29 @@ def test_history_gets_outcome_when_matured(tmp_path):
     assert hist[0]["horizons"]["1"]["actual"] == "NAIK"          # close 13 Okt > 12 Okt (harga sintetis naik)
     assert hist[0]["horizons"]["1"]["correct"] is True
     assert "actual" not in hist[-1]["horizons"]["1"]            # entri 14 Okt: target 15 Okt belum ada
+
+
+def test_patient_fetch_waits_and_retries_same_day_after_block():
+    from app.jobs import patient
+    from app.sources import SourceError
+    calls, waits = [], []
+
+    def flaky(day):
+        calls.append(day)
+        if len(calls) < 3:
+            raise SourceError("429")
+        return ["Bitcoin up"]
+
+    out = patient(flaky, cooldown=900, max_waits=5, sleep=waits.append)(date(2026, 9, 26))
+    assert out == ["Bitcoin up"] and calls == [date(2026, 9, 26)] * 3 and waits == [900, 900]
+
+
+def test_patient_fetch_gives_up_after_max_waits():
+    from app.jobs import patient
+    from app.sources import SourceError
+
+    def always(day):
+        raise SourceError("429")
+
+    with pytest.raises(SourceError):
+        patient(always, cooldown=1, max_waits=2, sleep=lambda s: None)(date(2026, 9, 26))
