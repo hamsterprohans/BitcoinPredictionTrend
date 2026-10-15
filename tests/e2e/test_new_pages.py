@@ -40,3 +40,18 @@ def test_about_page_shows_only_approved_facts(page, server):
                  "Renny Pradina Kusumawardani"):
         assert fact in text, fact
     assert page.locator("a[href*='github.com/hanscakrawangsa15']").count() == 1
+
+
+def test_about_page_has_photo_summary_and_linkedin_link(page, server):
+    page.goto(server + "/tentang")
+    img = page.locator("img.about-photo")
+    assert img.count() == 1 and "Hans" in img.get_attribute("alt")
+    page.wait_for_function("document.querySelector('img.about-photo').complete")
+    assert page.evaluate("document.querySelector('img.about-photo').naturalWidth") == 354         # PNG termuat
+    assert img.get_attribute("src").endswith(".png")
+    link = page.locator("a[href='https://www.linkedin.com/in/hanscakrawangsa/']")
+    assert link.count() >= 1 and "noopener" in link.first.get_attribute("rel")
+    summary = page.inner_text("#about-summary")
+    for fact in ("Sistem Informasi", "Institut Teknologi Sepuluh Nopember", "LSTM", "LinkedIn"):
+        assert fact in summary, fact
+    assert "Bitcoin" in summary

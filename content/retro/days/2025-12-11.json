@@ -228,9 +228,9 @@
   "used": -3.3333333333333335
  },
  "narrative": {
-  "text": "Pada 11 Desember 2025, Model F memberi probabilitas naik 0,5434 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 12 Desember 2025. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (+12,2 poin persentase), Sinyal MACD (+6,5 poin persentase), dan Histogram MACD (+4,6 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi harga Bitcoin naik pada 12 Desember 2025 dengan probabilitas 0,5434 dan tingkat keyakinan tinggi. Rata-rata harga 90 hari sebesar US$105.307 paling memengaruhi skor model dengan pengaruh +12,2 poin persentase, diikuti sinyal MACD dengan pengaruh +6,5 poin persentase. Histogram MACD juga berkontribusi dengan pengaruh +4,6 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Prediksi ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

@@ -228,9 +228,9 @@
   "used": 2.0
  },
  "narrative": {
-  "text": "Pada 15 November 2025, Model F memberi probabilitas naik 0,4742 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 16 November 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 7 hari (-9,0 poin persentase), Rata-rata harga 30 hari (-8,9 poin persentase), dan MACD (+4,3 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi Bitcoin **turun** pada 16 November 2025 dengan skor 0,4742, di bawah ambang 0,4768, namun tingkat keyakinan rendah. Rata-rata harga 7 hari (US$100.786) paling memengaruhi skor dengan pengaruh -9,0 poin persentase, diikuti rata-rata harga 30 hari (US$106.542) dengan pengaruh -8,9 poin persentase. MACD pada level rendah (US$-3.595,7) memberikan pengaruh +4,3 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
   "temperature": null
  }
 }

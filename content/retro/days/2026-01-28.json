@@ -228,9 +228,9 @@
   "used": 5.333333333333333
  },
  "narrative": {
-  "text": "Pada 28 Januari 2026, Model F memberi probabilitas naik 0,4665 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 29 Januari 2026. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (-7,9 poin persentase), Sentimen berita (+6,4 poin persentase), dan Rata-rata harga 7 hari (-4,9 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi Bitcoin akan **turun** pada 29 Januari 2026 dengan probabilitas 0,4665, namun tingkat keyakinan tergolong rendah. Fitur paling memengaruhi skor model adalah rata-rata harga 90 hari (pengaruh -7,9 poin persentase) dan sentimen berita (pengaruh +6,4 poin persentase). Rata-rata harga 7 hari juga memberikan pengaruh negatif sebesar -4,9 poin persentase. Skor model hanya 0,0103 poin di bawah ambang keputusan, menunjukkan ketidakpastian sinyal. AUC uji historis 0,4871 mengindikasikan performa model sangat lemah. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

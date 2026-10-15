@@ -228,9 +228,9 @@
   "used": 4.333333333333333
  },
  "narrative": {
-  "text": "Pada 1 Agustus 2025, Model F memberi probabilitas naik 0,4951 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 2 Agustus 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (-7,2 poin persentase), MACD (-7,0 poin persentase), dan Sentimen berita (+6,4 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi Bitcoin NAIK pada 2 Agustus 2025 dengan probabilitas 0,4951, meski tingkat keyakinan rendah. Fitur yang paling memengaruhi skor model adalah rata-rata harga 90 hari dengan pengaruh -7,2 poin persentase, dan MACD dengan pengaruh -7,0 poin persentase, diikuti sentimen berita dengan pengaruh +6,4 poin persentase. Namun, selisih skor terhadap ambang keputusan hanya 0,0183, menunjukkan prediksi sangat marginal. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan dapat keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

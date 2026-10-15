@@ -228,9 +228,9 @@
   "used": 2.3333333333333335
  },
  "narrative": {
-  "text": "Pada 23 Maret 2026, Model F memberi probabilitas naik 0,4111 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 24 Maret 2026. Tingkat keyakinannya sedang. Fitur yang paling memengaruhi skor adalah Histogram MACD (-11,3 poin persentase), Rata-rata harga 30 hari (-2,9 poin persentase), dan Sentimen berita (+2,9 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi harga Bitcoin cenderung TURUN pada 24 Maret 2026, dengan skor probabilitas 0,4111 dan tingkat keyakinan sedang. Fitur yang paling memengaruhi prediksi adalah Histogram MACD dengan pengaruh -11,3 poin persentase, diikuti Rata-rata harga 30 hari dengan pengaruh -2,9 poin persentase. Sentimen berita memberikan pengaruh +2,9 poin persentase, namun efeknya lebih kecil. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

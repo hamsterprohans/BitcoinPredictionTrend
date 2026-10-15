@@ -228,9 +228,9 @@
   "used": -5.0
  },
  "narrative": {
-  "text": "Pada 21 November 2025, Model F memberi probabilitas naik 0,5626 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 22 November 2025. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Sinyal MACD (+13,3 poin persentase), MACD (+10,0 poin persentase), dan Histogram MACD (+5,3 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi arah NAIK untuk Bitcoin pada 22 November 2025 berdasarkan data 21 November 2025, dengan probabilitas 0,5626 (melampaui ambang 0,4768). Fitur paling memengaruhi skor adalah Sinyal MACD dengan pengaruh +13,3 poin persentase dan MACD dengan pengaruh +10,0 poin persentase. Namun, perlu diketahui bahwa hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

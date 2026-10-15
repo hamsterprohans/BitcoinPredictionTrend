@@ -228,9 +228,9 @@
   "used": -3.0
  },
  "narrative": {
-  "text": "Pada 3 Februari 2026, Model F memberi probabilitas naik 0,4346 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 4 Februari 2026. Tingkat keyakinannya sedang. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (-14,4 poin persentase), Rata-rata harga 7 hari (-9,7 poin persentase), dan Rata-rata harga 30 hari (-6,2 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model prediksi untuk 4 Februari 2026 menunjukkan arah turun dengan skor 0,4346 dan tingkat keyakinan sedang. Rata-rata harga 90 hari memberikan pengaruh terbesar sebesar -14,4 poin persentase, diikuti rata-rata harga 7 hari dengan pengaruh -9,7 poin persentase. Kedua fitur ini paling memengaruhi skor model. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi tidak pasti dan dapat keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

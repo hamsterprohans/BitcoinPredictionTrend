@@ -31,3 +31,8 @@ def test_css_braces_balanced_and_no_orphan_keyframe_steps():
 
 def test_main_focus_ring_removed_rule_present():
     assert "main:focus{outline:none}" in (S / "css" / "app.css").read_text().replace(" ", "")
+
+
+def test_profile_photo_is_a_png():
+    data = (S / "img" / "foto-hans.png").read_bytes()
+    assert data[:8] == b"\x89PNG\r\n\x1a\n" and 10_000 < len(data) < 500_000

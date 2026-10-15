@@ -228,9 +228,9 @@
   "used": -1.0
  },
  "narrative": {
-  "text": "Pada 21 Agustus 2025, Model F memberi probabilitas naik 0,4621 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 22 Agustus 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Sentimen berita (+10,7 poin persentase), Rata-rata harga 7 hari (-6,7 poin persentase), dan Volatilitas 7 hari (+4,3 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi Bitcoin TURUN pada 22 Agustus 2025 berdasarkan skor 0,4621, meskipun keyakinannya rendah dan hasil berada dekat ambang keputusan. Fitur teratas paling memengaruhi skor: Sentimen berita dengan pengaruh +10,7 poin persentase berada pada level rendah, sementara Rata-rata harga 7 hari dengan pengaruh -6,7 poin persentase mencapai kategori tinggi. Volatilitas 7 hari menunjukkan pengaruh +4,3 poin persentase pada level rendah. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

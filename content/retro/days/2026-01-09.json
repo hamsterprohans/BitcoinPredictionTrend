@@ -228,9 +228,9 @@
   "used": 1.0
  },
  "narrative": {
-  "text": "Pada 9 Januari 2026, Model F memberi probabilitas naik 0,4380 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 10 Januari 2026. Tingkat keyakinannya sedang. Fitur yang paling memengaruhi skor adalah Sentimen berita (+8,2 poin persentase), Histogram MACD (-6,1 poin persentase), dan Volatilitas 7 hari (+4,2 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi harga Bitcoin **turun** pada 10 Januari 2026, berdasarkan data tanggal 9 Januari 2026, dengan skor probabilitas 0,4380 dan tingkat keyakinan sedang. Fitur yang paling memengaruhi prediksi adalah Sentimen berita dengan pengaruh +8,2 poin persentase dan Histogram MACD dengan pengaruh -6,1 poin persentase. Volatilitas 7 hari juga berkontribusi dengan pengaruh +4,2 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti, dapat keliru, dan perlu dipertimbangkan bersama analisis lainnya. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

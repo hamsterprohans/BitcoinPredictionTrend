@@ -228,9 +228,9 @@
   "used": 3.3333333333333335
  },
  "narrative": {
-  "text": "Pada 29 Desember 2025, Model F memberi probabilitas naik 0,4875 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 30 Desember 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 30 hari (-6,7 poin persentase), Sentimen berita (+4,1 poin persentase), dan Rata-rata harga 90 hari (+3,7 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi harga Bitcoin naik pada 30 Desember 2025 dengan skor 0,4875 dan tingkat keyakinan rendah. Rata-rata harga 30 hari (US$89.035) paling memengaruhi prediksi dengan pengaruh -6,7 poin persentase, sementara sentimen berita memberikan pengaruh +4,1 poin persentase. Rata-rata harga 90 hari (US$100.073) juga berkontribusi dengan pengaruh +3,7 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }
