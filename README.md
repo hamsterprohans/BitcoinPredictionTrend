@@ -72,3 +72,13 @@ python -m scripts.export_static --base /BitcoinPredictionTugasAkhir --out dist
 
 Hasilnya (`dist/`) dipublikasikan pada branch `gh-pages`. Data API dibekukan saat ekspor, sehingga prediksi harian dan
 berita baru muncul setelah job harian dan ekspor dijalankan ulang. Harga live diambil browser langsung dari Coinbase.
+
+## Merangkum hasil kuesioner
+
+Ekspor CSV dari Supabase (Table Editor, `feedback_flat`, Export) lalu:
+
+```bash
+python -m scripts.summarize_feedback hasil.csv --out ringkasan.md
+```
+
+Keluarannya tabel Ya/Netral/Tidak per pertanyaan dan daftar jawaban teks. Nama dan email tidak ikut dimasukkan.
