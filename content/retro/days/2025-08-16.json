@@ -227,5 +227,10 @@
   },
   "used": 0.6666666666666666
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi harga Bitcoin akan naik pada 17 Agustus 2025, dengan skor probabilitas 0,4783—hanya 0,0015 di atas ambang 0,4768, menunjukkan tingkat keyakinan rendah. Fitur yang paling memengaruhi skor model adalah sentimen berita positif (+12,4 poin persentase), volatilitas 7 hari pada level sedang di 2,28% (+6,9 poin persentase), dan rata-rata harga 30 hari di US$117.402 kategori tinggi (+6,1 poin persentase). Model belum terbukti lebih baik dari tebakan acak, dengan AUC historis 0,4871. Hasil prediksi tidak pasti dan dapat keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

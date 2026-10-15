@@ -227,5 +227,10 @@
   },
   "used": 5.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 12 September 2025, dengan skor probabilitas 0,5619, melampaui ambang 0,4768. Fitur paling memengaruhi skor adalah rata-rata harga 90 hari senilai US$112.868 (kategori tinggi, pengaruh +9,0 poin persentase) dan sentimen berita +5,33 (kategori tinggi, pengaruh +8,2 poin persentase). Meskipun demikian, hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

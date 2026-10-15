@@ -227,5 +227,10 @@
   },
   "used": -2.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 4 Agustus 2025 berdasarkan data 3 Agustus 2025, dengan skor probabilitas 0,4873 dan tingkat keyakinan rendah. Fitur rata-rata harga 90 hari (US$109.159) dan MACD (US$+448,1) paling memengaruhi skor model, masing-masing berkontribusi -11,8 dan -5,8 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi ini tidak pasti, dapat keliru, dan perbedaan dengan ambang keputusan minimal. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

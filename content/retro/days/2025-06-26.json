@@ -227,5 +227,10 @@
   },
   "used": 5.666666666666667
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi arah naik untuk Bitcoin pada 27 Juni 2025 dengan skor probabilitas 0,5698, melampaui ambang 0,4768. Sentimen berita dengan nilai +5,67 paling memengaruhi skor model sebesar +17,3 poin persentase, diikuti rata-rata harga 30 hari US$105.552 dan rata-rata harga 90 hari US$97.745 yang masing-masing berkontribusi +5,3 dan +3,0 poin persentase. Namun, hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

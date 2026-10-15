@@ -227,5 +227,10 @@
   },
   "used": -1.6666666666666667
  },
- "narrative": null
+ "narrative": {
+  "text": "Model memprediksi Bitcoin akan NAIK pada 17 Oktober 2025 dengan skor 0,5179 (tingkat keyakinan sedang). Fitur yang paling memengaruhi skor model adalah sentimen berita bernilai -1,67 (kategori rendah, pengaruh +17,4 poin persentase) dan rata-rata harga 30 hari US$115.782 (kategori tinggi, pengaruh +6,9 poin persentase). Hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 3,
+  "temperature": null
+ }
 }

@@ -227,5 +227,10 @@
   },
   "used": 3.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi pergerakan harga Bitcoin naik pada 6 Juli 2025 dengan skor probabilitas 0,5586, melampaui ambang 0,4768. Fitur yang paling memengaruhi skor model adalah sentimen berita pada nilai +3,33 (pengaruh +20,9 poin persentase), rata-rata harga 30 hari sebesar US$106.369 (pengaruh +9,5 poin persentase), dan volatilitas 7 hari 1,67% (pengaruh +3,4 poin persentase). Model belum terbukti lebih baik dari tebakan acak, dengan AUC uji historis 0,4871. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

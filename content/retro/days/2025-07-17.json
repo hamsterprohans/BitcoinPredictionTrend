@@ -227,5 +227,10 @@
   },
   "used": 6.666666666666667
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 17 Juli 2025, Model F memberi probabilitas naik 0,4508 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 18 Juli 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (-9,9 poin persentase), Sentimen berita (+8,7 poin persentase), dan MACD (-7,5 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

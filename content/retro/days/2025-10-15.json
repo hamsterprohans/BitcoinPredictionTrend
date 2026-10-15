@@ -227,5 +227,10 @@
   },
   "used": 1.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi harga Bitcoin akan **naik** pada 16 Oktober 2025 dengan probabilitas 0,5320 (tingkat keyakinan sedang). Fitur yang paling memengaruhi skor model adalah sentimen berita kategori tinggi (+19,1 poin persentase) dan rata-rata harga 30 hari US$116.071 pada persentil tertinggi (+9,7 poin persentase). Histogram MACD juga berkontribusi (+4,4 poin persentase) meski berada di persentil terendah. Namun, hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

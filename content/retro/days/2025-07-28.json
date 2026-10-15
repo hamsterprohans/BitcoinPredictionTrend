@@ -227,5 +227,10 @@
   },
   "used": 6.666666666666667
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi harga Bitcoin akan **naik** pada 29 Juli 2025 dengan probabilitas 0,4993, meski tingkat keyakinan rendah. Prediksi ini hanya 0,0224 di atas ambang keputusan 0,4768. Fitur yang paling memengaruhi skor adalah sentimen berita (+6,67, pengaruh +9,6 poin persentase) dan MACD (+US$2.171,0, pengaruh -8,2 poin persentase). Hasil historis menunjukkan AUC 0,4871. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

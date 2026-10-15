@@ -9,6 +9,7 @@ import pandas as pd
 CM_URL = "https://community-api.coinmetrics.io/v4/timeseries/asset-metrics"
 FNG_URL = "https://api.alternative.me/fng/"
 COINBASE_SPOT = "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+CRYPTOCOMPARE_NEWS = "https://min-api.cryptocompare.com/data/v2/news/"
 GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) BitcoinTrendWeb/1.0"}
 
@@ -70,6 +71,51 @@ def fetch_spot(http: httpx.Client) -> float:
 def _is_sponsored(title: str) -> bool:
     t = title.lower()
     return any(k in t for k in SPONSOR_KEYWORDS)
+
+
+def fetch_headlines_cryptocompare(http: httpx.Client, day: date, api_key: str, sleep=time.sleep,
+                                  retries: int = 3, max_pages: int = 40, page_pause: float = 0.3) -> list:
+    """Judul berita satu hari UTC dari CryptoCompare (sumber berita korpus latih), terbaru dulu.
+
+    Halaman diambil mundur dari akhir hari lewat `lTs` sampai melewati awal hari. Judul disaring seperti korpus
+    latih: menyebut Bitcoin/BTC, bukan konten sponsor, tanpa duplikat.
+    """
+    import datetime as dt
+    start = int(dt.datetime(day.year, day.month, day.day, tzinfo=dt.timezone.utc).timestamp())
+    cursor = start + 86400
+    seen, out = set(), []
+    for _ in range(max_pages):
+        for attempt in range(retries + 1):
+            r = http.get(CRYPTOCOMPARE_NEWS, params={"lang": "EN", "lTs": cursor},
+                         headers={**UA, "authorization": f"Apikey {api_key}"})
+            if r.status_code == 429:
+                sleep(15 * (2 ** attempt))
+                continue
+            break
+        else:
+            raise SourceError(f"CryptoCompare 429 berulang untuk {day}")
+        if r.status_code in (401, 403):
+            raise SourceError("CryptoCompare menolak API key (periksa COINDESK_API_KEY di scripts/.env)")
+        if r.status_code != 200:
+            raise SourceError(f"CryptoCompare HTTP {r.status_code} untuk {day}")
+        arts = r.json().get("Data") or []
+        if not isinstance(arts, list) or not arts:
+            break
+        for a in arts:
+            ts = int(a.get("published_on", 0))
+            title = (a.get("title") or "").strip()
+            if ts < start or ts >= start + 86400 or not title or title in seen:
+                continue
+            if not BTC_RE.search(title) or _is_sponsored(title):
+                continue
+            seen.add(title)
+            out.append(title)
+        oldest = min(int(a.get("published_on", cursor)) for a in arts)
+        if oldest < start:
+            break
+        cursor = oldest
+        sleep(page_pause)
+    return out
 
 
 def fetch_headlines(http: httpx.Client, day: date, sleep=time.sleep,

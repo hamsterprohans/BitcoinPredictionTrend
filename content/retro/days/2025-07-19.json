@@ -227,5 +227,10 @@
   },
   "used": 8.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan **turun** pada 20 Juli 2025, dengan probabilitas 0,4671 dan tingkat keyakinan rendah. Fitur yang paling memengaruhi skor model adalah Sentimen berita (nilai +8,00, pengaruh +9,0 poin persentase), MACD (nilai US$+3.264,5, pengaruh -7,8 poin persentase), dan Rata-rata harga 90 hari (nilai US$105.350, pengaruh -7,6 poin persentase). Performa historis model mencapai AUC 0,4871. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

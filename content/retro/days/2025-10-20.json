@@ -227,5 +227,10 @@
   },
   "used": 4.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 20 Oktober 2025, Model F memberi probabilitas naik 0,4576 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 21 Oktober 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (-9,1 poin persentase), Rata-rata harga 7 hari (-8,9 poin persentase), dan Histogram MACD (+5,6 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

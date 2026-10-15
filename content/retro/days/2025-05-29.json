@@ -227,5 +227,10 @@
   },
   "used": 6.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan **turun** pada 30 Mei 2025 dengan probabilitas 0,4703 dan tingkat keyakinan rendah. Fitur yang paling memengaruhi skor adalah rata-rata harga 90 hari di US$91.488 (persentil 100, pengaruh −12,9 poin persentase) dan MACD di US$+3.033,2 (persentil 98, pengaruh −8,4 poin persentase). Skor model hanya 0,0065 poin di bawah ambang keputusan, menunjukkan prediksi tidak jauh dari zona ketidakpastian. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

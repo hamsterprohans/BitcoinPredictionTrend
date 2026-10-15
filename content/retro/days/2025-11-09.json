@@ -227,5 +227,10 @@
   },
   "used": -4.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan TURUN pada 10 November 2025 dengan skor probabilitas 0,4357 dan tingkat keyakinan sedang. Fitur yang paling memengaruhi skor model adalah rata-rata harga 30 hari senilai US$108.973 (pengaruh -10,5 poin persentase) dan rata-rata harga 7 hari senilai US$103.350 (pengaruh -9,4 poin persentase), keduanya berada pada persentil 100 kategori tinggi. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

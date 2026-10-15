@@ -227,5 +227,10 @@
   },
   "used": 5.333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 13 Juli 2025 dengan probabilitas 0,5017, namun tingkat keyakinan rendah. Sentimen berita (+5,33) paling memengaruhi skor model dengan pengaruh +14,7 poin persentase, diikuti rata-rata harga 30 hari sebesar US$107.633 dengan pengaruh +8,2 poin persentase. Perlu diketahui bahwa hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

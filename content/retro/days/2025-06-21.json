@@ -227,5 +227,10 @@
   },
   "used": 2.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 21 Juni 2025, Model F memberi probabilitas naik 0,5592 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 22 Juni 2025. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Sentimen berita (+16,9 poin persentase), Rata-rata harga 30 hari (+7,9 poin persentase), dan Histogram MACD (+4,7 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

@@ -201,5 +201,10 @@
   "scores": null,
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan **turun** pada 9 Mei 2025 dengan skor 0,3744, di bawah ambang 0,4768. Tingkat keyakinan tinggi, meski AUC uji historis hanya 0,4871 menunjukkan akurasi terbatas. Fitur paling memengaruhi skor model adalah rata-rata harga 90 hari (US$88.728, pengaruh -13,3 poin persentase) dan rata-rata harga 30 hari (US$90.563, pengaruh -6,3 poin persentase), keduanya berada di level historis tertinggi. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

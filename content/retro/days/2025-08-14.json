@@ -227,5 +227,10 @@
   },
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan NAIK pada 15 Agustus 2025 dengan probabilitas 0,4979, hanya sedikit melampaui ambang 0,4768, mencerminkan tingkat keyakinan rendah. Sentimen berita senilai +0,00 (persentil 46, kategori sedang) dan volatilitas 7 hari sebesar 2,26% (persentil 34, kategori sedang) paling memengaruhi skor model masing-masing +13,0 dan +7,5 poin persentase. Hasil historis menunjukkan AUC 0,4871. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

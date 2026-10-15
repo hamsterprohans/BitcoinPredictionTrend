@@ -201,5 +201,10 @@
   "scores": null,
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan turun pada 4 Mei 2025, dengan skor probabilitas naik 0,3910 di bawah ambang 0,4768. Sinyal MACD (US$+2.694,9) dan rata-rata harga 30 hari (US$87.719) paling memengaruhi skor model, masing-masing berkontribusi +4,4 dan -4,1 poin persentase. Tidak ada berita bersih hari ini. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

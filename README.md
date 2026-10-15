@@ -42,6 +42,12 @@ Skrip berhenti dengan pesan bila akurasi/F1 hasil hitung ulang berbeda lebih dar
 (`--allow-mismatch` tetap menulis, tetapi halaman menandai paritas "belum terverifikasi"). Hasilnya di `content/retro/` dan tampil di `/retrospektif`.
 Job harian (`python -m app.jobs`) menyimpan blok `explain` (berita, kontribusi fitur, narasi) pada `latest.json` bila `content/retro/train_stats.json` ada.
 
+## Sumber berita live
+Korpus latih (2025–2026) berasal dari **CryptoCompare**, jadi job live memakainya bila ada API key gratis
+(buat di https://developers.coindesk.com, lalu tambahkan `COINDESK_API_KEY=...` di `scripts/.env`). Tanpa key, job memakai GDELT,
+yang sering membatasi laju (429/balasan kosong) dan dapat menahan job berjam-jam. Sumber tidak dicampur dalam satu jendela 22 hari:
+jika berpindah sumber, hapus `data/live/sentiment_log.csv` dan `data/live/news_log.json` lebih dulu.
+
 ## Tampilan demo (data sintetis)
 `python -m scripts.demo` menjalankan server di http://127.0.0.1:8001 dengan data buatan yang diberi label DEMO.
 Jangan memakai `LIVE_DIR=...` manual untuk demo: itu yang membuat angka palsu terlihat seperti data asli.

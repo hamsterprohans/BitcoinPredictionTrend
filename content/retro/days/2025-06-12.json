@@ -227,5 +227,10 @@
   },
   "used": 1.3333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan NAIK pada 13 Juni 2025 dengan probabilitas 0,5266 (keyakinan sedang). Fitur yang paling memengaruhi skor model adalah rata-rata harga 90 hari sebesar US$94.648 (pengaruh -4,4 poin persentase) dan sentimen berita bernilai +1,33 (pengaruh +4,3 poin persentase). Namun, hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

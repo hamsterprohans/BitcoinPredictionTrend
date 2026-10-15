@@ -227,5 +227,10 @@
   },
   "used": 1.3333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan bergerak naik pada 15 September 2025 dengan probabilitas 0,5564. Fitur yang paling memengaruhi skor model adalah sentimen berita (+1,33, pengaruh +12,8 poin persentase) dan rata-rata harga 90 hari (US$113.193, pengaruh +8,5 poin persentase). Tingkat keyakinan model dikategorikan tinggi berdasarkan selisih 0,0796 terhadap ambang keputusan. Namun, hasil ini mengandung ketidakpastian dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

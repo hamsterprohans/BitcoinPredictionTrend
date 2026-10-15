@@ -202,9 +202,9 @@
   "used": 0.0
  },
  "narrative": {
-  "text": "Pada 6 Maret 2025, Model F memberi probabilitas naik 0,4981 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 7 Maret 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 7 hari (-10,3 poin persentase), Rata-rata harga 30 hari (-7,9 poin persentase), dan Sinyal MACD (+6,8 poin persentase). Tidak ada berita bersih pada hari itu, sehingga nilai sentimen hanya isian forward-fill atau netral. Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi Bitcoin akan NAIK pada 7 Maret 2025 dengan probabilitas 0,4981, hanya 0,0213 poin di atas ambang 0,4768, menunjukkan tingkat keyakinan rendah. Fitur paling memengaruhi skor adalah rata-rata harga 7 hari (US$88.414, pengaruh -10,3 poin persentase) dan rata-rata harga 30 hari (US$93.474, pengaruh -7,9 poin persentase), yang berada di persentil tertinggi data latih. Sinyal MACD senilai US$-2.566,0 berkontribusi positif +6,8 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

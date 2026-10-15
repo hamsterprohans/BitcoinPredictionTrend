@@ -227,5 +227,10 @@
   },
   "used": 2.6666666666666665
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 7 Juli 2025, Model F memberi probabilitas naik 0,5428 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 8 Juli 2025. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Sentimen berita (+20,0 poin persentase), Rata-rata harga 30 hari (+10,1 poin persentase), dan Volatilitas 7 hari (+3,4 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

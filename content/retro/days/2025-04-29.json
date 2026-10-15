@@ -201,5 +201,10 @@
   "scores": null,
   "used": 0.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian untuk 30 April 2025 memprediksi arah harga Bitcoin akan **turun** dengan skor probabilitas 0,3871, berada di bawah ambang keputusan 0,4768. Fitur yang paling memengaruhi skor model adalah rata-rata harga 30 hari senilai US$86.044 (persentil 100, pengaruh -4,9 poin persentase) dan sinyal MACD senilai US$+2.125,3 (persentil 96, pengaruh +3,0 poin persentase). Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi tidak pasti dan dapat keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
 }

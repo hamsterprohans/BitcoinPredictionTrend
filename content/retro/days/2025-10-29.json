@@ -227,5 +227,10 @@
   },
   "used": -2.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin bergerak NAIK pada 30 Oktober 2025 dengan skor probabilitas 0,5581, melampaui ambang keputusan 0,4768. Fitur yang paling memengaruhi skor model adalah Sentimen berita (nilai -2,33, pengaruh +7,0 poin persentase), Histogram MACD (nilai US$+341,2, pengaruh +6,6 poin persentase), dan Rata-rata harga 90 hari (nilai US$114.172, pengaruh +5,9 poin persentase). Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

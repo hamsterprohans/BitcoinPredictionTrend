@@ -227,5 +227,10 @@
   },
   "used": 6.666666666666667
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan **naik** pada 17 Juni 2025 dengan probabilitas 0,5586 (tingkat keyakinan tinggi). Sentimen berita pada persentil 98 dan rata-rata harga 30 hari pada persentil 100 paling memengaruhi skor model, masing-masing berkontribusi +15,3 dan +6,6 poin persentase. Histogram MACD di persentil 10 juga turut memengaruhi dengan +5,3 poin persentase. Namun, hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
+  "temperature": null
+ }
 }

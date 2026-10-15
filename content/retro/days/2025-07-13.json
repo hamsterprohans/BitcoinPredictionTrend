@@ -227,5 +227,10 @@
   },
   "used": 4.666666666666667
  },
- "narrative": null
+ "narrative": {
+  "text": "Model penelitian memprediksi arah turun untuk Bitcoin pada 14 Juli 2025, dengan skor probabilitas 0,4764 dan tingkat keyakinan rendah. Fitur paling memengaruhi skor adalah sentimen berita (nilai +4,67, pengaruh +12,5 poin persentase) dan rata-rata harga 90 hari (nilai US$103.081, pengaruh -9,1 poin persentase). Skor model sangat dekat dengan ambang keputusan 0,4768, menunjukkan ketidakpastian prediksi. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 3,
+  "temperature": null
+ }
 }
