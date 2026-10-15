@@ -51,6 +51,8 @@ def test_about_page_has_photo_summary_and_linkedin_link(page, server):
     assert img.get_attribute("src").endswith(".png")
     link = page.locator("a[href='https://www.linkedin.com/in/hanscakrawangsa/']")
     assert link.count() >= 1 and "noopener" in link.first.get_attribute("rel")
+    words = len(page.inner_text("#about-summary p:not(:has(a))").split())
+    assert words <= 90, words                                                                     # ringkasan singkat
     summary = page.inner_text("#about-summary")
     for fact in ("Sistem Informasi", "Institut Teknologi Sepuluh Nopember", "LSTM", "LinkedIn"):
         assert fact in summary, fact
