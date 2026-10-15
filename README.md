@@ -61,3 +61,14 @@ Jangan memakai `LIVE_DIR=...` manual untuk demo: itu yang membuat angka palsu te
 ## Harga live
 `/api/price/live` mengambil harga spot BTC/USD dari Coinbase (cache 20 detik) hanya untuk tampilan; harga ini BUKAN input model.
 Probabilitas prediksi tetap resmi harian (dari penutupan hari penuh), tidak diperbarui real-time.
+
+## Publikasi statis (GitHub Pages)
+
+GitHub Pages tidak menjalankan Python, jadi situs diekspor menjadi berkas statis:
+
+```bash
+python -m scripts.export_static --base /BitcoinPredictionTugasAkhir --out dist
+```
+
+Hasilnya (`dist/`) dipublikasikan pada branch `gh-pages`. Data API dibekukan saat ekspor, sehingga prediksi harian dan
+berita baru muncul setelah job harian dan ekspor dijalankan ulang. Harga live diambil browser langsung dari Coinbase.

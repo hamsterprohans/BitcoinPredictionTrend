@@ -10,7 +10,28 @@ export const fmtDate = (iso) =>
 export const fmtDateShort = (iso) =>
   new Date(iso + "T00:00:00Z").toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 
-export async function getJSON(url) {
+// Situs statis (GitHub Pages): ekspor menyuntikkan window.__STATIC_BASE__; API dibaca dari berkas api/*.json.
+const STATIC_BASE = window.__STATIC_BASE__;
+
+async function staticJSON(url) {
+  if (url === "/api/price/live") {                 // satu-satunya data live: langsung dari Coinbase
+    const r = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return { price: parseFloat((await r.json()).data.amount) };
+  }
+  const path = url.replace(/\?interval=(\w)$/, "__$1") + ".json";
+  const d = await rawJSON(STATIC_BASE + path);
+  if (url === "/api/prediction/latest") {          // umur data dihitung di browser, bukan saat ekspor
+    d.age_days = Math.floor((Date.now() - Date.parse(d.as_of + "T00:00:00Z")) / 864e5);
+  }
+  return d;
+}
+
+export function getJSON(url) {
+  return STATIC_BASE === undefined ? rawJSON(url) : staticJSON(url);
+}
+
+async function rawJSON(url) {
   const r = await fetch(url);
   if (!r.ok) { const e = new Error(`HTTP ${r.status}`); e.status = r.status; throw e; }
   return r.json();
