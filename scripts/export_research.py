@@ -5,6 +5,7 @@ Notebook tidak diubah. Tabel yang tidak ditemukan dilaporkan, bukan diisi tebaka
 """
 import csv
 import json
+import re
 import shutil
 import sys
 from html.parser import HTMLParser
@@ -86,6 +87,29 @@ def find_tables(nb: dict, marker: str) -> list:
     return []
 
 
+def _stream_text(nb: dict, marker: str) -> str:
+    for cell in nb["cells"]:
+        if cell["cell_type"] == "code" and marker in "".join(cell["source"]):
+            return "".join("".join(o.get("text", [])) for o in cell.get("outputs", []) if o.get("output_type") == "stream")
+    return ""
+
+
+MC_RE = re.compile(r"^(\w) vs (\w): p-value=([\d.]+) \((.*?)\) \| hanya \w benar=(\d+), hanya \w benar=(\d+)", re.M)
+WL_RE = re.compile(r"^(\w) vs (\w): statistic=([\d.]+), p-value=([\d.]+) \((.*?)\) \| mean \w=([\d.]+), mean \w=([\d.]+)", re.M)
+
+
+def parse_significance(nb: dict) -> dict:
+    mc = _stream_text(nb, "def run_mcnemar")
+    wl = _stream_text(nb, "Wilcoxon Signed-Rank Test (berpasangan")
+    return {
+        "mcnemar": [{"a": a, "b": b, "p": float(p), "verdict": v, "only_a": int(x), "only_b": int(y)}
+                    for a, b, p, v, x, y in MC_RE.findall(mc)],
+        "wilcoxon": [{"a": a, "b": b, "statistic": float(st), "p": float(p), "verdict": v,
+                      "mean_a": float(ma), "mean_b": float(mb)}
+                     for a, b, st, p, v, ma, mb in WL_RE.findall(wl)],
+    }
+
+
 def build_evidence(rows: list) -> dict:
     ev = {}
     for r in rows:
@@ -113,6 +137,13 @@ def main(nb_path: str):
             (config.CONTENT_DIR / "multihorizon_evidence.json").write_text(
                 json.dumps(build_evidence(tables[idx]), ensure_ascii=False, indent=1), encoding="utf-8")
             report.append("ok: multihorizon_evidence")
+
+    sig = parse_significance(nb)
+    if sig["mcnemar"] and sig["wilcoxon"]:
+        (config.CONTENT_DIR / "significance.json").write_text(json.dumps(sig, ensure_ascii=False, indent=1), encoding="utf-8")
+        report.append(f"ok: significance (McNemar {len(sig['mcnemar'])}, Wilcoxon {len(sig['wilcoxon'])} pasangan)")
+    else:
+        report.append("TIDAK DITEMUKAN: McNemar/Wilcoxon (output sel notebook kosong atau formatnya berubah)")
 
     perm = config.ARTIFACTS / "permutation_importance.csv"
     if perm.exists():

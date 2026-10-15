@@ -57,3 +57,17 @@ def test_research_name_whitelist(paths, bad):
 def test_home_page_served(paths):
     r = make_client(paths).get("/")
     assert r.status_code == 200 and "home" in r.text
+
+
+@pytest.mark.parametrize("route", ["/", "/riset", "/metodologi"])
+def test_page_routes_ignore_fname_query_param(paths, route):
+    live, content, static = paths
+    (static / "riset.html").write_text("<h1>riset</h1>")
+    (static / "metodologi.html").write_text("<h1>metodologi</h1>")
+    secret = static.parent / "secret.env"
+    secret.write_text("ANTHROPIC_API_KEY=sk-test")
+    c = make_client(paths)
+    for q in ("../secret.env", "/etc/os-release", "../../app/config.py"):
+        r = c.get(route, params={"fname": q})
+        assert "sk-test" not in r.text and "ANTHROPIC" not in r.text
+        assert r.status_code == 200 and "<h1>" in r.text

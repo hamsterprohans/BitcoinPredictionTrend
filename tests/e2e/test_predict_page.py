@@ -14,7 +14,9 @@ def test_prediction_page_renders_data(page, server):
     assert page.inner_text("#price").startswith("$")
     assert page.locator("#horizon-tabs [role=tab]").count() == 2          # horizon 1 dan 7 pada data uji
     assert page.inner_text("#prediction-direction") == "NAIK"
-    assert page.locator("#evidence-badge").is_visible()                   # H=1: tautan ke Riset
+    assert page.locator("#evidence-badge").is_visible()                   # H=1: tetap berlabel jujur
+    assert "Belum terbukti lebih baik dari tebakan acak" in page.inner_text("#evidence-badge")
+    assert "semua horizon" in page.inner_text("footer")
     page.click("#horizon-tabs [role=tab]:has-text('7 hari')")
     assert page.inner_text("#prediction-direction") == "TURUN"
     assert "Belum terbukti lebih baik dari tebakan acak" in page.inner_text("#evidence-badge")

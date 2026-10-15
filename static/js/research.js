@@ -74,6 +74,19 @@ section("sec-multihorizon", "multihorizon", (box, rows) => {
   ]);
 });
 
+section("sec-signif", "significance", (box, d) => {
+  box.append(el("h3", "McNemar (data uji)"));
+  renderTable(box, d.mcnemar, [
+    { get: (r) => `${r.a} vs ${r.b}`, label: "Pasangan" }, { key: "only_a", label: "Hanya model pertama benar", num: true, d: 0 },
+    { key: "only_b", label: "Hanya model kedua benar", num: true, d: 0 }, { key: "p", label: "p-value", num: true, d: 4 },
+    { key: "verdict", label: "Kesimpulan" }]);
+  box.append(el("h3", "Wilcoxon berpasangan per seed"));
+  renderTable(box, d.wilcoxon, [
+    { get: (r) => `${r.a} vs ${r.b}`, label: "Pasangan" }, { key: "statistic", label: "Statistik", num: true, d: 1 },
+    { key: "p", label: "p-value", num: true, d: 4 }, { key: "mean_a", label: "Rata-rata pertama", num: true, d: 4 },
+    { key: "mean_b", label: "Rata-rata kedua", num: true, d: 4 }, { key: "verdict", label: "Kesimpulan" }]);
+});
+
 section("sec-holding", "holding_period", (box, rows) => renderTable(box, rows, [
   { key: "H", label: "Masa pegang (hari)", num: true, d: 0 }, { key: "subset", label: "Subset" },
   { key: "n_jendela", label: "Jendela", num: true, d: 0 }, { key: "pct_positif", label: "% positif", num: true, d: 1 },

@@ -69,13 +69,16 @@ def create_app(live_dir=config.LIVE_DIR, content_dir=config.CONTENT_DIR,
     def healthz():
         return {"status": "ok"}
 
-    for route, fname in (("/", "index.html"), ("/riset", "riset.html"), ("/metodologi", "metodologi.html")):
-        def page(fname=fname):
+    def make_page(fname: str):
+        def page():            # tanpa parameter: FastAPI tidak boleh menjadikannya query param
             f = static_dir / fname
             if not f.exists():
                 raise HTTPException(404, "Halaman belum ada")
             return FileResponse(f)
-        app.get(route, include_in_schema=False)(page)
+        return page
+
+    for route, fname in (("/", "index.html"), ("/riset", "riset.html"), ("/metodologi", "metodologi.html")):
+        app.get(route, include_in_schema=False)(make_page(fname))
 
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
     return app
