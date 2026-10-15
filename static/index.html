@@ -14,13 +14,18 @@
   <script src="/static/vendor/lightweight-charts.standalone.production.js"></script>
 </head>
 <body class="page-predict">
-  <div id="splash" role="dialog" aria-modal="true" aria-label="Pembuka Bitcoin Trend">
+  <div id="splash" role="dialog" aria-modal="true" aria-labelledby="splash-title">
     <canvas id="splash-canvas" aria-hidden="true"></canvas>
     <div class="splash-inner">
-      <h2 class="splash-title">Bitcoin Trend</h2>
+      <svg id="splash-fallback-mark" viewBox="0 0 120 150" width="110" height="138" aria-hidden="true" fill="currentColor">
+        <text x="60" y="118" text-anchor="middle" font-family="Geist, system-ui, sans-serif" font-weight="800" font-size="112">B</text>
+        <rect x="41" y="2" width="9" height="20"/><rect x="70" y="2" width="9" height="20"/>
+        <rect x="41" y="128" width="9" height="20"/><rect x="70" y="128" width="9" height="20"/>
+      </svg>
+      <h2 id="splash-title" class="splash-title">Bitcoin Trend</h2>
       <p class="splash-tag">Prediksi arah harga berbasis LSTM, sentimen berita LLM, dan Fear &amp; Greed Index</p>
-      <button id="splash-enter" class="splash-btn" type="button">Masuk</button>
-      <p class="splash-hint">atau tekan Esc / klik di mana saja</p>
+      <button id="splash-enter" class="splash-btn" type="button" autofocus>Lanjutkan ke Dashboard Prediksi</button>
+      <p class="splash-hint">Tekan Enter atau klik tombol untuk melanjutkan</p>
     </div>
   </div>
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
@@ -48,7 +53,7 @@
 
     <div id="banner" class="banner" role="status" hidden></div>
 
-    <section class="card" aria-labelledby="h-pred">
+    <section class="card" id="sec-pred" aria-labelledby="h-pred">
       <h2 id="h-pred">Prediksi arah harga</h2>
       <div class="tabs" id="horizon-tabs" role="tablist" aria-label="Horizon prediksi"></div>
       <canvas id="horizon-canvas" aria-hidden="true"></canvas>
@@ -65,8 +70,14 @@
 
     <section class="card" aria-labelledby="h-chart">
       <div class="card-head">
-        <h2 id="h-chart">Grafik harga</h2>
-        <div class="ranges" id="ranges" role="group" aria-label="Rentang waktu"></div>
+        <div>
+          <h2 id="h-chart">Grafik harga</h2>
+          <p class="muted mono tf" id="tf-label">Timeframe: Harian (D)</p>
+        </div>
+        <div class="controls">
+          <div class="ranges" id="intervals" role="group" aria-label="Interval (timeframe)"></div>
+          <div class="ranges" id="ranges" role="group" aria-label="Rentang waktu"></div>
+        </div>
       </div>
       <div class="legend mono" aria-hidden="true">
         <span><i style="background:#e6c068"></i>Harga</span><span><i style="background:#f3d98b"></i>MA7</span>
@@ -80,7 +91,7 @@
       <div id="chart-macd" class="chart small"></div>
     </section>
 
-    <section class="card" aria-labelledby="h-hist">
+    <section class="card" id="sec-hist" aria-labelledby="h-hist">
       <h2 id="h-hist">Riwayat prediksi vs kenyataan <span class="muted mono" id="hist-h"></span></h2>
       <div class="table-wrap">
         <table>

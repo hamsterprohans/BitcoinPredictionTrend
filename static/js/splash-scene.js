@@ -7,13 +7,13 @@ attribute vec3 aStart;
 attribute float aSeed;
 varying float vA;
 void main() {
-  float e = 1.0 - pow(1.0 - clamp(uT * (0.75 + aSeed * 0.25), 0.0, 1.0), 3.0);   // easing keluar
+  float e = 1.0 - pow(1.0 - clamp(uT * (0.7 + aSeed * 0.3), 0.0, 1.0), 3.0);   // easing keluar
   vec3 p = mix(aStart, position, e);
-  float a = uTime * 0.35 * e;
+  float a = sin(uTime * 0.7) * 0.4 * e;                                       // ayunan lembut, simbol tetap terbaca
   p = vec3(p.x * cos(a) + p.z * sin(a), p.y, -p.x * sin(a) + p.z * cos(a));
-  vA = 0.35 + 0.65 * e;
+  vA = 0.3 + 0.7 * e;
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
-  gl_PointSize = (2.0 + aSeed * 2.0) * (26.0 / -mv.z) * uPx;
+  gl_PointSize = (2.2 + aSeed * 2.0) * (26.0 / -mv.z) * uPx;
   gl_Position = projectionMatrix * mv;
 }`;
 
@@ -26,23 +26,47 @@ void main() {
   gl_FragColor = vec4(uColor, smoothstep(0.5, 0.0, d) * vA);
 }`;
 
-export function createRing(canvas, { reduced = false } = {}) {
+/** Titik-titik simbol ₿: huruf B ditambah dua garis vertikal di atas dan bawah (tidak bergantung glyph ₿ pada font). */
+export async function sampleBitcoin(maxPts, height = 4.0) {
+  try { await Promise.race([document.fonts.load('800 200px "Geist"'), new Promise((r) => setTimeout(r, 900))]); } catch { /* pakai font cadangan */ }
+  const W = 360, H = 470, size = 300, base = 365;
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const g = c.getContext("2d");
+  g.fillStyle = "#fff";
+  g.font = `800 ${size}px Geist, system-ui, sans-serif`;
+  g.textAlign = "center";
+  g.textBaseline = "alphabetic";
+  g.fillText("B", W / 2, base);
+  const cap = size * 0.72, bw = size * 0.075, bh = size * 0.15;
+  for (const x of [W / 2 - size * 0.1, W / 2 + size * 0.1]) {
+    g.fillRect(x - bw / 2, base - cap - bh, bw, bh);   // garis atas
+    g.fillRect(x - bw / 2, base, bw, bh);              // garis bawah
+  }
+  const data = g.getImageData(0, 0, W, H).data, px = [];
+  for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) if (data[(y * W + x) * 4 + 3] > 128) px.push([x, y]);
+  for (let i = px.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [px[i], px[j]] = [px[j], px[i]]; }
+  const scale = height / (cap + 2 * bh), cx = W / 2, cy = base - cap / 2;
+  return px.slice(0, maxPts).map(([x, y]) => [(x - cx) * scale, -(y - cy) * scale + 1.5]);
+}
+
+export async function createBitcoinMark(canvas, { reduced = false } = {}) {
+  const pts = await sampleBitcoin(7000);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "low-power" });
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   renderer.setPixelRatio(dpr);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 0.6, 11);
-  camera.lookAt(0, 0, 0);
+  camera.position.set(0, 0.4, 11);
+  camera.lookAt(0, 0.4, 0);
 
-  const N = 5000, R = 3.2;
+  const N = pts.length;
   const pos = new Float32Array(N * 3), start = new Float32Array(N * 3), seed = new Float32Array(N);
-  for (let i = 0; i < N; i++) {
-    const th = Math.random() * Math.PI * 2, r = R + (Math.random() - 0.5) * 0.35, k = i % 2 ? 1 : 0.62;   // dua cincin
-    pos.set([Math.cos(th) * r * k, Math.sin(th) * r * k, (Math.random() - 0.5) * 0.5], i * 3);
+  pts.forEach(([x, y], i) => {
+    pos.set([x, y, (Math.random() - 0.5) * 0.35], i * 3);
     start.set([(Math.random() - 0.5) * 28, (Math.random() - 0.5) * 16, (Math.random() - 0.5) * 20], i * 3);
     seed[i] = Math.random();
-  }
+  });
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
   geo.setAttribute("aStart", new THREE.BufferAttribute(start, 3));
@@ -69,7 +93,7 @@ export function createRing(canvas, { reduced = false } = {}) {
   function loop(now) {
     raf = requestAnimationFrame(loop);
     const t = (now - t0) / 1000;
-    mat.uniforms.uT.value = Math.min(1, t / 1.6);
+    mat.uniforms.uT.value = Math.min(1, t / 1.8);
     mat.uniforms.uTime.value = t;
     renderer.render(scene, camera);
   }

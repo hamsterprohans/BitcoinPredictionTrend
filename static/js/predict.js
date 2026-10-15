@@ -6,7 +6,8 @@ initTheme();
 markCapabilities();
 initSplash();
 
-const state = { latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null };
+const state = { latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null, interval: "D", range: "1Y" };
+const INTERVALS = { D: "Harian (D)", W: "Mingguan (W)", M: "Bulanan (M)" };
 const RANGES = ["1M", "3M", "6M", "YTD", "1Y", "5Y", "MAX"];
 const arrow = (dir) => (dir === "NAIK" ? "▲" : "▼");
 const cls = (dir) => (dir === "NAIK" ? "up" : "down");
@@ -122,13 +123,59 @@ function buildRanges() {
   RANGES.forEach((r) => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "range"; b.textContent = r;
-    b.setAttribute("aria-pressed", String(r === "1Y"));
+    b.setAttribute("aria-pressed", String(r === state.range));
     b.addEventListener("click", () => {
+      state.range = r;
       wrap.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
       state.charts.setRange(r);
     });
     wrap.append(b);
   });
+}
+
+async function loadPrices(interval) {
+  const cols = await getJSON(`/api/prices?interval=${interval}`);
+  state.charts.setData(cols);
+  state.charts.setRange(state.range);
+  state.charts.setMarkers(interval === "D" ? state.history : []);   // penanda prediksi harian hanya pada interval D
+  return cols;
+}
+
+function buildIntervals() {
+  const wrap = $("#intervals");
+  Object.keys(INTERVALS).forEach((k) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "range"; b.textContent = k;
+    b.setAttribute("aria-pressed", String(k === state.interval));
+    b.addEventListener("click", async () => {
+      if (k === state.interval) return;
+      try {
+        await loadPrices(k);
+        state.interval = k;
+        wrap.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+        $("#tf-label").textContent = `Timeframe: ${INTERVALS[k]}`;
+      } catch (e) { console.warn("Gagal memuat interval", k, e); }
+    });
+    wrap.append(b);
+  });
+}
+
+async function setupCharts() {
+  state.charts = createCharts({ priceEl: $("#chart-price"), rsiEl: $("#chart-rsi"), macdEl: $("#chart-macd") });
+  buildIntervals();
+  buildRanges();
+  const cols = await loadPrices("D");
+  document.addEventListener("themechange", () => { state.charts.restyle(); if (state.latest) state.hero?.setState(currentVisual()); });
+  return cols;
+}
+
+function headerFromPrices(cols) {
+  const n = cols.close.length, last = cols.close[n - 1], prev = cols.close[n - 2];
+  $("#price").textContent = fmtUSD(last);
+  const pct = (last / prev - 1) * 100, ch = $("#change");
+  ch.textContent = `${pct >= 0 ? "▲" : "▼"} ${fmtPct(pct)}`;
+  ch.className = "chg mono " + (pct >= 0 ? "up" : "down");
+  $("#asof").textContent = `Penutupan ${fmtDate(cols.date[n - 1])} (UTC) · harga terakhir, belum ada prediksi`;
 }
 
 async function start3D() {
@@ -153,10 +200,14 @@ async function main() {
   try {
     state.latest = await getJSON("/api/prediction/latest");
   } catch (e) {
+    // Tanpa prediksi: tetap tampilkan harga dan grafik asli bila ada, tanpa kartu prediksi/riwayat yang kosong.
     $("#asof").textContent = "";
     showBanner(e.status === 404
-      ? "Prediksi belum tersedia: job harian belum pernah berhasil dijalankan."
+      ? "Prediksi belum tersedia: job harian belum pernah berhasil dijalankan. Yang tampil hanya harga asli dan grafiknya."
       : "Gagal memuat prediksi. Coba muat ulang halaman.");
+    $("#sec-pred").hidden = true;
+    $("#sec-hist").hidden = true;
+    try { headerFromPrices(await setupCharts()); } catch (err) { console.warn("Grafik harga tidak tersedia:", err); }
     return;
   }
   renderHeader(state.latest);
@@ -169,12 +220,7 @@ async function main() {
   } catch { /* riwayat opsional */ }
 
   try {
-    state.charts = createCharts({ priceEl: $("#chart-price"), rsiEl: $("#chart-rsi"), macdEl: $("#chart-macd") });
-    buildRanges();
-    state.charts.setData(await getJSON("/api/prices"));
-    state.charts.setRange("1Y");
-    state.charts.setMarkers(state.history);
-    document.addEventListener("themechange", () => { state.charts.restyle(); state.hero?.setState(currentVisual()); });
+    await setupCharts();
   } catch (e) {
     console.warn("Grafik harga tidak tersedia:", e);
   }

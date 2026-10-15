@@ -79,3 +79,15 @@ def test_new_pages_routes(paths, route, fname):
     (static / fname).write_text("<h1>ok</h1>")
     r = make_client(paths).get(route)
     assert r.status_code == 200 and "ok" in r.text
+
+
+def test_prices_interval_weekly_and_monthly(paths):
+    c = make_client(paths)
+    d = c.get("/api/prices").json()
+    w = c.get("/api/prices", params={"interval": "W"}).json()
+    m = c.get("/api/prices", params={"interval": "M"}).json()
+    assert len(w["date"]) < len(d["date"]) / 6 and len(m["date"]) < len(w["date"]) / 3
+    assert w["close"][-1] == d["close"][-1] == m["close"][-1] and w["date"][-1] == d["date"][-1]
+    assert "RSI14" in w and "BB_up" in m
+    assert c.get("/api/prices", params={"interval": "D"}).json() == d
+    assert c.get("/api/prices", params={"interval": "H"}).status_code == 422

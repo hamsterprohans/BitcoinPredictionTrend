@@ -59,3 +59,15 @@ def test_parity_with_notebook_test_split():
     assert len(m) == len(test_df)
     for f in TECH_FEATURES:
         np.testing.assert_allclose(m[f + "_web"], m[f + "_nb"], rtol=1e-6, atol=1e-9, err_msg=f)
+
+
+def test_resample_prices_weekly_monthly_bars_dated_by_last_day():
+    from app.features import resample_prices
+    p = _prices(400)
+    w, m = resample_prices(p, "W"), resample_prices(p, "M")
+    assert len(w) < len(p) / 6 and len(m) < len(w) / 3
+    assert w["date"].iloc[-1] == p["date"].iloc[-1] and w["close"].iloc[-1] == p["close"].iloc[-1]  # bar terakhir = hari terakhir
+    assert (w["date"].iloc[:-1].dt.dayofweek == 6).all()                                        # minggu berakhir Minggu
+    assert m["date"].is_monotonic_increasing and m["close"].iloc[-1] == p["close"].iloc[-1]
+    with pytest.raises(ValueError):
+        resample_prices(p, "H")
