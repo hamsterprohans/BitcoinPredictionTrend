@@ -8,6 +8,7 @@ import pandas as pd
 
 CM_URL = "https://community-api.coinmetrics.io/v4/timeseries/asset-metrics"
 FNG_URL = "https://api.alternative.me/fng/"
+COINBASE_SPOT = "https://api.coinbase.com/v2/prices/BTC-USD/spot"
 GDELT_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) BitcoinTrendWeb/1.0"}
 
@@ -52,6 +53,18 @@ def fetch_fear_greed(http: httpx.Client, limit: int = 60) -> pd.DataFrame:
     df["date"] = pd.to_datetime(df["timestamp"].astype(int), unit="s").dt.normalize()
     df["fear_greed_index"] = df["value"].astype(float)
     return df[["date", "fear_greed_index"]].sort_values("date").reset_index(drop=True)
+
+
+def fetch_spot(http: httpx.Client) -> float:
+    """Harga spot BTC/USD saat ini (hanya untuk tampilan; BUKAN input model). Satu kali ulang untuk gangguan sesaat."""
+    for attempt in range(2):
+        try:
+            r = http.get(COINBASE_SPOT, headers=UA, timeout=5)
+            r.raise_for_status()
+            return float(r.json()["data"]["amount"])
+        except httpx.HTTPError:
+            if attempt == 1:
+                raise
 
 
 def _is_sponsored(title: str) -> bool:

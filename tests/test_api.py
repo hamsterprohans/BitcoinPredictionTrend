@@ -91,3 +91,24 @@ def test_prices_interval_weekly_and_monthly(paths):
     assert "RSI14" in w and "BB_up" in m
     assert c.get("/api/prices", params={"interval": "D"}).json() == d
     assert c.get("/api/prices", params={"interval": "H"}).status_code == 422
+
+
+def test_live_price_cached_then_refreshed_and_503_on_failure(paths):
+    live, content, static = paths
+    seed_live_dir(live, content)
+    calls, clock = [], {"t": 1000.0}
+    def fetch():
+        calls.append(1)
+        if len(calls) == 3:
+            raise RuntimeError("upstream down")
+        return 81000.0 + len(calls)
+    app = create_app(live, content, static, now=lambda: NOW, fetch_live=fetch, monotonic=lambda: clock["t"])
+    c = TestClient(app)
+    a = c.get("/api/price/live").json()
+    assert a["price"] == 81001.0 and a["source"] == "Coinbase" and a["fetched_at"].startswith("2026-10-15")
+    clock["t"] += 10
+    assert c.get("/api/price/live").json() == a and len(calls) == 1          # masih dalam TTL: tidak memanggil upstream
+    clock["t"] += 30
+    assert c.get("/api/price/live").json()["price"] == 81002.0 and len(calls) == 2
+    clock["t"] += 30
+    assert c.get("/api/price/live").status_code == 503                         # upstream gagal -> 503, bukan angka lama

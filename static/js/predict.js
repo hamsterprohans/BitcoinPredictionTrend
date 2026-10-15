@@ -6,7 +6,7 @@ initTheme();
 markCapabilities();
 initSplash();
 
-const state = { latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null, interval: "D", range: "1Y" };
+const state = { change: null, close: null, closeDate: null, closeText: "", latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null, interval: "D", range: "1Y" };
 const INTERVALS = { D: "Harian (D)", W: "Mingguan (W)", M: "Bulanan (M)" };
 const RANGES = ["1M", "3M", "6M", "YTD", "1Y", "5Y", "MAX"];
 const arrow = (dir) => (dir === "NAIK" ? "▲" : "▼");
@@ -19,10 +19,13 @@ function showBanner(text) {
 }
 
 function renderHeader(d) {
+  state.close = d.close; state.closeDate = d.as_of;
   $("#price").textContent = fmtUSD(d.close);
+  state.closeText = $("#price").textContent;
   const ch = $("#change");
   ch.textContent = `${d.change_pct >= 0 ? "▲" : "▼"} ${fmtPct(d.change_pct)}`;
   ch.className = "chg mono " + (d.change_pct >= 0 ? "up" : "down");
+  state.change = { text: ch.textContent, cls: ch.className };
   $("#asof").textContent = `Penutupan ${fmtDate(d.as_of)} (UTC)`;
   $("#stat-sent").textContent = fmtNum(d.inputs.news_sentiment, 2);
   $("#stat-fg").textContent = `${fmtNum(d.inputs.fear_greed_index, 0)}/100`;
@@ -171,10 +174,13 @@ async function setupCharts() {
 
 function headerFromPrices(cols) {
   const n = cols.close.length, last = cols.close[n - 1], prev = cols.close[n - 2];
+  state.close = last; state.closeDate = cols.date[n - 1];
   $("#price").textContent = fmtUSD(last);
+  state.closeText = $("#price").textContent;
   const pct = (last / prev - 1) * 100, ch = $("#change");
   ch.textContent = `${pct >= 0 ? "▲" : "▼"} ${fmtPct(pct)}`;
   ch.className = "chg mono " + (pct >= 0 ? "up" : "down");
+  state.change = { text: ch.textContent, cls: ch.className };
   $("#asof").textContent = `Penutupan ${fmtDate(cols.date[n - 1])} (UTC) · harga terakhir, belum ada prediksi`;
 }
 
@@ -227,4 +233,41 @@ async function main() {
   start3D();
 }
 
-main();
+// ---- Harga live (hanya tampilan; probabilitas tetap resmi harian dari penutupan lengkap) ----
+async function refreshLive() {
+  if (document.hidden || state.close == null) return;
+  const badge = $("#live-badge");
+  try {
+    const { price } = await getJSON("/api/price/live");
+    const pct = (price / state.close - 1) * 100;
+    $("#price").textContent = fmtUSD(price);
+    const ch = $("#change");
+    ch.textContent = `${pct >= 0 ? "▲" : "▼"} ${fmtPct(pct)}`;     // perubahan terhadap penutupan terakhir
+    ch.className = "chg mono " + (pct >= 0 ? "up" : "down");
+    $("#asof").hidden = true;                                       // baris penutupan ada di #since-close
+    badge.hidden = false;
+    const since = $("#since-close");
+    since.hidden = false;
+    since.textContent = `Penutupan ${fmtDate(state.closeDate)}: ${fmtUSD(state.close)} · sejak penutupan ${fmtPct(pct)}`;
+    const live = $("#prediction-live");
+    if (state.latest) {
+      live.hidden = false;
+      live.textContent = `patokan penutupan ${fmtUSD(state.close)} · harga live ${fmtUSD(price)} (${fmtPct(pct)}); arah prediksi dinilai dari penutupan hari target`;
+    }
+  } catch {
+    badge.hidden = true;
+    $("#since-close").hidden = true;
+    $("#prediction-live").hidden = true;
+    if (state.closeText) $("#price").textContent = state.closeText;     // kembali ke harga penutupan
+    if (state.change) { const ch = $("#change"); ch.textContent = state.change.text; ch.className = state.change.cls; }
+    $("#asof").hidden = false;
+  }
+}
+
+function startLive() {
+  refreshLive();
+  setInterval(refreshLive, 30000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshLive(); });
+}
+
+main().then(startLive);

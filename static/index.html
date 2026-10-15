@@ -41,8 +41,10 @@
       <div class="price-row">
         <h1 class="price mono" id="price">—</h1>
         <span class="chg mono" id="change"></span>
+        <span class="live-badge mono" id="live-badge" hidden>● LIVE</span>
       </div>
       <p class="asof" id="asof">Memuat data…</p>
+      <p class="asof mono" id="since-close" hidden></p>
       <dl class="stats">
         <div><dt>Sentimen berita (−10…+10)</dt><dd class="mono" id="stat-sent">—</dd></div>
         <div><dt>Fear &amp; Greed</dt><dd class="mono" id="stat-fg">—</dd></div>
@@ -64,6 +66,7 @@
           <span id="prediction-prob" class="prob mono"></span>
         </div>
         <p class="meta mono" id="prediction-meta"></p>
+        <p class="meta mono" id="prediction-live" hidden></p>
         <p id="evidence-badge" class="badge" hidden></p>
       </div>
     </section>

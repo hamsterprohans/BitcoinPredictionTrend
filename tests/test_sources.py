@@ -76,3 +76,30 @@ def test_fetch_headlines_retries_429_then_raises():
     with pytest.raises(SourceError):
         fetch_headlines(client(handler), date(2026, 10, 14), sleep=lambda s: None)
     assert calls["n"] == 4  # 1 + 3 ulang
+
+
+def test_fetch_spot_parses_coinbase_amount():
+    from app.sources import fetch_spot
+    def handler(req):
+        assert req.url.host == "api.coinbase.com" and req.url.path.endswith("/BTC-USD/spot")
+        return httpx.Response(200, json={"data": {"base": "BTC", "currency": "USD", "amount": "81131.45"}})
+    assert fetch_spot(client(handler)) == pytest.approx(81131.45)
+
+
+def test_fetch_spot_retries_once_on_transient_error():
+    from app.sources import fetch_spot
+    calls = {"n": 0}
+    def handler(req):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise httpx.ConnectError("sesaat")
+        return httpx.Response(200, json={"data": {"amount": "81000.5"}})
+    assert fetch_spot(client(handler)) == pytest.approx(81000.5) and calls["n"] == 2
+
+
+def test_fetch_spot_gives_up_after_second_failure():
+    from app.sources import fetch_spot
+    def handler(req):
+        raise httpx.ConnectError("mati")
+    with pytest.raises(httpx.HTTPError):
+        fetch_spot(client(handler))

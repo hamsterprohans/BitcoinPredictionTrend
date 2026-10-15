@@ -7,6 +7,18 @@ dan untuk multi-horizon: `multihorizon/F_h{H}_s{seed}.keras` serta `multihorizon
 (H = 3,5,7,15,20,25,30,35; seed = 47,123,2024). Lalu: `python -m scripts.compute_mh_thresholds`.
 Horizon tanpa berkasnya otomatis tidak ditampilkan.
 
+### Ekspor artefak dari notebook (10)
+Tambahkan sel ini di akhir notebook (10) di Colab, jalankan, lalu unduh folder `web_export` dari Drive ke `data/model_artifacts/`:
+```python
+import pickle, os, json, shutil
+OUT = f'{DRIVE_FOLDER}/web_export'; os.makedirs(f'{OUT}/models', exist_ok=True)
+results['F']['model_obj'].save(f'{OUT}/models/model_F.keras')
+pickle.dump(scaler, open(f'{OUT}/scaler.pkl', 'wb'))
+json.dump({'THRESHOLD_OPTIMAL': THRESHOLD_OPTIMAL}, open(f'{OUT}/threshold_beku.json', 'w'))
+shutil.copytree(f'{DRIVE_FOLDER}/multihorizon', f'{OUT}/multihorizon', dirs_exist_ok=True)
+print(list(scaler.feature_names_in_)[-1])   # harus: news_sentiment
+```
+
 ## Menjalankan
 ```bash
 uv venv --python 3.12 .venv && source .venv/bin/activate
@@ -25,3 +37,7 @@ Penjadwalan: `RUN_SCHEDULER=1` menjalankan job tiap hari 00.30 UTC di dalam pros
 
 ## Tes
 `pytest -m "not e2e"` (backend), `pytest -m e2e` (browser).
+
+## Harga live
+`/api/price/live` mengambil harga spot BTC/USD dari Coinbase (cache 20 detik) hanya untuk tampilan; harga ini BUKAN input model.
+Probabilitas prediksi tetap resmi harian (dari penutupan hari penuh), tidak diperbarui real-time.
