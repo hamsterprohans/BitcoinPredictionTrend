@@ -86,8 +86,9 @@ def fetch_headlines(http: httpx.Client, day: date, sleep=time.sleep,
         if r.status_code != 200:
             raise SourceError(f"GDELT HTTP {r.status_code} untuk {day}")
         if not r.text.strip():
-            sleep(min_interval)
-            return []
+            # Badan kosong = GDELT sedang membatasi (bukan "tidak ada berita Bitcoin"): ulangi dengan jeda yang naik.
+            sleep(15 * (2 ** attempt))
+            continue
         try:
             arts = r.json().get("articles", [])
         except ValueError as e:
@@ -101,4 +102,4 @@ def fetch_headlines(http: httpx.Client, day: date, sleep=time.sleep,
             out.append(title)
         sleep(min_interval)  # GDELT: >= 5 detik antar permintaan
         return out
-    raise SourceError(f"GDELT 429 berulang untuk {day}")
+    raise SourceError(f"GDELT 429/balasan kosong berulang untuk {day}")
