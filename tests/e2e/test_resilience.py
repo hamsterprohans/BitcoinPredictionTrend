@@ -48,3 +48,17 @@ def test_no_horizontal_scroll_on_phone(browser, server, path):
     page.wait_for_load_state("networkidle")
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 1")
     ctx.close()
+
+
+def test_reduced_motion_still_renders_hero_scene(browser, server):
+    ctx = browser.new_context(reduced_motion="reduce")
+    page = ctx.new_page()
+    warnings = []
+    page.on("console", lambda m: warnings.append(m.text) if m.type == "warning" else None)
+    page.add_init_script("sessionStorage.setItem('splash-seen', '1')")
+    page.goto(server + "/")
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")
+    page.wait_for_timeout(1500)                                       # beri waktu start3D selesai
+    assert not page.evaluate("document.body.classList.contains('no-webgl')")   # hero tidak jatuh ke fallback
+    assert not [w for w in warnings if "Visual 3D dinonaktifkan" in w]
+    ctx.close()

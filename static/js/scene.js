@@ -82,10 +82,6 @@ export function createHero(canvas, { reduced = false, mobile = false, onSlow = (
     camera.updateProjectionMatrix();
     if (reduced) renderOnce();
   }
-  const ro = new ResizeObserver(resize);
-  ro.observe(canvas);
-  resize();
-
   const lerp = (a, b, t) => a + (b - a) * t;
   function applyTargets(k) {
     u.uAmp.value = lerp(u.uAmp.value, target.amp, k);
@@ -99,6 +95,11 @@ export function createHero(canvas, { reduced = false, mobile = false, onSlow = (
     applyTargets(1);
     renderer.render(scene, camera);
   }
+
+  // resize() memanggil renderOnce() (mode reduced): harus setelah lerp/applyTargets/renderOnce terdefinisi.
+  const ro = new ResizeObserver(resize);
+  ro.observe(canvas);
+  resize();
 
   let raf = 0, last = performance.now(), visible = true, frames = 0, ema = 16, stage = 0;
   function loop(now) {
