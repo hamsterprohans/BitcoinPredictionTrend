@@ -164,7 +164,7 @@ body.no-webgl #splash-canvas{display:none}
 
 /* halaman Tentang: foto + ringkasan */
 .about-hero{display:grid;grid-template-columns:200px 1fr;gap:22px;align-items:start}
-.about-photo{width:100%;height:auto;display:block}
+.about-photo{width:100%;height:auto;border-radius:16px;border:1px solid var(--line);background:#fff;display:block}
 .btn-link{display:inline-block;padding:9px 16px;border-radius:12px;border:1px solid color-mix(in srgb,var(--gold) 55%,transparent);color:var(--gold);text-decoration:none;font-weight:600}
 .btn-link:hover{background:color-mix(in srgb,var(--gold) 12%,transparent)}
 @media (max-width:560px){.about-hero{grid-template-columns:1fr}.about-photo{max-width:220px}}
