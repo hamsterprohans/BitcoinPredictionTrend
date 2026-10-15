@@ -7,6 +7,9 @@ export const fmtPct = (n, d = 2) => (n > 0 ? "+" : "") + idNum(d).format(n) + "%
 export const fmtDate = (iso) =>
   new Date(iso + "T00:00:00Z").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
+export const fmtDateShort = (iso) =>
+  new Date(iso + "T00:00:00Z").toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
 export async function getJSON(url) {
   const r = await fetch(url);
   if (!r.ok) { const e = new Error(`HTTP ${r.status}`); e.status = r.status; throw e; }
