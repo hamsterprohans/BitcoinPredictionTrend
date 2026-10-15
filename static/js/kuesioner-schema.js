@@ -4,8 +4,9 @@ export const SURVEY = {
   version: 1,
   sections: [
     { id: "a", title: "A. Tentang Anda",
-      intro: "Untuk memahami siapa yang memakai situs ini. Tidak meminta nama.",
+      intro: "Untuk memahami siapa yang memakai situs ini. Nama boleh dikosongkan.",
       questions: [
+        { id: "a0", type: "short", text: "Nama Anda (opsional):", autocomplete: "name" },
         { id: "a1", type: "short", text: "Apa latar belakang Anda? (mis. mahasiswa, pekerja, investor, peneliti)" },
         { id: "a2", type: "yn", text: "Apakah Anda pernah membeli atau memperdagangkan Bitcoin atau aset kripto lain?" },
         { id: "a3", type: "yn", text: "Apakah Anda sudah mengenal istilah machine learning atau LSTM sebelum membuka situs ini?" },

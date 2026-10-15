@@ -25,6 +25,7 @@ select id, created_at, survey_version, answers->>'a1' as latar_belakang, answers
        answers->>'c4' as narasi_membantu, answers->>'c5' as retro_membantu, answers->>'d1' as percaya, answers->>'d4' as andalkan_jual_beli,
        answers->>'e1' as tampilan_menarik, answers->>'e2' as navigasi_mudah, answers->>'e6' as ada_kendala,
        answers->>'g1' as membantu_keseluruhan, answers->>'g2' as rekomendasikan, answers->>'f6' as fitur_diminta,
-       answers->>'f7' as perlu_ditingkatkan, answers->>'g3' as komentar, answers
+       answers->>'f7' as perlu_ditingkatkan, answers->>'g3' as komentar, answers,
+       answers->>'a0' as nama
 from public.feedback_responses;
 revoke all on public.feedback_flat from anon, authenticated;

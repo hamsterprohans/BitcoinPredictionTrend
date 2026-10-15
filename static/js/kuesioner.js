@@ -35,7 +35,7 @@ function renderQuestion(q) {
     }
     wrap.append(row);
   } else if (q.type === "short") {
-    wrap.append(el("input", { type: "text", name: q.id, maxlength: LIMIT.short, autocomplete: "off", "aria-label": q.text }));
+    wrap.append(el("input", { type: "text", name: q.id, maxlength: LIMIT.short, autocomplete: q.autocomplete || "off", "aria-label": q.text }));
   } else {
     wrap.append(el("textarea", { name: q.id, rows: 4, maxlength: LIMIT.long, "aria-label": q.text }));
   }
@@ -58,7 +58,7 @@ function render(root) {
     el("p", { id: "survey-error", class: "survey-error", role: "alert", hidden: true }),
     el("p", { id: "survey-status", class: "muted", role: "status" }),
     el("button", { id: "survey-submit", class: "btn-link", type: "submit", text: "Kirim jawaban" }),
-    el("p", { class: "muted small", text: "Jawaban disimpan tanpa nama. Isi email hanya bila bersedia diwawancara. Data dipakai untuk pengembangan tugas akhir ini saja." }));
+    el("p", { class: "muted small", text: "Nama dan email bersifat opsional; isi email hanya bila bersedia diwawancara. Data dipakai untuk pengembangan tugas akhir ini saja." }));
   root.replaceChildren(form);
   return form;
 }
