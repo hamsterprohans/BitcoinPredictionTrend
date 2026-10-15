@@ -228,8 +228,8 @@
   "used": -3.0
  },
  "narrative": {
-  "text": "Pada 12 Februari 2026, Model F memberi probabilitas naik 0,6031 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 13 Februari 2026. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Sinyal MACD (+9,5 poin persentase), Rata-rata harga 90 hari (+7,5 poin persentase), dan Histogram MACD (+5,8 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
+  "text": "Model penelitian memprediksi Bitcoin akan NAIK pada 13 Februari 2026, dengan probabilitas 0,6031 dan tingkat keyakinan tinggi. Fitur teratas paling memengaruhi skor model adalah Sinyal MACD dengan pengaruh +9,5 poin persentase, diikuti Rata-rata harga 90 hari dengan pengaruh +7,5 poin persentase. Histogram MACD juga berkontribusi dengan pengaruh +5,8 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi tidak pasti dan dapat keliru. Ini bukan saran investasi.",
+  "source": "llm",
   "attempts": 3,
   "temperature": null
  }

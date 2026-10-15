@@ -228,9 +228,9 @@
   "used": 8.0
  },
  "narrative": {
-  "text": "Pada 22 April 2026, Model F memberi probabilitas naik 0,4584 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 23 April 2026. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Sentimen berita (+9,2 poin persentase), Rata-rata harga 90 hari (-8,8 poin persentase), dan Histogram MACD (-5,6 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "**Prediksi Arah Harga Bitcoin 22–23 April 2026**\n\nModel memprediksi harga Bitcoin akan bergerak turun pada 23 April 2026, dengan skor probabilitas 0,4584 dan tingkat keyakinan rendah. Fitur yang paling memengaruhi skor model adalah sentimen berita dengan pengaruh +9,2 poin persentase, serta rata-rata harga 90 hari dengan pengaruh -8,8 poin persentase. Histogram MACD juga berkontribusi dengan pengaruh -5,6 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
   "temperature": null
  }
 }

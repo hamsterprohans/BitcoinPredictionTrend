@@ -228,9 +228,9 @@
   "used": -3.6666666666666665
  },
  "narrative": {
-  "text": "Pada 1 Januari 2026, Model F memberi probabilitas naik 0,4950 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 2 Januari 2026. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Sentimen berita (+5,0 poin persentase), Rata-rata harga 90 hari (+3,3 poin persentase), dan Volatilitas 7 hari (+3,0 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model memprediksi arah NAIK untuk Bitcoin pada 2 Januari 2026 dengan probabilitas 0,4950, namun tingkat keyakinan rendah. Fitur yang paling memengaruhi skor model adalah Sentimen berita dengan pengaruh +5,0 poin persentase, diikuti Rata-rata harga 90 hari dengan pengaruh +3,3 poin persentase. Volatilitas 7 hari berkontribusi dengan pengaruh +3,0 poin persentase. Hasil prediksi ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

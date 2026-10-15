@@ -228,9 +228,9 @@
   "used": 6.666666666666667
  },
  "narrative": {
-  "text": "Pada 27 Oktober 2025, Model F memberi probabilitas naik 0,5529 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 28 Oktober 2025. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Histogram MACD (+8,6 poin persentase), Sentimen berita (+7,2 poin persentase), dan Rata-rata harga 90 hari (+4,0 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi Bitcoin akan NAIK pada 28 Oktober 2025, dengan skor 0,5529 (ambang: 0,4768). Fitur teratas paling memengaruhi skor: Histogram MACD memberikan pengaruh +8,6 poin persentase, dan Sentimen berita memberikan pengaruh +7,2 poin persentase. Rata-rata harga 90 hari juga berkontribusi dengan pengaruh +4,0 poin persentase. Namun, AUC uji historis 0,4871 menunjukkan performa model rendah. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

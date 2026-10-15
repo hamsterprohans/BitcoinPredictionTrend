@@ -228,9 +228,9 @@
   "used": 4.666666666666667
  },
  "narrative": {
-  "text": "Pada 9 April 2026, Model F memberi probabilitas naik 0,5052 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 10 April 2026. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 30 hari (-5,4 poin persentase), Sentimen berita (+4,4 poin persentase), dan Volatilitas 30 hari (-3,5 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi harga Bitcoin naik pada 10 April 2026 dengan skor 0,5052, hanya 0,0284 poin di atas ambang keputusan, menunjukkan keyakinan rendah. Fitur teratas paling memengaruhi prediksi adalah rata-rata harga 30 hari (US$69.680) dengan pengaruh -5,4 poin persentase dan sentimen berita bernilai +4,67 dengan pengaruh +4,4 poin persentase. Volatilitas 30 hari rendah pada 2,08% memengaruhi skor sebesar -3,5 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

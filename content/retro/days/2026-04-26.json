@@ -228,9 +228,9 @@
   "used": 4.666666666666667
  },
  "narrative": {
-  "text": "Pada 26 April 2026, Model F memberi probabilitas naik 0,4584 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 27 April 2026. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Sentimen berita (+10,0 poin persentase), Rata-rata harga 90 hari (-8,3 poin persentase), dan Sinyal MACD (+3,9 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Untuk 27 April 2026, model penelitian memprediksi arah **TURUN** dengan probabilitas naik 0,4584, di bawah ambang 0,4768. Tingkat keyakinan rendah. Fitur paling memengaruhi skor model: Sentimen berita dengan pengaruh +10,0 poin persentase, dan Rata-rata harga 90 hari dengan pengaruh -8,3 poin persentase. Sinyal MACD berkontribusi dengan pengaruh +3,9 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi. Hasil prediksi ini tidak pasti dan dapat keliru.",
+  "source": "llm",
+  "attempts": 2,
   "temperature": null
  }
 }

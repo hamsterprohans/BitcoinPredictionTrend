@@ -228,9 +228,9 @@
   "used": 3.0
  },
  "narrative": {
-  "text": "Pada 20 Juli 2025, Model F memberi probabilitas naik 0,4741 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 21 Juli 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Sentimen berita (+9,6 poin persentase), MACD (-8,3 poin persentase), dan Rata-rata harga 90 hari (-6,6 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi Bitcoin akan bergerak **turun** pada 21 Juli 2025, berdasarkan data hingga 20 Juli 2025. Skor model mencapai 0,4741, hanya 0,0027 poin di bawah ambang 0,4768, menunjukkan **keyakinan rendah**. Sentimen berita memberikan pengaruh +9,6 poin persentase, namun MACD dengan pengaruh -8,3 poin persentase dan rata-rata harga 90 hari dengan pengaruh -6,6 poin persentase mendorong prediksi turun. Hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
   "temperature": null
  }
 }

@@ -228,9 +228,9 @@
   "used": 5.666666666666667
  },
  "narrative": {
-  "text": "Pada 16 Juli 2025, Model F memberi probabilitas naik 0,4487 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 17 Juli 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (-10,2 poin persentase), Sentimen berita (+9,1 poin persentase), dan MACD (-7,4 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi harga Bitcoin akan **turun** pada 17 Juli 2025 berdasarkan data hingga 16 Juli, dengan skor probabilitas 0,4487 dan tingkat keyakinan rendah. Fitur rata-rata harga 90 hari paling memengaruhi prediksi dengan pengaruh -10,2 poin persentase, diikuti MACD dengan pengaruh -7,4 poin persentase. Sentimen berita menunjukkan pengaruh positif +9,1 poin persentase, namun tidak cukup mengalahkan sinyal negatif. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

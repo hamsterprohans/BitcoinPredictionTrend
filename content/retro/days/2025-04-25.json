@@ -202,9 +202,9 @@
   "used": 0.0
  },
  "narrative": {
-  "text": "Pada 25 April 2025, Model F memberi probabilitas naik 0,3952 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 26 April 2025. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Rata-rata harga 30 hari (-10,0 poin persentase), Rata-rata harga 7 hari (-7,4 poin persentase), dan Rata-rata harga 90 hari (+6,1 poin persentase). Tidak ada berita bersih pada hari itu, sehingga nilai sentimen hanya isian forward-fill atau netral. Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi Bitcoin turun pada 26 April 2025 dengan skor probabilitas 0,3952 dan tingkat keyakinan tinggi. Fitur paling memengaruhi adalah rata-rata harga 30 hari (US$84.662) dengan pengaruh -10,0 poin persentase dan rata-rata harga 7 hari (US$90.486) dengan pengaruh -7,4 poin persentase, keduanya berada di persentil tertinggi data latih. Rata-rata harga 90 hari menunjukkan pengaruh +6,1 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 1,
   "temperature": null
  }
 }

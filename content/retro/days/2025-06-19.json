@@ -228,8 +228,8 @@
   "used": 1.6666666666666667
  },
  "narrative": {
-  "text": "Pada 19 Juni 2025, Model F memberi probabilitas naik 0,5598 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 20 Juni 2025. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Sentimen berita (+17,3 poin persentase), Rata-rata harga 30 hari (+7,9 poin persentase), dan Histogram MACD (+5,1 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 20 Juni 2025 dengan skor 0,5598 (ambang 0,4768). Sentimen berita paling memengaruhi prediksi dengan pengaruh +17,3 poin persentase, diikuti rata-rata harga 30 hari dengan pengaruh +7,9 poin persentase. Hasil ini bersifat tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
   "attempts": 3,
   "temperature": null
  }

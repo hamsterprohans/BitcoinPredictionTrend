@@ -228,9 +228,9 @@
   "used": 4.0
  },
  "narrative": {
-  "text": "Pada 14 Maret 2026, Model F memberi probabilitas naik 0,5076 terhadap ambang keputusan 0,4768, sehingga prediksinya naik untuk 15 Maret 2026. Tingkat keyakinannya sedang. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (+13,7 poin persentase), Rata-rata harga 30 hari (-5,0 poin persentase), dan MACD (+3,6 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-  "source": "template",
-  "attempts": 3,
+  "text": "Model penelitian memprediksi harga Bitcoin akan **naik** pada 15 Maret 2026, berdasarkan data dari 14 Maret 2026, dengan probabilitas 0,5076 dan tingkat keyakinan sedang. Dua fitur teratas paling memengaruhi skor: rata-rata harga 90 hari (US$79.886) memberikan pengaruh +13,7 poin persentase, sedangkan rata-rata harga 30 hari (US$68.246) memberikan pengaruh -5,0 poin persentase. Hasil prediksi ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
   "temperature": null
  }
 }
