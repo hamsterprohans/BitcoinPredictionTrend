@@ -126,3 +126,21 @@ def test_feature_mention_counts_whole_labels_only():
     text = template_narrative(f)
     only_signal = text.replace("MACD (+3,0", "hal").replace("RSI 14 hari", "hal lain")        # hanya "Sinyal MACD" yang tersisa
     assert "fitur_disebut" in validate(only_signal, f)
+
+
+def test_unicode_minus_in_delta_is_accepted_as_the_same_sign():
+    assert validate(GOOD.replace("(-2,1 poin", "(−2,1 poin"), FACTS) == []
+    assert "tanda_pengaruh" in validate(GOOD.replace("(-2,1 poin", "(+2,1 poin"), FACTS)           # tanda salah tetap ditolak
+
+
+def test_counting_features_is_fine_but_quantity_words_are_not():
+    assert "angka_valid" not in validate(GOOD + " Tiga fitur teratas disebut.", FACTS)
+    for bad in (" Peluangnya dua persen.", " Peluangnya lima puluh persen.", " Naik tiga poin.", " Sekitar sepuluh kali."):
+        assert "angka_valid" in validate(GOOD + bad, FACTS), bad
+
+
+def test_day_month_without_year_is_allowed_only_for_the_facts_dates():
+    assert "tanggal_valid" not in validate(GOOD + " Berdasarkan data hingga 16 Februari.", FACTS)
+    assert "tanggal_valid" not in validate(GOOD + " Target 17 Februari.", FACTS)
+    assert "tanggal_valid" in validate(GOOD + " Pada 17 Oktober harga bergerak.", FACTS)
+    assert "tanggal_valid" in validate(GOOD + " Pada 18 Februari harga bergerak.", FACTS)

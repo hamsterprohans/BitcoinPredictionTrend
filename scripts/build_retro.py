@@ -178,13 +178,14 @@ def write_outputs(out_dir, out: dict) -> None:
             f.unlink()
 
 
-def fill_narratives(out_dir, client) -> int:
+def fill_narratives(out_dir, client, redo_template: bool = False) -> int:
     out_dir = Path(out_dir)
     auc = read_json(out_dir / "series.json", {}).get("auc")
     made = 0
     for f in sorted((out_dir / "days").glob("*.json")):
         rec = read_json(f)
-        if rec.get("narrative"):
+        nar = rec.get("narrative")
+        if nar and not (redo_template and nar.get("source") == "template"):
             continue
         rec["narrative"] = explain.generate_narrative(client, explain.build_facts(rec, auc=auc))
         atomic_write_json(f, rec)
@@ -210,6 +211,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--allow-mismatch", action="store_true", help="tetap tulis walau paritas gagal (ditandai verified=false)")
     ap.add_argument("--narratives", action="store_true", help="buat narasi (Claude Haiku) untuk hari yang belum punya")
+    ap.add_argument("--redo-template", action="store_true", help="dengan --narratives: buat ulang narasi yang jatuh ke template")
     args = ap.parse_args(argv)
     from app import jobs
     from app.inference import Predictor
@@ -240,7 +242,7 @@ def main(argv=None):
         key = os.environ.get("ANTHROPIC_API_KEY")
         if not key:
             raise SystemExit("ANTHROPIC_API_KEY belum diset (environment variable atau .env)")
-        print("narasi baru:", fill_narratives(out_dir, anthropic.Anthropic(api_key=key)))
+        print("narasi baru:", fill_narratives(out_dir, anthropic.Anthropic(api_key=key), redo_template=args.redo_template))
 
 
 if __name__ == "__main__":

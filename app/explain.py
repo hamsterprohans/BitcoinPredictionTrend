@@ -175,8 +175,10 @@ _FORBIDDEN_RE = re.compile(
     r"|karena|menyebabkan|mengakibatkan|akibat|disebabkan|penyebab)\b"
     r"|\bsaran\b(?! investasi)|(?<!tidak )\bpasti\w*", re.I)
 _UNCERTAIN = ("tidak pasti", "ketidakpastian", "bisa keliru", "dapat keliru", "mungkin keliru")
-_NUMBER_WORDS_RE = re.compile(r"\b(?:nol|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas|\w+belas|\w+puluh|ratus|ribu|juta)\b", re.I)
-_DATE_NOYEAR_RE = re.compile(rf"\b\d{{1,2}} (?:{_MONTHS_RE})\b(?! \d{{4}})")
+_NUMBER_WORDS_RE = re.compile(
+    r"\b(?:nol|sebelas|\w*belas|puluh|\w+puluh|ratus|ribu|juta)\b"
+    r"|\b(?:nol|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh)\s+(?:persen|poin|kali|ribu|juta|dolar)\b", re.I)
+_DATE_NOYEAR_RE = re.compile(rf"\b(\d{{1,2}} (?:{_MONTHS_RE}))\b(?! \d{{4}})")
 _SENT_START = r"(?:^|[.!?]\s+)"
 _LIMIT_RE = re.compile(_SENT_START + r"model belum terbukti lebih baik dari tebakan acak", re.I)
 _DISC_RE = re.compile(_SENT_START + r"ini bukan saran investasi\.", re.I)
@@ -243,11 +245,14 @@ def _direction_ok(text: str, direction: str) -> bool:
 
 def validate(text: str, facts: dict) -> list:
     failed = []
+    text = text.replace("\u2212", "-")                      # minus Unicode dari LLM = minus biasa
     low = text.lower()
     allowed_dates = {facts["date_id"], facts["target_id"]}
     allowed_iso = {facts["date"], facts["target"]}
+    allowed_day_month = {d.rsplit(" ", 1)[0] for d in allowed_dates}
     if any(m not in allowed_dates for m in _DATE_RE.findall(text)) or \
-            any(m not in allowed_iso for m in _ISO_RE.findall(text)) or _DATE_NOYEAR_RE.search(text):
+            any(m not in allowed_iso for m in _ISO_RE.findall(text)) or \
+            any(m not in allowed_day_month for m in _DATE_NOYEAR_RE.findall(text)):
         failed.append("tanggal_valid")
     allowed_nums = set(_NUM_RE.findall(facts_text(facts)))
     if any(n not in allowed_nums for n in _NUM_RE.findall(text)) or _NUMBER_WORDS_RE.search(text):
