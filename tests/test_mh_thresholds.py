@@ -17,3 +17,8 @@ def test_youden_from_mean_of_seed_probabilities(tmp_path):
     assert set(out) == {"3"}            # H=5 tidak punya berkas -> dilewati
     assert 0.3 < out["3"] < 0.7
     assert json.loads((mh / "thresholds.json").read_text()) == out
+
+
+def test_missing_multihorizon_folder_is_not_a_crash(tmp_path):
+    assert compute(tmp_path) == {}
+    assert not (tmp_path / "multihorizon").exists()          # tidak membuat folder kosong diam-diam

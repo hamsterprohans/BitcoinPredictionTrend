@@ -79,3 +79,13 @@ def test_real_artifacts_load_and_predict():
     frame = frame.assign(news_sentiment=frame.get("news_sentiment", 0.0))
     out = pred.predict(frame)
     assert 0.0 <= out[1]["prob"] <= 1.0
+
+
+def test_from_artifacts_lists_missing_files_with_guidance(tmp_path):
+    from app.inference import ArtifactsMissing
+    with pytest.raises(ArtifactsMissing) as e:
+        Predictor.from_artifacts(tmp_path)
+    msg = str(e.value)
+    for name in ("scaler.pkl", "model_F.keras", "threshold_beku.json", "README"):
+        assert name in msg, name
+    assert isinstance(e.value, RuntimeError)                  # CLI dan penjadwal menangani sebagai kegagalan biasa
