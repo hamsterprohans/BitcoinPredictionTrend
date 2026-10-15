@@ -62,9 +62,33 @@ def test_fetch_headlines_filters_btc_sponsor_and_dupes():
         "Bitcoin jumps 5%", "BTC holds $100k"]
 
 
-def test_fetch_headlines_empty_body_means_no_news():
+def test_fetch_headlines_empty_body_is_throttling_and_is_retried():
+    # Bukti dari run nyata: GDELT membalas badan KOSONG (200) saat dibatasi, bukan karena tidak ada berita Bitcoin.
+    calls = {"n": 0}
     def handler(req):
+        calls["n"] += 1
+        if calls["n"] <= 2:
+            return httpx.Response(200, text="")
+        return httpx.Response(200, json={"articles": [{"title": "Bitcoin up"}]})
+    waits = []
+    out = fetch_headlines(client(handler), date(2026, 10, 14), sleep=waits.append)
+    assert out == ["Bitcoin up"] and calls["n"] == 3
+    assert waits[:2] == [15, 30]                                   # jeda naik seperti pada 429
+
+
+def test_fetch_headlines_persistent_empty_body_raises_instead_of_caching_no_news():
+    calls = {"n": 0}
+    def handler(req):
+        calls["n"] += 1
         return httpx.Response(200, text="")
+    with pytest.raises(SourceError, match="kosong"):
+        fetch_headlines(client(handler), date(2026, 10, 14), sleep=lambda s: None)
+    assert calls["n"] == 4                                          # 1 + 3 ulang
+
+
+def test_fetch_headlines_valid_json_with_no_articles_is_no_news():
+    def handler(req):
+        return httpx.Response(200, json={"articles": []})
     assert fetch_headlines(client(handler), date(2026, 10, 14), sleep=lambda s: None) == []
 
 
