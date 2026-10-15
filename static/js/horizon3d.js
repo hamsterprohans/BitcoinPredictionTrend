@@ -3,13 +3,13 @@ import { cssVar } from "./common.js";
 
 function label(text, color) {
   const c = document.createElement("canvas");
-  c.width = 128; c.height = 48;
+  c.width = 256; c.height = 72;
   const g = c.getContext("2d");
-  g.font = '600 26px "Geist Mono", monospace';
+  g.font = '600 42px "Geist Mono", monospace';
   g.fillStyle = color; g.textAlign = "center"; g.textBaseline = "middle";
-  g.fillText(text, 64, 24);
+  g.fillText(text, 128, 36);
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true }));
-  s.scale.set(1.6, 0.6, 1);
+  s.scale.set(2.6, 0.74, 1);
   return s;
 }
 
@@ -18,7 +18,7 @@ export function createHorizonScene(canvas, { onSelect = () => {}, reduced = fals
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-  camera.position.set(0, 1.4, 11);
+  camera.position.set(0, 1.2, 9.5);
   camera.lookAt(0, 0, 0);
   scene.add(new THREE.AmbientLight(0xffffff, 0.9));
   const key = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -32,20 +32,20 @@ export function createHorizonScene(canvas, { onSelect = () => {}, reduced = fals
   function setHorizons(list) {
     group.clear();
     nodes = [];
-    const n = list.length, span = 10;
+    const n = list.length, span = 11;
     const pts = list.map((_, i) => new THREE.Vector3((i / Math.max(1, n - 1) - 0.5) * span, 0, 0));
     group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),
       new THREE.LineBasicMaterial({ color: new THREE.Color(cssVar("--text-2")) })));
     list.forEach((it, i) => {
       const col = new THREE.Color(cssVar(it.direction === "NAIK" ? "--up" : "--down"));
-      const m = new THREE.Mesh(new THREE.SphereGeometry(0.3, 24, 24),
+      const m = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32),
         new THREE.MeshStandardMaterial({ color: col, roughness: 0.35, metalness: 0.2 }));
       m.position.copy(pts[i]);
       m.userData.h = String(it.h);
       group.add(m);
       nodes.push(m);
-      const l = label(`${it.h}h`, cssVar("--text"));
-      l.position.set(pts[i].x, -0.85, 0);
+      const l = label(`${it.h} hari`, cssVar("--text"));
+      l.position.set(pts[i].x, -1.25, 0);
       group.add(l);
     });
     paint();
@@ -54,7 +54,7 @@ export function createHorizonScene(canvas, { onSelect = () => {}, reduced = fals
   function paint() {
     nodes.forEach((m) => {
       const on = m.userData.h === selected;
-      m.scale.setScalar(on ? 1.8 : 1);
+      m.scale.setScalar(on ? 1.5 : 1);
       m.material.emissive.set(on ? cssVar("--gold") : "#000000");
       m.material.emissiveIntensity = on ? 0.6 : 0;
     });

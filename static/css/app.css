@@ -39,7 +39,7 @@ td.up{color:var(--up)} td.down{color:var(--down)}
 .tab,.range{font:inherit;font-family:var(--mono);background:transparent;color:var(--text-2);border:1px solid var(--line);border-radius:10px;padding:6px 12px;cursor:pointer}
 .tab:hover,.range:hover{color:var(--text)}
 .tab[aria-selected="true"],.range[aria-pressed="true"]{background:var(--gold);color:var(--on-gold);border-color:var(--gold);font-weight:600}
-#horizon-canvas{display:block;width:100%;height:180px;margin:6px 0}
+#horizon-canvas{display:block;width:100%;height:230px;margin:6px 0}
 .panel{padding-top:4px}
 .dir-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .arrow{font-size:1.8rem}
@@ -82,7 +82,45 @@ body.no-webgl #hero-canvas,body.no-webgl #horizon-canvas,body.no-webgl #bars3d-c
   .topbar{gap:6px;padding:12px 12px}
   .brand{font-size:.95rem}
   .topbar nav{gap:0}
-  .topbar nav a{padding:8px 7px;font-size:.88rem}
+  .topbar nav a{padding:8px 5px;font-size:.8rem}
   .icon-btn{width:36px;height:36px;flex:none}
   th,td{padding:7px 6px;font-size:.82rem}
 }
+
+/* judul riwayat: keterangan pada baris sendiri */
+#hist-h{display:block;margin-top:4px;font-size:.85rem}
+
+/* navigasi 5 tautan: baris kedua di layar sempit */
+@media (max-width:760px){
+  .topbar{flex-wrap:wrap}
+  .brand{order:1}
+  .icon-btn{order:2;margin-left:auto}
+  .topbar nav{order:3;width:100%;margin-left:0;overflow-x:auto;scrollbar-width:none}
+  .topbar nav a{white-space:nowrap}
+}
+
+/* splash */
+html.no-splash #splash{display:none}
+#splash{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:center;text-align:center;transition:opacity .45s ease}
+#splash[hidden]{display:none}
+#splash.leaving{opacity:0;pointer-events:none}
+#splash-canvas{position:absolute;inset:0;width:100%;height:100%}
+.splash-inner{position:relative;z-index:1;padding:0 20px;animation:splash-in 1.2s .5s both ease-out}
+.splash-title{margin:0;font-size:clamp(2.2rem,9vw,4.4rem);letter-spacing:-.02em;color:var(--gold);font-weight:700}
+.splash-tag{margin:8px 0 22px;color:var(--text-2)}
+.splash-btn{font:inherit;font-family:var(--mono);background:var(--gold);color:var(--on-gold);border:0;border-radius:12px;padding:10px 22px;cursor:pointer;font-weight:600}
+.splash-hint{margin:14px 0 0;color:var(--text-2);font-size:.8rem}
+@keyframes splash-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+body.no-webgl #splash-canvas{display:none}
+main:focus{outline:none}
+
+/* halaman teks */
+.prose h3{margin:18px 0 6px;font-size:1rem}
+.prose ol.rq{padding-left:1.2rem}
+.prose ol.rq>li{margin:0 0 16px}
+.answer{margin:6px 0 0;padding:10px 12px;border-left:3px solid var(--gold);background:color-mix(in srgb,var(--gold) 7%,transparent);border-radius:0 10px 10px 0;color:var(--text)}
+.answer b{color:var(--gold)}
+dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;margin:0}
+dl.facts dt{color:var(--text-2)}
+dl.facts dd{margin:0}
+@media (max-width:560px){dl.facts{grid-template-columns:1fr;gap:2px}dl.facts dd{margin-bottom:10px}}
