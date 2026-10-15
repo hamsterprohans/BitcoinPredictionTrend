@@ -76,3 +76,17 @@ def frame_to_columns(df: pd.DataFrame) -> dict:
             s = df[c].astype(float).round(4)
             out[c] = [None if np.isnan(x) else float(x) for x in s]
     return out
+
+
+def _news_path(live_dir) -> Path:
+    return Path(live_dir) / "news_log.json"
+
+
+def append_news(live_dir, day: date, titles: list, scores) -> None:
+    log = read_json(_news_path(live_dir), {})
+    log[day.isoformat()] = {"titles": list(titles), "scores": scores}
+    atomic_write_json(_news_path(live_dir), log)
+
+
+def read_news_entry(live_dir, day: date):
+    return read_json(_news_path(live_dir), {}).get(day.isoformat())

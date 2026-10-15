@@ -16,7 +16,7 @@ import pandas as pd
 from . import config
 from .sources import SourceError
 from .features import TECH_FEATURES, assemble_frame, chart_frame, compute_features
-from .store import (append_sentiment, atomic_write_json, evaluate_history, frame_to_columns,
+from .store import (append_news, append_sentiment, atomic_write_json, evaluate_history, frame_to_columns,
                     load_sentiment_log, read_json, upsert_history)
 
 
@@ -30,6 +30,8 @@ class Deps:
     score: Callable[[list], Optional[float]]
     predictor: Any
     now: Callable[[], datetime]
+    score_detail: Optional[Callable[[list], Optional[dict]]] = None
+    explainer: Optional[Callable[[dict], Optional[dict]]] = None
 
 
 def patient(fetch, cooldown: int = 900, max_waits: int = 48, sleep=time.sleep):
@@ -63,15 +65,21 @@ def refresh_prices(prices: pd.DataFrame, fetch, today: date) -> pd.DataFrame:
     return prices.sort_values("date").reset_index(drop=True)
 
 
-def ensure_sentiment(live_dir: Path, days: list, fetch_headlines, score) -> pd.DataFrame:
+def ensure_sentiment(live_dir: Path, days: list, fetch_headlines, score, score_detail=None) -> pd.DataFrame:
     log = load_sentiment_log(live_dir)
     for day in days:
         ts = pd.Timestamp(day)
         if ts in log.index:
             continue
         heads = fetch_headlines(day)
-        raw = score(heads) if heads else None
+        detail = score_detail(heads) if (score_detail and heads) else None
+        if detail is not None:
+            raw = detail["mean"]
+        else:
+            raw = score(heads) if heads else None
         append_sentiment(live_dir, day, raw, len(heads))
+        if heads:
+            append_news(live_dir, day, heads[:5], detail)
         log.loc[ts, "raw"] = np.nan if raw is None else raw
         log.loc[ts, "count"] = len(heads)
     return log.sort_index()
@@ -108,7 +116,7 @@ def run_daily(deps: Deps, force: bool = False):
     first = window_days[0] - timedelta(days=2)  # 2 hari sebelum window, untuk ffill(limit=2)
     days = [first + timedelta(days=i) for i in range((as_of - first).days + 1)]
 
-    sent = ensure_sentiment(live, days, deps.fetch_headlines, deps.score)
+    sent = ensure_sentiment(live, days, deps.fetch_headlines, deps.score, deps.score_detail)
     fg = deps.fetch_fear_greed()
     frame = assemble_frame(feats, sent["raw"], fg)
     frame = frame[frame["date"] <= pd.Timestamp(as_of)]

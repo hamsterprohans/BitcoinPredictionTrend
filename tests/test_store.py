@@ -55,3 +55,13 @@ def test_frame_to_columns_nan_to_null_and_json_safe():
     cols = frame_to_columns(df)
     assert cols == {"date": ["2026-10-01", "2026-10-02"], "x": [1.2346, None]}
     json.dumps(cols)
+
+
+def test_news_log_roundtrip(tmp_path):
+    from app.store import append_news, read_news_entry
+    scores = {"pemahaman": 1, "detail": 2, "bullbear": 3, "mean": 2.0}
+    append_news(tmp_path, date(2026, 10, 14), ["a", "b"], scores)
+    append_news(tmp_path, date(2026, 10, 13), ["c"], None)
+    assert read_news_entry(tmp_path, date(2026, 10, 14)) == {"titles": ["a", "b"], "scores": scores}
+    assert read_news_entry(tmp_path, date(2026, 10, 13))["scores"] is None
+    assert read_news_entry(tmp_path, date(2026, 1, 1)) is None
