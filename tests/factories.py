@@ -24,7 +24,22 @@ class FakePredictor:
                 3: {"prob": 0.45, "threshold": 0.5, "direction": "TURUN"}}
 
 
-def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14), demo=False):
+def _explain_block():
+    from app.explain import build_facts, feature_rows, rank_contributions, template_narrative
+    from app.inference import FEATURE_ORDER
+    stats = {"quantiles": {f: np.round(np.linspace(0, 10, 101), 6).tolist() for f in FEATURE_ORDER}}
+    deltas = np.linspace(-3, 3, 13)
+    feats, contrib = feature_rows({f: 5.0 for f in FEATURE_ORDER}, stats), rank_contributions(deltas)
+    rec = {"date": "2026-10-14", "target_date": "2026-10-15", "prob": 0.52, "threshold": 0.4557, "level": "tinggi",
+           "features": feats, "contributions": contrib}
+    return {"headlines": [{"title": f"Judul berita {i}"} for i in range(3)],
+            "sentiment": {"has_news": True, "scores": {"pemahaman": 3, "detail": 2, "bullbear": 1, "mean": 2.0}, "used": 1.67},
+            "contributions": contrib, "features": feats, "level": "tinggi",
+            "narrative": {"text": template_narrative(build_facts(rec, auc=0.52)), "source": "llm",
+                          "attempts": 1, "temperature": 0.1}}
+
+
+def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14), demo=False, explain=True):
     """Isi live_dir dan content_dir dengan data sintetis yang bentuknya sama dengan keluaran job."""
     prices = synthetic_prices(as_of)
     prices.to_csv(live_dir / "prices.csv", index=False)
@@ -32,6 +47,7 @@ def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14), demo=False):
     atomic_write_json(live_dir / "chart.json", frame_to_columns(chart_frame(feats)))
     atomic_write_json(live_dir / "latest.json", {
         **({"demo": True} if demo else {}),
+        **({"explain": _explain_block()} if explain else {}),
         "as_of": as_of.isoformat(), "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "close": round(float(prices.close.iloc[-1]), 2), "change_pct": -1.33,
         "inputs": {"news_sentiment": 1.67, "news_sentiment_raw": 2.0, "headline_count": 5, "fear_greed_index": 63.0},

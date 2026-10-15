@@ -17,7 +17,7 @@ from . import config
 from .sources import SourceError
 from .features import TECH_FEATURES, assemble_frame, chart_frame, compute_features
 from .store import (append_news, append_sentiment, atomic_write_json, evaluate_history, frame_to_columns,
-                    load_sentiment_log, read_json, upsert_history)
+                    load_sentiment_log, read_json, read_news_entry, upsert_history)
 
 
 @dataclass
@@ -140,6 +140,14 @@ def run_daily(deps: Deps, force: bool = False):
         "horizons": {str(h): {**v, "target_date": (as_of + timedelta(days=h)).isoformat()}
                      for h, v in preds.items()},
     }
+    if deps.explainer is not None:
+        try:
+            explained = deps.explainer({"frame": frame, "preds": preds, "as_of": as_of.isoformat(),
+                                        "news": read_news_entry(live, as_of)})
+            if explained is not None:
+                latest["explain"] = explained
+        except Exception as e:  # noqa: BLE001 - penjelasan opsional; prediksi harian tidak boleh gagal karenanya
+            print(f"[explain] dilewati: {e}", flush=True)
     entry = {"date": as_of.isoformat(), "close": round(close, 2),
              "horizons": {str(h): {k: v[k] for k in ("prob", "direction", "threshold")}
                           for h, v in preds.items()}}
@@ -171,14 +179,24 @@ def make_real_deps(patient_mode: bool = False, prices_only: bool = False) -> Dep
         raise RuntimeError("ANTHROPIC_API_KEY belum diset (environment variable atau .env)")
     http = httpx.Client(timeout=30, follow_redirects=True)
     llm = anthropic.Anthropic(api_key=key)
+    from . import explain
+    from .sentiment import daily_sentiment_detail
+    pred = Predictor.from_artifacts()
+    retro = config.CONTENT_DIR / "retro"
+    stats, series = read_json(retro / "train_stats.json"), read_json(retro / "series.json")
+    explainer = None
+    if stats:
+        explainer = lambda ctx: explain.build_live_explain(  # noqa: E731
+            predictor=pred, frame=ctx["frame"], pred=ctx["preds"][1], news=ctx["news"], as_of=ctx["as_of"],
+            stats=stats, series=series, client=llm)
     return Deps(
         live_dir=config.LIVE_DIR, seed_tsv=config.SEED_PRICE_TSV,
         fetch_prices=lambda start: sources.fetch_prices(http, start),
         fetch_fear_greed=lambda: sources.fetch_fear_greed(http, limit=60),
         fetch_headlines=(patient if patient_mode else (lambda f: f))(lambda day: sources.fetch_headlines(http, day)),
         score=lambda heads: daily_sentiment(llm, heads),
-        predictor=Predictor.from_artifacts(),
-        now=lambda: datetime.now(timezone.utc),
+        predictor=pred, now=lambda: datetime.now(timezone.utc),
+        score_detail=lambda heads: daily_sentiment_detail(llm, heads), explainer=explainer,
     )
 
 

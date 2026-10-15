@@ -99,6 +99,11 @@ def create_app(live_dir=config.LIVE_DIR, content_dir=config.CONTENT_DIR,
 
     retro_dir = content_dir / "retro"
 
+    @app.get("/api/retro/status")
+    def retro_status():
+        d = read_json(retro_dir / "series.json")
+        return {"built": d is not None, "n": None if d is None else d["n"]}
+
     @app.get("/api/retro/series")
     def retro_series():
         d = read_json(retro_dir / "series.json")

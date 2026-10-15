@@ -1,6 +1,7 @@
 import { $, fmtDate, fmtDateShort, fmtNum, fmtPct, fmtUSD, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion } from "./common.js";
 import { createCharts } from "./chart.js";
 import { initSplash } from "./splash.js";
+import { renderContrib, renderNarrative, renderNews, renderReliability } from "./panels.js";
 
 initTheme();
 markCapabilities();
@@ -207,6 +208,25 @@ async function start3D() {
   }
 }
 
+async function renderExplain() {
+  const ex = state.latest?.explain;
+  if (!ex) return;
+  $("#sec-explain").hidden = false;
+  renderNews($("#live-news"), ex.headlines, ex.sentiment);
+  renderContrib($("#live-contrib"), ex.contributions);
+  renderNarrative($("#live-narrative"), ex.narrative);
+  try {
+    if (!(await getJSON("/api/retro/status")).built) throw new Error("belum dibangun");
+    const series = await getJSON("/api/retro/series");
+    renderReliability($("#live-reliability"), series.reliability, series);
+  } catch {
+    const p = document.createElement("p");
+    p.className = "muted";
+    p.textContent = "Keandalan historis belum tersedia: jalankan python -m scripts.build_retro.";
+    $("#live-reliability").replaceChildren(p);
+  }
+}
+
 async function main() {
   try {
     state.latest = await getJSON("/api/prediction/latest");
@@ -224,6 +244,7 @@ async function main() {
   renderHeader(state.latest);
   buildTabs();
   select(state.selected);
+  renderExplain();
 
   try {
     state.history = await getJSON("/api/prediction/history");

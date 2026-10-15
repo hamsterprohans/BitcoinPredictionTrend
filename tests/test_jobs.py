@@ -147,3 +147,32 @@ def test_score_detail_logs_titles_and_prompt_scores(tmp_path):
     assert e["titles"] == ["t0", "t1", "t2", "t3", "t4"] and e["scores"]["mean"] == 2.0   # hanya 5 judul pertama
     assert calls["score"] == []                                                           # score tidak dipanggil bila score_detail ada
     assert latest["inputs"]["news_sentiment_raw"] == 2.0
+
+
+def test_explainer_result_is_stored_with_context(tmp_path):
+    deps, _ = make_deps(tmp_path)
+    deps.score_detail = lambda h: {"pemahaman": 1, "detail": 1, "bullbear": 1, "mean": 1.0}
+    seen = {}
+
+    def explainer(ctx):
+        seen.update(ctx)
+        return {"narrative": None, "contributions": []}
+
+    deps.explainer = explainer
+    latest = run_daily(deps)
+    assert latest["explain"] == {"narrative": None, "contributions": []}
+    assert seen["as_of"] == "2026-10-14" and 1 in seen["preds"] and "frame" in seen
+    assert seen["news"]["titles"] and seen["news"]["scores"]["mean"] == 1.0
+    assert read_json(deps.live_dir / "latest.json")["explain"] == latest["explain"]
+
+
+def test_explainer_failure_never_blocks_the_prediction(tmp_path):
+    deps, _ = make_deps(tmp_path)
+
+    def boom(ctx):
+        raise RuntimeError("llm mati")
+
+    deps.explainer = boom
+    latest = run_daily(deps)
+    assert "explain" not in latest and latest["as_of"] == "2026-10-14"
+    assert read_json(deps.live_dir / "latest.json")["as_of"] == "2026-10-14"           # prediksi tetap tertulis

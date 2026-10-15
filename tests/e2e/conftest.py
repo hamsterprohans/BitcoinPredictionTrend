@@ -40,7 +40,7 @@ def make_server(tmp_path_factory):
         if chart_only:
             seed_prices_only(live)
         elif seed:
-            seed_live_dir(live, content, demo=demo)
+            seed_live_dir(live, content, demo=demo, explain=explain)
         if retro:
             seed_retro(content)
         def fetch_live():                       # tes tidak boleh menyentuh jaringan
