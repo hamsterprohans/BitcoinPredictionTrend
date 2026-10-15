@@ -139,3 +139,25 @@ body.no-webgl #splash-canvas{display:none}
 @keyframes live-blink{50%{opacity:.55}}
 
 .banner.demo{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent);color:var(--gold);font-weight:600}
+
+/* retrospektif dan panel penjelasan */
+.banner.retro{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent);color:var(--gold);font-weight:600}
+.day-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.day-controls input[type=range]{flex:1 1 220px;accent-color:var(--gold)}
+.day-controls input[type=date]{font:inherit;font-family:var(--mono);background:var(--surface-2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:6px 8px}
+.day-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px;margin-top:14px}
+.day-summary dt{color:var(--text-2);font-size:.8rem}
+.day-summary dd{margin:2px 0 0;font-size:1.05rem}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px}
+.news-list{margin:0 0 10px;padding-left:1.1rem}
+.news-list li{margin:4px 0}
+.dv{position:relative;height:10px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.dv>span{position:absolute;top:0;height:100%}
+.dv>span.pos{left:50%;background:var(--up)}
+.dv>span.neg{right:50%;background:var(--down)}
+.dv::after{content:"";position:absolute;left:50%;top:0;width:1px;height:100%;background:var(--text-2)}
+.narr{margin:0;padding:12px 14px;border-left:3px solid var(--gold);background:color-mix(in srgb,var(--gold) 7%,transparent);border-radius:0 10px 10px 0}
+.small{font-size:.82rem}
+.chart.mid{height:240px}
+
+.wide{grid-column:1/-1}

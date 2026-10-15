@@ -8,7 +8,7 @@ import uvicorn
 
 from app import config
 from app.main import create_app
-from tests.factories import seed_live_dir, seed_prices_only
+from tests.factories import seed_live_dir, seed_prices_only, seed_retro
 
 BASE_NOW = datetime(2026, 10, 15, 3, 0, tzinfo=timezone.utc)
 
@@ -32,7 +32,7 @@ def _serve(app):
 def make_server(tmp_path_factory):
     started = []
 
-    def _make(now, seed=True, chart_only=False, live_price=None, demo=False):
+    def _make(now, seed=True, chart_only=False, live_price=None, demo=False, retro=False, explain=True):
         base = tmp_path_factory.mktemp("e2e")
         live, content = base / "live", base / "content"
         live.mkdir()
@@ -41,6 +41,8 @@ def make_server(tmp_path_factory):
             seed_prices_only(live)
         elif seed:
             seed_live_dir(live, content, demo=demo)
+        if retro:
+            seed_retro(content)
         def fetch_live():                       # tes tidak boleh menyentuh jaringan
             if live_price is None:
                 raise RuntimeError("harga live tidak tersedia")
