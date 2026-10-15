@@ -124,3 +124,15 @@ def test_patient_fetch_gives_up_after_max_waits():
 
     with pytest.raises(SourceError):
         patient(always, cooldown=1, max_waits=2, sleep=lambda s: None)(date(2026, 9, 26))
+
+
+def test_prices_only_writes_chart_without_prediction_or_keys(tmp_path):
+    from app.jobs import run_prices_only
+    deps, calls = make_deps(tmp_path)
+    as_of = run_prices_only(deps)
+    assert as_of == date(2026, 10, 14)                                   # 15 Okt (hari berjalan) dibuang
+    chart = read_json(deps.live_dir / "chart.json")
+    assert chart["date"][-1] == "2026-10-14" and "BB_up" in chart
+    assert not (deps.live_dir / "latest.json").exists()
+    assert not (deps.live_dir / "sentiment_log.csv").exists()
+    assert calls["score"] == [] and calls["headlines"] == [] and deps.predictor.frames == []

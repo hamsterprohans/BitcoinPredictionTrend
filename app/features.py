@@ -64,3 +64,15 @@ def assemble_frame(feats: pd.DataFrame, sent_raw: pd.Series, fg: pd.DataFrame) -
     df["fear_greed_index"] = df["date"].map(g)
     df["fear_greed_index_scaled"] = df["fear_greed_index"] / 100.0
     return df
+
+
+def resample_prices(prices: pd.DataFrame, interval: str) -> pd.DataFrame:
+    """Agregasi harga harian ke mingguan (W) atau bulanan (M). Bar diberi tanggal hari terakhir yang ada pada periodenya."""
+    rule = {"W": "W-SUN", "M": "ME"}.get(interval)
+    if rule is None:
+        raise ValueError(f"interval harus 'W' atau 'M', bukan {interval!r}")
+    df = prices[["date", "close"]].copy()
+    df["date"] = pd.to_datetime(df["date"])
+    g = df.sort_values("date").groupby(pd.Grouper(key="date", freq=rule))
+    out = pd.DataFrame({"date": g["date"].max(), "close": g["close"].last()}).dropna()
+    return out.reset_index(drop=True)

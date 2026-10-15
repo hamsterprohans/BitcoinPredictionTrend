@@ -27,6 +27,7 @@ class FakePredictor:
 def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14)):
     """Isi live_dir dan content_dir dengan data sintetis yang bentuknya sama dengan keluaran job."""
     prices = synthetic_prices(as_of)
+    prices.to_csv(live_dir / "prices.csv", index=False)
     feats = compute_features(prices)
     atomic_write_json(live_dir / "chart.json", frame_to_columns(chart_frame(feats)))
     atomic_write_json(live_dir / "latest.json", {
@@ -72,3 +73,10 @@ def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14)):
         "wilcoxon": [{"a": "C", "b": "F", "statistic": 5.0, "p": 0.625, "verdict": "tidak signifikan",
                       "mean_a": 0.4658, "mean_b": 0.4455}]})
     return feats
+
+
+def seed_prices_only(live_dir, as_of=date(2026, 10, 14)):
+    """Seperti keluaran `jobs --prices-only`: prices.csv + chart.json, tanpa latest.json."""
+    prices = synthetic_prices(as_of)
+    prices.to_csv(live_dir / "prices.csv", index=False)
+    atomic_write_json(live_dir / "chart.json", frame_to_columns(chart_frame(compute_features(prices))))

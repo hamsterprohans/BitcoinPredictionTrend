@@ -99,19 +99,6 @@ body.no-webgl #hero-canvas,body.no-webgl #horizon-canvas,body.no-webgl #bars3d-c
   .topbar nav a{white-space:nowrap}
 }
 
-/* splash */
-html.no-splash #splash{display:none}
-#splash{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:center;text-align:center;transition:opacity .45s ease}
-#splash[hidden]{display:none}
-#splash.leaving{opacity:0;pointer-events:none}
-#splash-canvas{position:absolute;inset:0;width:100%;height:100%}
-.splash-inner{position:relative;z-index:1;padding:0 20px;animation:splash-in 1.2s .5s both ease-out}
-.splash-title{margin:0;font-size:clamp(2.2rem,9vw,4.4rem);letter-spacing:-.02em;color:var(--gold);font-weight:700}
-.splash-tag{margin:8px 0 22px;color:var(--text-2)}
-.splash-btn{font:inherit;font-family:var(--mono);background:var(--gold);color:var(--on-gold);border:0;border-radius:12px;padding:10px 22px;cursor:pointer;font-weight:600}
-.splash-hint{margin:14px 0 0;color:var(--text-2);font-size:.8rem}
-@keyframes splash-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-body.no-webgl #splash-canvas{display:none}
 main:focus{outline:none}
 
 /* halaman teks */
@@ -124,3 +111,25 @@ dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;margin:
 dl.facts dt{color:var(--text-2)}
 dl.facts dd{margin:0}
 @media (max-width:560px){dl.facts{grid-template-columns:1fr;gap:2px}dl.facts dd{margin-bottom:10px}}
+
+/* splash: simbol ₿ dari partikel, menunggu konfirmasi pengguna */
+html.no-splash #splash{display:none}
+#splash{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:end center;padding-bottom:7vh;text-align:center;transition:opacity .45s ease}
+#splash[hidden]{display:none}
+#splash.leaving{opacity:0;pointer-events:none}
+#splash-canvas{position:absolute;inset:0;width:100%;height:100%}
+.splash-inner{position:relative;z-index:1;padding:0 20px;max-width:680px;animation:splash-in 1s .6s both ease-out}
+.splash-title{margin:0;font-size:clamp(1.8rem,6vw,3rem);letter-spacing:-.02em;color:var(--gold);font-weight:700}
+.splash-tag{margin:8px 0 22px;color:var(--text-2)}
+.splash-btn{font:inherit;font-family:var(--mono);background:var(--gold);color:var(--on-gold);border:0;border-radius:14px;padding:13px 26px;cursor:pointer;font-weight:600;font-size:1rem;box-shadow:0 0 0 0 color-mix(in srgb,var(--gold) 45%,transparent);animation:splash-pulse 2.4s 2s infinite}
+.splash-btn:hover{filter:brightness(1.08)}
+.splash-hint{margin:14px 0 0;color:var(--text-2);font-size:.8rem}
+#splash-fallback-mark{display:none;color:var(--gold);margin:0 auto 12px}
+body.no-webgl #splash-fallback-mark{display:block}
+body.no-webgl #splash-canvas{display:none}
+@keyframes splash-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes splash-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--gold) 45%,transparent)}70%,100%{box-shadow:0 0 0 14px transparent}}
+
+/* kontrol grafik */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tf{margin:2px 0 0;font-size:.8rem}

@@ -4,55 +4,69 @@ from tests.e2e.conftest import collect_errors
 
 pytestmark = pytest.mark.e2e
 
+NO_WEBGL = """
+const o = HTMLCanvasElement.prototype.getContext;
+HTMLCanvasElement.prototype.getContext = function (t, ...a) { return /webgl/i.test(t) ? null : o.call(this, t, ...a); };
+"""
+
 
 def _fresh(browser, **kw):
     ctx = browser.new_context(**kw)              # konteks baru: sessionStorage kosong, tanpa penanda "sudah dilihat"
     return ctx, ctx.new_page()
 
 
-def test_splash_shows_then_escape_skips_and_is_remembered(browser, server):
+def test_splash_waits_for_user_and_button_enters(browser, server):
     ctx, page = _fresh(browser)
     errs = collect_errors(page)
     page.goto(server + "/")
     page.wait_for_selector("#splash:not([hidden])")
-    assert "Bitcoin Trend" in page.inner_text("#splash")
-    page.keyboard.press("Escape")
+    assert page.inner_text("#splash-enter") == "Lanjutkan ke Dashboard Prediksi"
+    page.wait_for_timeout(4500)                                          # tidak boleh tertutup sendiri
+    assert page.is_visible("#splash")
+    page.click("#splash", position={"x": 20, "y": 20})                   # klik di area kosong tidak melanjutkan
+    page.wait_for_timeout(700)
+    assert page.is_visible("#splash")
+    page.click("#splash-enter")
     page.wait_for_selector("#splash", state="hidden", timeout=3000)
     assert page.evaluate("sessionStorage.getItem('splash-seen')") == "1"
-    page.wait_for_selector("#prediction-direction:not(:text('—'))")   # data tetap dimuat di belakang splash
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")      # data dimuat di belakang splash
     page.reload()
-    assert page.is_hidden("#splash")                                   # tidak muncul lagi pada sesi yang sama
+    assert page.is_hidden("#splash")                                     # tidak muncul lagi pada sesi yang sama
     assert errs == []
     ctx.close()
 
 
-def test_splash_auto_dismisses(browser, server):
+def test_splash_enter_and_escape_keys_are_explicit_confirmation(browser, server):
+    for key in ("Enter", "Escape"):
+        ctx, page = _fresh(browser)
+        page.goto(server + "/")
+        page.wait_for_selector("#splash:not([hidden])")
+        assert page.evaluate("document.activeElement.id") == "splash-enter"   # fokus awal di tombol
+        page.keyboard.press(key)
+        page.wait_for_selector("#splash", state="hidden", timeout=3000)
+        ctx.close()
+
+
+def test_splash_draws_bitcoin_symbol_particles(browser, server):
     ctx, page = _fresh(browser)
     page.goto(server + "/")
     page.wait_for_selector("#splash:not([hidden])")
-    page.wait_for_selector("#splash", state="hidden", timeout=8000)
+    page.wait_for_function("document.getElementById('splash').dataset.mark === 'bitcoin'", timeout=5000)
     ctx.close()
 
 
-def test_splash_enter_button(browser, server):
-    ctx, page = _fresh(browser)
-    page.goto(server + "/")
-    page.click("#splash-enter")
-    page.wait_for_selector("#splash", state="hidden", timeout=3000)
-    ctx.close()
-
-
-def test_splash_without_webgl_and_reduced_motion_no_errors(browser, server):
+def test_splash_without_webgl_and_reduced_motion_still_waits_and_shows_symbol(browser, server):
     ctx, page = _fresh(browser, reduced_motion="reduce")
-    page.add_init_script("""
-      const o = HTMLCanvasElement.prototype.getContext;
-      HTMLCanvasElement.prototype.getContext = function (t, ...a) { return /webgl/i.test(t) ? null : o.call(this, t, ...a); };
-    """)
+    page.add_init_script(NO_WEBGL)
     errs = collect_errors(page)
     page.goto(server + "/")
     page.wait_for_selector("#splash:not([hidden])")
-    assert "Bitcoin Trend" in page.inner_text("#splash")               # judul tetap terbaca tanpa WebGL
-    page.wait_for_selector("#splash", state="hidden", timeout=8000)
+    assert "Bitcoin Trend" in page.inner_text("#splash")
+    assert page.is_visible("#splash-fallback-mark")                      # simbol ₿ statis tanpa WebGL
+    page.wait_for_timeout(2500)
+    assert page.is_visible("#splash")                                    # tetap menunggu pengguna
+    page.click("#splash-enter")
+    page.wait_for_selector("#splash", state="hidden", timeout=3000)
     assert errs == []
     ctx.close()
 

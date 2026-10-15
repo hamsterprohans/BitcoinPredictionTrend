@@ -19,3 +19,15 @@ def test_tokens_declare_geist_and_palette():
     assert '"Geist"' in css and '"Geist Mono"' in css
     for token in ("--bg:#0d0c0a", "--gold:#e6c068", "--up:#35c08a", "--down:#ef6a5e"):
         assert token in css.replace(" ", ""), token
+
+
+def test_css_braces_balanced_and_no_orphan_keyframe_steps():
+    import re
+    for name in ("app.css", "tokens.css"):
+        css = (S / "css" / name).read_text()
+        assert css.count("{") == css.count("}"), name
+        assert not re.search(r"^(from|to|\d+%)\s*\{", css, re.M), name   # langkah keyframes harus di dalam @keyframes
+
+
+def test_main_focus_ring_removed_rule_present():
+    assert "main:focus{outline:none}" in (S / "css" / "app.css").read_text().replace(" ", "")

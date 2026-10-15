@@ -4,6 +4,7 @@ import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.gzip import GZipMiddleware
@@ -11,7 +12,10 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import config
-from .store import read_json
+import pandas as pd
+
+from .features import chart_frame, compute_features, resample_prices
+from .store import frame_to_columns, read_json
 
 NAME_RE = re.compile(r"^[a-z0-9_]+$")
 
@@ -50,11 +54,17 @@ def create_app(live_dir=config.LIVE_DIR, content_dir=config.CONTENT_DIR,
         return read_json(live_dir / "history.json", [])
 
     @app.get("/api/prices")
-    def prices():
-        d = read_json(live_dir / "chart.json")
-        if d is None:
+    def prices(interval: Literal["D", "W", "M"] = "D"):
+        if interval == "D":
+            d = read_json(live_dir / "chart.json")
+            if d is None:
+                raise HTTPException(404, "Data harga belum tersedia")
+            return d
+        csv = live_dir / "prices.csv"
+        if not csv.exists():
             raise HTTPException(404, "Data harga belum tersedia")
-        return d
+        agg = resample_prices(pd.read_csv(csv, parse_dates=["date"]), interval)
+        return frame_to_columns(chart_frame(compute_features(agg)))
 
     @app.get("/api/research/{name}")
     def research(name: str):

@@ -49,3 +49,29 @@ def test_missing_data_shows_banner_not_blank_page(page, make_server):
     page.goto(url + "/")
     page.wait_for_selector("#banner:not([hidden])")
     assert "belum tersedia" in page.inner_text("#banner").lower()
+
+
+def test_interval_selector_default_daily_and_switch_to_weekly(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#intervals button")
+    assert page.locator("#intervals button").all_inner_texts() == ["D", "W", "M"]
+    assert page.get_attribute("#intervals button:has-text('D')", "aria-pressed") == "true"
+    assert "Harian" in page.inner_text("#tf-label")
+    with page.expect_response(lambda r: "/api/prices" in r.url and "interval=W" in r.url) as resp:
+        page.click("#intervals button:has-text('W')")
+    assert resp.value.ok
+    assert page.get_attribute("#intervals button:has-text('W')", "aria-pressed") == "true"
+    assert "Mingguan" in page.inner_text("#tf-label")
+
+
+def test_without_prediction_still_shows_real_chart_and_last_close(page, make_server):
+    url = make_server(BASE_NOW, chart_only=True)
+    errs = collect_errors(page)
+    page.goto(url + "/")
+    page.wait_for_selector("#banner:not([hidden])")
+    page.wait_for_selector("#chart-price canvas")
+    assert page.inner_text("#price").startswith("$")                    # harga terakhir dari data harga
+    assert "Penutupan" in page.inner_text("#asof")
+    assert page.is_hidden("#sec-pred") and page.is_hidden("#sec-hist")  # tidak ada kartu prediksi kosong
+    assert "belum tersedia" in page.inner_text("#banner").lower()
+    assert [e for e in errs if "404" not in e] == []                    # 404 /api/prediction/latest memang disengaja

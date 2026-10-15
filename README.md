@@ -15,6 +15,8 @@ echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env           # tidak ikut git
 python -m app.jobs --patient                           # job pertama: mengisi sentimen 22 hari; --patient menunggu bila GDELT memblokir (429)
 uvicorn app.main:app --port 8000                       # buka http://127.0.0.1:8000
 ```
+Hanya ingin melihat harga dan grafik asli (tanpa model, tanpa API key): `python -m app.jobs --prices-only`.
+
 Penjadwalan: `RUN_SCHEDULER=1` menjalankan job tiap hari 00.30 UTC di dalam proses web; alternatifnya cron:
 `30 0 * * * cd /path/webapp && .venv/bin/python -m app.jobs`.
 

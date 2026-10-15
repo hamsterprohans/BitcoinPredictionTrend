@@ -77,6 +77,17 @@ def ensure_sentiment(live_dir: Path, days: list, fetch_headlines, score) -> pd.D
     return log.sort_index()
 
 
+def run_prices_only(deps: Deps):
+    """Perbarui hanya harga dan data grafik (tanpa sentimen, model, atau API key). Mengembalikan tanggal terakhir."""
+    live = deps.live_dir
+    live.mkdir(parents=True, exist_ok=True)
+    today = deps.now().astimezone(timezone.utc).date()
+    prices = refresh_prices(load_prices(live, deps.seed_tsv), deps.fetch_prices, today)
+    prices.to_csv(live / "prices.csv", index=False)
+    atomic_write_json(live / "chart.json", frame_to_columns(chart_frame(compute_features(prices))))
+    return prices["date"].max().date()
+
+
 def run_daily(deps: Deps, force: bool = False):
     live = deps.live_dir
     live.mkdir(parents=True, exist_ok=True)
@@ -133,7 +144,7 @@ def run_daily(deps: Deps, force: bool = False):
     return latest
 
 
-def make_real_deps(patient_mode: bool = False) -> Deps:
+def make_real_deps(patient_mode: bool = False, prices_only: bool = False) -> Deps:
     import anthropic
     import httpx
 
@@ -141,6 +152,12 @@ def make_real_deps(patient_mode: bool = False) -> Deps:
     from .inference import Predictor
     from .sentiment import daily_sentiment
 
+    if prices_only:  # hanya perlu sumber harga: tanpa API key, tanpa model
+        http = httpx.Client(timeout=30, follow_redirects=True)
+        return Deps(live_dir=config.LIVE_DIR, seed_tsv=config.SEED_PRICE_TSV,
+                    fetch_prices=lambda start: sources.fetch_prices(http, start),
+                    fetch_fear_greed=None, fetch_headlines=None, score=None, predictor=None,
+                    now=lambda: datetime.now(timezone.utc))
     key = os.environ.get("ANTHROPIC_API_KEY")
     if not key:
         raise RuntimeError("ANTHROPIC_API_KEY belum diset (environment variable atau .env)")
@@ -173,7 +190,12 @@ if __name__ == "__main__":
     ap.add_argument("--force", action="store_true", help="hitung ulang walau sudah mutakhir")
     ap.add_argument("--patient", action="store_true",
                     help="bila GDELT memblokir (429), tunggu 15 menit lalu ulangi hari yang sama (untuk backfill pertama)")
+    ap.add_argument("--prices-only", action="store_true",
+                    help="hanya perbarui harga dan grafik (tanpa API key atau model)")
     args = ap.parse_args()
+    if args.prices_only:
+        print("harga terakhir:", run_prices_only(make_real_deps(prices_only=True)))
+        raise SystemExit(0)
     try:
         deps = make_real_deps(patient_mode=args.patient)
     except RuntimeError as e:

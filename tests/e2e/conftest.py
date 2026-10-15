@@ -8,7 +8,7 @@ import uvicorn
 
 from app import config
 from app.main import create_app
-from tests.factories import seed_live_dir
+from tests.factories import seed_live_dir, seed_prices_only
 
 BASE_NOW = datetime(2026, 10, 15, 3, 0, tzinfo=timezone.utc)
 
@@ -32,12 +32,14 @@ def _serve(app):
 def make_server(tmp_path_factory):
     started = []
 
-    def _make(now, seed=True):
+    def _make(now, seed=True, chart_only=False):
         base = tmp_path_factory.mktemp("e2e")
         live, content = base / "live", base / "content"
         live.mkdir()
         content.mkdir()
-        if seed:
+        if chart_only:
+            seed_prices_only(live)
+        elif seed:
             seed_live_dir(live, content)
         srv, t, url = _serve(create_app(live, content, config.STATIC_DIR, now=lambda: now))
         started.append((srv, t))
