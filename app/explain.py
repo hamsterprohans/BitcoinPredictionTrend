@@ -304,6 +304,16 @@ def template_narrative(f: dict) -> str:
     return " ".join(parts)
 
 
+class FatalAPIError(RuntimeError):
+    """Galat tagihan/autentikasi API: bukan kegagalan validasi narasi, jadi proses harus berhenti dengan pesan jelas."""
+
+
+def _is_fatal(e: Exception) -> bool:
+    msg = str(e).lower()
+    return (getattr(e, "status_code", None) in (401, 403) or "credit balance" in msg
+            or "invalid x-api-key" in msg or "authentication" in msg)
+
+
 def generate_narrative(client, facts: dict, retries: int = 3) -> dict:
     ftxt, feedback, temperature = facts_text(facts), "", 0.1
     for attempt in range(1, retries + 1):
@@ -313,11 +323,15 @@ def generate_narrative(client, facts: dict, retries: int = 3) -> dict:
             resp = client.messages.create(temperature=temperature, **kw) if temperature is not None \
                 else client.messages.create(**kw)
         except Exception as e:  # noqa: BLE001
+            if _is_fatal(e):
+                raise FatalAPIError(str(e)) from e
             if temperature is not None and "temperature" in str(e).lower():
                 temperature = None            # API menolak suhu: lanjut dengan suhu bawaan, statusnya dicatat
                 try:
                     resp = client.messages.create(**kw)
-                except Exception:  # noqa: BLE001
+                except Exception as e2:  # noqa: BLE001
+                    if _is_fatal(e2):
+                        raise FatalAPIError(str(e2)) from e2
                     continue
             else:
                 continue

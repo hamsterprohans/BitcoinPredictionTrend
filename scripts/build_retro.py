@@ -242,7 +242,10 @@ def main(argv=None):
         key = os.environ.get("ANTHROPIC_API_KEY")
         if not key:
             raise SystemExit("ANTHROPIC_API_KEY belum diset (environment variable atau .env)")
-        print("narasi baru:", fill_narratives(out_dir, anthropic.Anthropic(api_key=key), redo_template=args.redo_template))
+        try:
+            print("narasi baru:", fill_narratives(out_dir, anthropic.Anthropic(api_key=key), redo_template=args.redo_template))
+        except explain.FatalAPIError as e:
+            raise SystemExit(f"API Anthropic menolak permintaan: {e}\nIsi saldo atau periksa key, lalu jalankan ulang perintah yang sama (dapat dilanjutkan).")
 
 
 if __name__ == "__main__":

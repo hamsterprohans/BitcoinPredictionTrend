@@ -220,3 +220,13 @@ def test_fill_narratives_can_redo_template_fallbacks(tmp_path):
     assert fill_narratives(tmp_path, llm, redo_template=True) == len(files) - 1
     assert json.loads(files[0].read_text())["narrative"]["source"] == "llm"
     assert json.loads(files[1].read_text())["narrative"]["text"] == "l"        # narasi LLM tidak disentuh
+
+
+def test_fill_narratives_stops_on_billing_error_without_writing_templates(tmp_path):
+    from app.explain import FatalAPIError
+    write_outputs(tmp_path, outputs())
+    before = {f.name: f.read_text() for f in (tmp_path / "days").glob("*.json")}
+    with pytest.raises(FatalAPIError):
+        fill_narratives(tmp_path, FakeLLM([RuntimeError("Your credit balance is too low")]))
+    after = {f.name: f.read_text() for f in (tmp_path / "days").glob("*.json")}
+    assert after == before                                                     # tidak ada narasi template yang tertulis
