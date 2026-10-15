@@ -20,6 +20,7 @@ from .features import chart_frame, compute_features, resample_prices
 from .store import frame_to_columns, read_json
 
 NAME_RE = re.compile(r"^[a-z0-9_]+$")
+DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 LIVE_TTL = 20.0   # detik: cache harga live di server agar upstream tidak dibanjiri
@@ -96,6 +97,24 @@ def create_app(live_dir=config.LIVE_DIR, content_dir=config.CONTENT_DIR,
             live_cache.update(t=t, v=v)
             return v
 
+    retro_dir = content_dir / "retro"
+
+    @app.get("/api/retro/series")
+    def retro_series():
+        d = read_json(retro_dir / "series.json")
+        if d is None:
+            raise HTTPException(404, "Data retrospektif belum dibangun")
+        return d
+
+    @app.get("/api/retro/day/{day}")
+    def retro_day(day: str):
+        if not DAY_RE.match(day):
+            raise HTTPException(404, "Tidak ditemukan")
+        d = read_json(retro_dir / "days" / f"{day}.json")
+        if d is None:
+            raise HTTPException(404, "Tidak ditemukan")
+        return d
+
     @app.get("/api/research/{name}")
     def research(name: str):
         if not NAME_RE.match(name):
@@ -117,7 +136,8 @@ def create_app(live_dir=config.LIVE_DIR, content_dir=config.CONTENT_DIR,
             return FileResponse(f)
         return page
 
-    for route, fname in (("/", "index.html"), ("/latar-belakang", "latar-belakang.html"), ("/riset", "riset.html"),
+    for route, fname in (("/", "index.html"), ("/latar-belakang", "latar-belakang.html"), ("/retrospektif", "retrospektif.html"),
+                         ("/riset", "riset.html"),
                          ("/metodologi", "metodologi.html"), ("/tentang", "tentang.html")):
         app.get(route, include_in_schema=False)(make_page(fname))
 

@@ -114,3 +114,19 @@ def fit_scaler(inputs):
                            inputs["fg"])
     train, _, _ = split_table(table, inputs["start"], inputs["end"])
     return RobustScaler().fit(train[TECH_FEATURES + ["news_sentiment"]])
+
+
+def seed_retro(content_dir):
+    """Tulis content/retro/ dengan skema nyata (dari build_outputs + model tiruan) untuk tes API dan e2e."""
+    from pathlib import Path
+    from app.explain import build_facts, template_narrative
+    from scripts.build_retro import build_outputs, write_outputs
+    inp = synthetic_retro_inputs()
+    out = build_outputs(inp["prices"], inp["sent3"], inp["news"], inp["fg"], fit_scaler(inp), FakeRetroModel(), 0.5,
+                        start=inp["start"], end=inp["end"], allow_mismatch=True)
+    for k in list(out["days"])[:3]:
+        rec = out["days"][k]
+        rec["narrative"] = {"text": template_narrative(build_facts(rec, auc=out["series"]["auc"])),
+                            "source": "llm", "attempts": 1, "temperature": 0.1}
+    write_outputs(Path(content_dir) / "retro", out)
+    return out
