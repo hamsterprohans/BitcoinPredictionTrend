@@ -119,7 +119,8 @@ def feature_rows(values: dict, stats) -> list:
     for f in FEATURE_ORDER:
         q = np.asarray(stats["quantiles"][f], dtype=float)
         v = float(values[f])
-        pct = int(np.clip(np.searchsorted(q, v, side="right") - 1, 0, 100))
+        left, right = np.searchsorted(q, v, side="left"), np.searchsorted(q, v, side="right")
+        pct = int(np.clip(round((left + right) / 2 - 0.5), 0, 100))      # persentil tengah: gumpalan nol tidak jadi "tinggi"
         cat = "rendah" if pct < 33.3 else "tinggi" if pct > 66.7 else "sedang"
         rows.append({"feature": f, "label": FEATURE_LABELS[f], "value": v, "value_text": format_value(f, v),
                      "percentile": pct, "category": cat,
@@ -139,6 +140,7 @@ def build_facts(rec: dict, auc=None) -> dict:
             "target": rec["target_date"], "target_id": date_id(rec["target_date"]),
             "prob": _id(prob, 4), "threshold": _id(thr, 4), "margin": _id(abs(prob - thr), 4),
             "direction": "NAIK" if prob > thr else "TURUN", "level": rec.get("level"),
+            "has_news": (rec.get("sentiment") or {}).get("has_news", True),
             "auc": _id(auc, 4) if auc is not None else None, "top": top}
 
 
@@ -150,6 +152,8 @@ def facts_text(f: dict) -> str:
         lines.append(f"tingkat keyakinan: {f['level']}")
     if f["auc"]:
         lines.append(f"AUC uji historis: {f['auc']}")
+    if not f.get("has_news", True):
+        lines.append("berita hari ini: tidak ada berita bersih (nilai sentimen hanya isian forward-fill atau netral)")
     lines.append("fitur teratas yang paling memengaruhi skor:")
     for i, t in enumerate(f["top"], 1):
         lines.append(f"{i}. {t['label']}: nilai {t['value_text']}, persentil {t['percentile']} terhadap data latih, "
@@ -166,8 +170,18 @@ _DATE_RE = re.compile(rf"\b\d{{1,2}} (?:{_MONTHS_RE}) \d{{4}}\b")
 _ISO_RE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
 _NUM_RE = re.compile(r"\d[\d.,]*\d|\d")
 _FORBIDDEN_RE = re.compile(
-    r"\b(?:beli|membeli|jual|menjual|buy|sell|dijamin|garansi|rekomendasi|sebaiknya)\b|(?<!tidak )\bpasti\b", re.I)
+    r"\b\w*(?:beli|jual)\w*\b"
+    r"|\b(?:buy\w*|sell\w*|short|long|hold|hodl|posisi|disarankan|dianjurkan|anjuran|rekomendasi|sebaiknya|dijamin|garansi"
+    r"|karena|menyebabkan|mengakibatkan|akibat|disebabkan|penyebab)\b"
+    r"|\bsaran\b(?! investasi)|(?<!tidak )\bpasti\w*", re.I)
 _UNCERTAIN = ("tidak pasti", "ketidakpastian", "bisa keliru", "dapat keliru", "mungkin keliru")
+_NUMBER_WORDS_RE = re.compile(r"\b(?:nol|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas|\w+belas|\w+puluh|ratus|ribu|juta)\b", re.I)
+_DATE_NOYEAR_RE = re.compile(rf"\b\d{{1,2}} (?:{_MONTHS_RE})\b(?! \d{{4}})")
+_SENT_START = r"(?:^|[.!?]\s+)"
+_LIMIT_RE = re.compile(_SENT_START + r"model belum terbukti lebih baik dari tebakan acak", re.I)
+_DISC_RE = re.compile(_SENT_START + r"ini bukan saran investasi\.", re.I)
+_KEYWORDS = ("probabilitas", "skor", "ambang")
+
 
 NARRATIVE_PROMPT = """Anda menulis penjelasan singkat dalam Bahasa Indonesia untuk investor ritel tentang satu prediksi arah harga Bitcoin dari sebuah model penelitian.
 
@@ -178,6 +192,7 @@ ATURAN KETAT:
 - Jangan mengajak membeli atau menjual, dan jangan memakai kata beli, jual, pasti, dijamin, garansi, rekomendasi, sebaiknya.
 - Wajib menulis kalimat persis: "Model belum terbukti lebih baik dari tebakan acak" dan kalimat persis: "Ini bukan saran investasi."
 - Akui bahwa hasil ini tidak pasti dan bisa keliru.
+- Jika BLOK FAKTA menyatakan tidak ada berita bersih, jangan menggambarkan sentimen sebagai berita hari itu.
 - Panjang 60 sampai 140 kata, satu paragraf.
 
 BLOK FAKTA:
@@ -186,29 +201,73 @@ BLOK FAKTA:
 Tulis penjelasannya sekarang."""
 
 
+def _nearest_keyword(text: str, idx: int, window: int = 60):
+    seg = text[max(0, idx - window):idx].lower()
+    best, best_pos = None, -1
+    for k in _KEYWORDS:
+        p = seg.rfind(k)
+        if p > best_pos:
+            best, best_pos = k, p
+    return best
+
+
+def _occurrences_paired(text: str, num: str, ok_words: tuple):
+    occ = [m.start() for m in re.finditer(re.escape(num), text)]
+    return bool(occ), all(_nearest_keyword(text, i) in ok_words for i in occ)
+
+
+def _mentioned(text: str, labels: list) -> list:
+    """Label fitur yang disebut utuh; label yang lebih panjang dihitung dulu agar "Sinyal MACD" tidak sekaligus "MACD"."""
+    work, found = text.lower(), []
+    for lab in sorted(labels, key=len, reverse=True):
+        pat = re.compile(r"(?<!\w)" + re.escape(lab.lower()) + r"(?!\w)")
+        if pat.search(work):
+            found.append(lab)
+            work = pat.sub(" " * len(lab), work)
+    return found
+
+
+def _direction_ok(text: str, direction: str) -> bool:
+    cleaned = re.sub(r"probabilitas naik", "probabilitas ", text, flags=re.I)
+    tokens = list(re.finditer(r"\b(naik|turun)\b", cleaned, re.I))
+    if not tokens:
+        return False
+    for m in tokens:
+        start = max(cleaned.rfind(". ", 0, m.start()), cleaned.rfind("\n", 0, m.start()))
+        seg = cleaned[start + 1:m.start()].lower()
+        negated = re.search(r"\b(?:bukan|tidak|belum)\b(?:\W+\w+){0,2}\W*$", seg)
+        if "prediksi" not in seg or m.group(1).lower() != direction.lower() or negated:
+            return False
+    return True
+
+
 def validate(text: str, facts: dict) -> list:
     failed = []
     low = text.lower()
     allowed_dates = {facts["date_id"], facts["target_id"]}
     allowed_iso = {facts["date"], facts["target"]}
     if any(m not in allowed_dates for m in _DATE_RE.findall(text)) or \
-            any(m not in allowed_iso for m in _ISO_RE.findall(text)):
+            any(m not in allowed_iso for m in _ISO_RE.findall(text)) or _DATE_NOYEAR_RE.search(text):
         failed.append("tanggal_valid")
     allowed_nums = set(_NUM_RE.findall(facts_text(facts)))
-    if any(n not in allowed_nums for n in _NUM_RE.findall(text)):
+    if any(n not in allowed_nums for n in _NUM_RE.findall(text)) or _NUMBER_WORDS_RE.search(text):
         failed.append("angka_valid")
-    if facts["prob"] not in text:
+    has_prob, prob_ok = _occurrences_paired(text, facts["prob"], ("probabilitas", "skor"))
+    has_thr, thr_ok = _occurrences_paired(text, facts["threshold"], ("ambang",))
+    if not has_prob or not prob_ok or (has_thr and not thr_ok):
         failed.append("skor_disebut")
-    m = re.search(r"prediksi\w*[^.]*?\b(naik|turun)\b", text, re.I | re.S)
-    if not m or m.group(1).lower() != facts["direction"].lower():
+    if not _direction_ok(text, facts["direction"]):
         failed.append("label_benar")
-    if sum(1 for t in facts["top"] if t["label"].lower() in low) < 2:
+    mentioned = _mentioned(text, [t["label"] for t in facts["top"]])
+    if len(mentioned) < 2:
         failed.append("fitur_disebut")
+    if any(t["delta"] not in text for t in facts["top"] if t["label"] in mentioned):
+        failed.append("tanda_pengaruh")
     if _FORBIDDEN_RE.search(text):
         failed.append("kata_terlarang")
-    if "bukan saran investasi" not in low:
+    if not _DISC_RE.search(text.strip()):
         failed.append("disclaimer")
-    if "belum terbukti lebih baik dari tebakan acak" not in low:
+    if not _LIMIT_RE.search(text.strip()):
         failed.append("keterbatasan")
     if not any(u in low for u in _UNCERTAIN):
         failed.append("ketidakpastian")
@@ -233,6 +292,8 @@ def template_narrative(f: dict) -> str:
     items = [f"{t['label']} ({t['delta']} poin persentase)" for t in f["top"]]
     if items:
         parts.append("Fitur yang paling memengaruhi skor adalah " + _join(items) + ".")
+    if not f.get("has_news", True):
+        parts.append("Tidak ada berita bersih pada hari itu, sehingga nilai sentimen hanya isian forward-fill atau netral.")
     parts.append("Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti "
                  "dan bisa keliru. Ini bukan saran investasi.")
     return " ".join(parts)
@@ -274,8 +335,9 @@ def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=Non
     level = level_of(abs(prob - thr), series["level_cuts"]) if series else None
     rec = {"date": as_of, "target_date": (date.fromisoformat(as_of) + timedelta(days=1)).isoformat(),
            "prob": prob, "threshold": thr, "level": level, "features": feats, "contributions": contrib}
-    narrative = generate_narrative(client, build_facts(rec, auc=(series or {}).get("auc"))) if client else None
     titles = (news or {}).get("titles", [])
+    rec["sentiment"] = {"has_news": bool(titles)}
+    narrative = generate_narrative(client, build_facts(rec, auc=(series or {}).get("auc"))) if client else None
     return {"headlines": [{"title": t} for t in titles],
             "sentiment": {"has_news": bool(titles), "scores": (news or {}).get("scores"),
                           "used": values["news_sentiment"]},

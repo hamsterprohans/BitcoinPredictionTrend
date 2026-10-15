@@ -79,11 +79,18 @@ async function select(i) {
   try {
     const d = await loadDay(s.date[i]);
     if (state.idx !== i) return;                                  // pengguna sudah pindah hari
-    renderNews($("#panel-news"), d.headlines, d.sentiment);
+    renderNews($("#panel-news"), d.headlines, d.sentiment, { approx: true });
     renderContrib($("#panel-contrib"), d.contributions);
     renderNarrative($("#panel-narrative"), d.narrative);
   } catch (e) {
     console.warn("Gagal memuat hari", s.date[i], e);
+    if (state.idx !== i) return;
+    ["#panel-news", "#panel-contrib", "#panel-narrative"].forEach((sel) => {
+      const p = document.createElement("p");
+      p.className = "muted";
+      p.textContent = "Gagal memuat data hari ini.";
+      $(sel).replaceChildren(p);                                  // jangan sisakan panel hari sebelumnya di bawah tanggal baru
+    });
   }
 }
 

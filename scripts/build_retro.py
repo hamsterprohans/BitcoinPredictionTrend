@@ -156,13 +156,26 @@ def build_outputs(prices, sent3, news, fg, scaler, model, threshold, *, start=NB
     return {"series": series, "days": days, "stats": stats}
 
 
+def _facts_key(rec: dict):
+    top3 = tuple((c["feature"], round(c["delta_pp"], 1)) for c in rec["contributions"][:3])
+    return (round(rec["prob"], 6), round(rec["threshold"], 6), rec["direction"], rec.get("level"),
+            bool((rec.get("sentiment") or {}).get("has_news", True)), top3)
+
+
 def write_outputs(out_dir, out: dict) -> None:
     out_dir = Path(out_dir)
-    (out_dir / "days").mkdir(parents=True, exist_ok=True)
+    days_dir = out_dir / "days"
+    days_dir.mkdir(parents=True, exist_ok=True)
     atomic_write_json(out_dir / "series.json", out["series"])
     atomic_write_json(out_dir / "train_stats.json", out["stats"])
     for iso, rec in out["days"].items():
-        atomic_write_json(out_dir / "days" / f"{iso}.json", rec)
+        old = read_json(days_dir / f"{iso}.json")
+        if old and old.get("narrative") and _facts_key(old) == _facts_key(rec):
+            rec["narrative"] = old["narrative"]               # fakta tidak berubah: pertahankan narasi yang sudah dibayar
+        atomic_write_json(days_dir / f"{iso}.json", rec)
+    for f in days_dir.glob("*.json"):                          # buang sisa build lama yang bukan bagian seri ini
+        if f.stem not in out["days"]:
+            f.unlink()
 
 
 def fill_narratives(out_dir, client) -> int:

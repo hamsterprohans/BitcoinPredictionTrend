@@ -7,12 +7,16 @@ const el = (tag, text, cls) => {
   return e;
 };
 
-export function renderNews(root, headlines, sentiment) {
+export function renderNews(root, headlines, sentiment, opts = {}) {
   root.replaceChildren();
   if (headlines?.length) {
     const ul = el("ul", undefined, "news-list");
     headlines.forEach((h) => ul.append(el("li", h.title)));
     root.append(ul);
+    if (opts.approx) {
+      root.append(el("p", "Contoh judul berita hari itu: belum tentu sama dengan lima judul yang dinilai " +
+        "(urutan data scrap tidak dapat direproduksi persis).", "muted small"));
+    }
   } else {
     root.append(el("p", sentiment?.has_news === false
       ? "Tidak ada berita bersih pada hari ini: sentimen diisi dari forward-fill maksimal 2 hari, lalu 0."
@@ -47,6 +51,10 @@ export function renderContrib(root, contributions) {
 
 export function renderReliability(root, reliability, series) {
   root.replaceChildren();
+  if (series?.parity && !series.parity.verified) {
+    root.append(el("p", "Paritas dengan tabel notebook belum terverifikasi: angka keandalan ini belum boleh dianggap " +
+      "sama dengan hasil notebook.", "banner"));
+  }
   const table = el("table"), head = el("tr");
   ["Tingkat keyakinan", "Hari", "Akurasi", "CI 95% (Wilson)", "Kesimpulan"].forEach((h, i) =>
     head.append(el("th", h, i >= 1 && i <= 3 ? "num" : "")));
@@ -80,7 +88,7 @@ export function renderNarrative(root, narrative) {
   }
   root.append(el("p", narrative.text, "narr"));
   root.append(el("p", narrative.source === "llm"
-    ? "Ditulis oleh LLM dan lolos 10 pemeriksaan otomatis (angka, label, disclaimer, dan lain-lain)."
+    ? "Ditulis oleh LLM dan lolos pemeriksaan otomatis atas angka, arah prediksi, dan disclaimer; ini bukan jaminan penjelasannya benar."
     : "Narasi template: keluaran LLM tidak lolos pemeriksaan otomatis, sehingga memakai template berbasis fakta.",
     "muted small"));
 }
