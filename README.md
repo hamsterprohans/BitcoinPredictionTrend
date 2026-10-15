@@ -81,4 +81,6 @@ Ekspor CSV dari Supabase (Table Editor, `feedback_flat`, Export) lalu:
 python -m scripts.summarize_feedback hasil.csv --out ringkasan.md
 ```
 
-Keluarannya tabel Ya/Netral/Tidak per pertanyaan dan daftar jawaban teks. Nama dan email tidak ikut dimasukkan.
+Keluarannya tabel Ya/Netral/Tidak per pertanyaan, perbandingan antar kelompok (pengalaman kripto dan pengenalan machine
+learning, kelompok kurang dari 5 orang diberi tanda "n kecil"), dan daftar jawaban teks. Tambahkan `--html laporan.html`
+untuk laporan bergrafik batang (satu berkas, bisa dibuka di browser). Nama dan email tidak ikut dimasukkan.
