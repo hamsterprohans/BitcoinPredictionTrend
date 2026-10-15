@@ -55,3 +55,22 @@ def test_about_page_has_photo_summary_and_linkedin_link(page, server):
     for fact in ("Sistem Informasi", "Institut Teknologi Sepuluh Nopember", "LSTM", "LinkedIn"):
         assert fact in summary, fact
     assert "Bitcoin" in summary
+
+
+def test_about_page_experience_certifications_and_skills_from_linkedin(page, server):
+    page.goto(server + "/tentang")
+    summary = page.inner_text("#about-summary")
+    for fact in ("JejakPangan", "FlyRank AI", "Solidity", "LSTM", "sulit dipakai untuk berbohong"):
+        assert fact in summary, fact
+    exp = page.inner_text("#about-experience")
+    for fact in ("Asisten Dosen", "Backend AI Engineer", "FlyRank AI", "Vallidge Consulting", "BEP-20", "ERC-1155",
+                 "Polygon", "Odoo", "PKMBK"):
+        assert fact in exp, fact
+    assert page.locator("#about-experience > ul > li").count() >= 5
+    cert = page.inner_text("#about-certs")
+    for fact in ("AWS Academy", "Cloud Foundations", "Prompt Design in Vertex AI", "Cisco DevNet Associate",
+                 "Anthropic Academy", "Model Context Protocol", "Claude 101"):
+        assert fact in cert, fact
+    skills = page.inner_text("#about-skills")
+    assert "Kepemimpinan Organisasi" in skills and "Pengembangan Aplikasi Cloud" in skills
+    assert "profil LinkedIn" in page.inner_text("#about-source")                  # sumber disebut jelas
