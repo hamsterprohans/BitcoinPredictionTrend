@@ -63,3 +63,16 @@ def test_raises_after_three_failures():
     c = FakeClient([RuntimeError("a"), RuntimeError("b"), "bukan angka"])
     with pytest.raises(SentimentError):
         score_one(c, "detail", ["x"], sleep=no_sleep)
+
+
+def test_daily_detail_returns_scores_and_mean():
+    from app.sentiment import daily_sentiment_detail
+    c = FakeClient(["6", "3", "0"])
+    d = daily_sentiment_detail(c, ["Bitcoin rises"], sleep=no_sleep)
+    assert d == {"pemahaman": 6, "detail": 3, "bullbear": 0, "mean": pytest.approx(3.0)}
+
+
+def test_daily_detail_none_for_empty_headlines():
+    from app.sentiment import daily_sentiment_detail
+    c = FakeClient([])
+    assert daily_sentiment_detail(c, [], sleep=no_sleep) is None and c.prompts == []

@@ -136,3 +136,14 @@ def test_prices_only_writes_chart_without_prediction_or_keys(tmp_path):
     assert not (deps.live_dir / "latest.json").exists()
     assert not (deps.live_dir / "sentiment_log.csv").exists()
     assert calls["score"] == [] and calls["headlines"] == [] and deps.predictor.frames == []
+
+
+def test_score_detail_logs_titles_and_prompt_scores(tmp_path):
+    from app.store import read_news_entry
+    deps, calls = make_deps(tmp_path, headlines=lambda d: [f"t{i}" for i in range(7)])
+    deps.score_detail = lambda h: {"pemahaman": 4, "detail": 2, "bullbear": 0, "mean": 2.0}
+    latest = run_daily(deps)
+    e = read_news_entry(deps.live_dir, date(2026, 10, 14))
+    assert e["titles"] == ["t0", "t1", "t2", "t3", "t4"] and e["scores"]["mean"] == 2.0   # hanya 5 judul pertama
+    assert calls["score"] == []                                                           # score tidak dipanggil bila score_detail ada
+    assert latest["inputs"]["news_sentiment_raw"] == 2.0

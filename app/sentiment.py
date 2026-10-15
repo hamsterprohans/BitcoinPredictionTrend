@@ -38,7 +38,13 @@ def score_one(client, kind: str, headlines: list, sleep=time.sleep, retries: int
     raise SentimentError(f"{kind}: gagal setelah {retries} percobaan ({last})")
 
 
-def daily_sentiment(client, headlines: list, sleep=time.sleep):
+def daily_sentiment_detail(client, headlines: list, sleep=time.sleep):
     if not headlines:
         return None
-    return sum(score_one(client, k, headlines, sleep) for k in KINDS) / len(KINDS)
+    scores = {k: score_one(client, k, headlines, sleep) for k in KINDS}
+    return {**scores, "mean": sum(scores.values()) / len(KINDS)}
+
+
+def daily_sentiment(client, headlines: list, sleep=time.sleep):
+    d = daily_sentiment_detail(client, headlines, sleep)
+    return None if d is None else d["mean"]
