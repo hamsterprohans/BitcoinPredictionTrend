@@ -16,6 +16,8 @@ def compute(artifacts: Path, horizons=None, seeds=None) -> dict:
     horizons = horizons or config.HORIZONS[1:]
     seeds = seeds or config.MH_SEEDS
     mh = Path(artifacts) / "multihorizon"
+    if not mh.is_dir():
+        return {}
     out = {}
     for h in horizons:
         files = [mh / f"C_h{h}_s{s}.npz" for s in seeds]
@@ -30,6 +32,9 @@ def compute(artifacts: Path, horizons=None, seeds=None) -> dict:
 
 if __name__ == "__main__":
     res = compute(config.ARTIFACTS)
+    if not (config.ARTIFACTS / "multihorizon").is_dir():
+        raise SystemExit(f"Folder {config.ARTIFACTS / 'multihorizon'} belum ada. Ekspor dari notebook (10) dulu "
+                         "(lihat README bagian 'Ekspor artefak dari notebook (10)'); tanpa itu hanya prediksi 1 hari yang tampil.")
     print("threshold per horizon:", res)
     missing = [h for h in config.HORIZONS[1:] if str(h) not in res]
     if missing:

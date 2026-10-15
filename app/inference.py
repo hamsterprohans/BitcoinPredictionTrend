@@ -13,6 +13,10 @@ SENTIMENT_COL = "news_sentiment"
 FEATURE_ORDER = TECH_FEATURES + [SENTIMENT_COL, "fear_greed_index_scaled"]
 
 
+class ArtifactsMissing(RuntimeError):
+    """Artefak model dari notebook (10) belum lengkap."""
+
+
 def youden_threshold(y, p) -> float:
     fpr, tpr, th = roc_curve(y, p)
     fpr, tpr, th = fpr[1:], tpr[1:], th[1:]  # buang titik threshold=inf
@@ -57,6 +61,13 @@ class Predictor:
         import keras  # impor lambat; hanya saat benar-benar memuat model
 
         path = Path(path)
+        needed = [path / "scaler.pkl", path / "models" / "model_F.keras", path / "threshold_beku.json"]
+        missing = [str(p.relative_to(path)) for p in needed if not p.exists()]
+        if missing:
+            raise ArtifactsMissing(
+                f"Artefak model belum lengkap di {path}. Belum ada: {', '.join(missing)}. "
+                "Ekspor dari notebook (10) dengan sel pada README (bagian 'Ekspor artefak dari notebook (10)'), "
+                "lalu taruh hasilnya di folder itu (model_F.keras di subfolder models/).")
         scaler = pickle.load(open(path / "scaler.pkl", "rb"))
         load = keras.saving.load_model
         models = {1: [load(path / "models" / "model_F.keras")]}
