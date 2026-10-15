@@ -4,11 +4,11 @@ from tests.e2e.conftest import collect_errors
 
 pytestmark = pytest.mark.e2e
 
-NAV = ["Prediksi", "Latar Belakang", "Retrospektif", "Riset", "Metodologi", "Tentang"]
+NAV = ["Prediksi", "Latar Belakang", "Retrospektif", "Riset", "Metodologi", "Kuesioner", "Tentang"]
 
 
-@pytest.mark.parametrize("path", ["/", "/latar-belakang", "/retrospektif", "/riset", "/metodologi", "/tentang"])
-def test_nav_has_six_links_on_every_page(page, server, path):
+@pytest.mark.parametrize("path", ["/", "/latar-belakang", "/retrospektif", "/riset", "/metodologi", "/kuesioner", "/tentang"])
+def test_nav_has_seven_links_on_every_page(page, server, path):
     page.goto(server + path)
     assert page.locator("header nav a").all_inner_texts() == NAV
     assert page.get_attribute("header nav a[aria-current]", "href") == path

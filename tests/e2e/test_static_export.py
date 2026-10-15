@@ -59,6 +59,8 @@ def test_static_prediction_page_and_interval_work_under_subpath(page, static_sit
     page.goto(static_site + "/retrospektif")
     page.wait_for_selector("#day-slider")
     page.wait_for_function("document.querySelector('#day-slider').max > 0")
+    page.goto(static_site + "/kuesioner")
+    page.wait_for_selector("#survey input[type=radio]")                  # modul, skema, dan konfigurasi termuat di subpath
     page.goto(static_site + "/riset")
     page.wait_for_load_state("networkidle")
     assert not failed, failed

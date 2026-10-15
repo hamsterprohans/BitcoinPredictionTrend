@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 .env
-data/live/
+data/live/_*/
 .pytest_cache/
 .superpowers/
+dist/
