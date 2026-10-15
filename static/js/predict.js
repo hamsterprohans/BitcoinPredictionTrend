@@ -1,8 +1,10 @@
 import { $, fmtDate, fmtDateShort, fmtNum, fmtPct, fmtUSD, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion } from "./common.js";
 import { createCharts } from "./chart.js";
+import { initSplash } from "./splash.js";
 
 initTheme();
 markCapabilities();
+initSplash();
 
 const state = { latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null };
 const RANGES = ["1M", "3M", "6M", "YTD", "1Y", "5Y", "MAX"];

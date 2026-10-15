@@ -77,7 +77,8 @@ def create_app(live_dir=config.LIVE_DIR, content_dir=config.CONTENT_DIR,
             return FileResponse(f)
         return page
 
-    for route, fname in (("/", "index.html"), ("/riset", "riset.html"), ("/metodologi", "metodologi.html")):
+    for route, fname in (("/", "index.html"), ("/latar-belakang", "latar-belakang.html"), ("/riset", "riset.html"),
+                         ("/metodologi", "metodologi.html"), ("/tentang", "tentang.html")):
         app.get(route, include_in_schema=False)(make_page(fname))
 
     app.mount("/static", StaticFiles(directory=static_dir), name="static")

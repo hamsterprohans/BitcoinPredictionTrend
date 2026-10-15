@@ -71,3 +71,11 @@ def test_page_routes_ignore_fname_query_param(paths, route):
         r = c.get(route, params={"fname": q})
         assert "sk-test" not in r.text and "ANTHROPIC" not in r.text
         assert r.status_code == 200 and "<h1>" in r.text
+
+
+@pytest.mark.parametrize("route,fname", [("/latar-belakang", "latar-belakang.html"), ("/tentang", "tentang.html")])
+def test_new_pages_routes(paths, route, fname):
+    live, content, static = paths
+    (static / fname).write_text("<h1>ok</h1>")
+    r = make_client(paths).get(route)
+    assert r.status_code == 200 and "ok" in r.text

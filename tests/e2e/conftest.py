@@ -64,3 +64,10 @@ def collect_errors(page):
     page.on("console", lambda m: errs.append(m.text) if m.type == "error" else None)
     page.on("pageerror", lambda e: errs.append(str(e)))
     return errs
+
+
+@pytest.fixture
+def context(context):
+    """Splash screen tampil sekali per sesi; tes lain menandainya sudah dilihat agar tidak menghalangi klik."""
+    context.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}")
+    return context

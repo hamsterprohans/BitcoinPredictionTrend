@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tentang — Bitcoin Trend</title>
+  <meta name="description" content="Tentang penulis dan konteks tugas akhir sistem prediksi tren harga Bitcoin.">
+  <link rel="preload" href="/static/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="page-about no-webgl">
+  <header class="topbar">
+    <a class="brand" href="/">Bitcoin&nbsp;Trend</a>
+    <nav aria-label="Utama"><a href="/">Prediksi</a><a href="/latar-belakang">Latar Belakang</a><a href="/riset">Riset</a><a href="/metodologi">Metodologi</a><a href="/tentang" aria-current="page">Tentang</a></nav>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Ganti tema terang/gelap">◐</button>
+  </header>
+  <main>
+    <article class="prose">
+      <h1 style="font-size:clamp(1.8rem,6vw,2.6rem)">Tentang</h1>
+      <h2>Penulis</h2>
+      <div class="card">
+        <dl class="facts">
+          <dt>Nama</dt><dd>Hans Christian Cakrawangsa</dd>
+          <dt>NRP</dt><dd class="mono">5026231130</dd>
+          <dt>Program studi</dt><dd>Sistem Informasi (S-1)</dd>
+          <dt>Departemen / fakultas</dt><dd>Departemen Sistem Informasi, Fakultas Teknologi Elektro dan Informatika Cerdas</dd>
+          <dt>Kampus</dt><dd>Institut Teknologi Sepuluh Nopember, Surabaya</dd>
+          <dt>Dosen pembimbing</dt><dd>Renny Pradina Kusumawardani, S.T., M.T.</dd>
+          <dt>Bidang</dt><dd>Predictive Analytics, Laboratorium Rekayasa Data dan Intelegensi Bisnis (RDIB)</dd>
+        </dl>
+      </div>
+      <h2>Tugas akhir</h2>
+      <p><strong>Sistem Prediksi Tren Harga Bitcoin Berbasis LSTM dengan Integrasi Sentimen Berita Berbasis LLM dan Fear and Greed Index</strong> (2026). Penelitian ini menguji apakah penambahan sentimen berita dan Fear and Greed Index meningkatkan prediksi arah harga Bitcoin dibanding indikator teknikal saja. Latar belakang dan jawabannya ada di halaman <a href="/latar-belakang">Latar Belakang</a>.</p>
+      <h2>Tentang situs ini</h2>
+      <p>Situs ini menampilkan prediksi harian dari model tugas akhir beserta hasil risetnya, termasuk hasil yang negatif. Ini bukan produk investasi dan bukan saran investasi.</p>
+      <p>Kode proyek: <a href="https://github.com/hanscakrawangsa15/BitcoinPredictionTugasAkhir" rel="noopener">github.com/hanscakrawangsa15/BitcoinPredictionTugasAkhir</a>.</p>
+    </article>
+  </main>
+  <footer class="footer"><p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir.</p></footer>
+  <script type="module">
+    import { initTheme } from "/static/js/common.js";
+    initTheme();
+  </script>
+</body>
+</html>
