@@ -227,5 +227,10 @@
   },
   "used": 3.3333333333333335
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 7 Januari 2026, Model F memberi probabilitas naik 0,4553 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 8 Januari 2026. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Sentimen berita (+7,4 poin persentase), Rata-rata harga 90 hari (+6,0 poin persentase), dan Histogram MACD (-4,7 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

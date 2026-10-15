@@ -227,5 +227,10 @@
   },
   "used": -6.666666666666667
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 31 Maret 2026, Model F memberi probabilitas naik 0,3706 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 1 April 2026. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Rata-rata harga 7 hari (-9,3 poin persentase), Rata-rata harga 90 hari (-8,2 poin persentase), dan Sentimen berita (-6,5 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

@@ -227,5 +227,10 @@
   },
   "used": 5.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 26 Desember 2025, Model F memberi probabilitas naik 0,4610 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 27 Desember 2025. Tingkat keyakinannya rendah. Fitur yang paling memengaruhi skor adalah Rata-rata harga 30 hari (-8,4 poin persentase), Rata-rata harga 90 hari (+5,2 poin persentase), dan Rata-rata harga 7 hari (-3,7 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

@@ -227,5 +227,10 @@
   },
   "used": 7.0
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 26 Januari 2026, Model F memberi probabilitas naik 0,4364 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 27 Januari 2026. Tingkat keyakinannya sedang. Fitur yang paling memengaruhi skor adalah Rata-rata harga 90 hari (-9,1 poin persentase), Sentimen berita (+7,2 poin persentase), dan Volatilitas 7 hari (+4,2 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

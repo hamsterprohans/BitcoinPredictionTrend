@@ -227,5 +227,10 @@
   },
   "used": 1.3333333333333333
  },
- "narrative": null
+ "narrative": {
+  "text": "Pada 24 Maret 2026, Model F memberi probabilitas naik 0,4060 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 25 Maret 2026. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Histogram MACD (-10,8 poin persentase), Rata-rata harga 30 hari (-3,2 poin persentase), dan Rata-rata harga 7 hari (-3,2 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+  "source": "template",
+  "attempts": 3,
+  "temperature": null
+ }
 }

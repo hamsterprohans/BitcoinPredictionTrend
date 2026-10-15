@@ -144,3 +144,19 @@ def test_day_month_without_year_is_allowed_only_for_the_facts_dates():
     assert "tanggal_valid" not in validate(GOOD + " Target 17 Februari.", FACTS)
     assert "tanggal_valid" in validate(GOOD + " Pada 17 Oktober harga bergerak.", FACTS)
     assert "tanggal_valid" in validate(GOOD + " Pada 18 Februari harga bergerak.", FACTS)
+
+
+class _ApiStatusError(Exception):
+    def __init__(self, status, msg):
+        super().__init__(msg)
+        self.status_code = status
+
+
+def test_billing_and_auth_errors_abort_instead_of_silently_writing_templates():
+    from app.explain import FatalAPIError
+    for err in (RuntimeError("Error code: 400 - Your credit balance is too low to access the Anthropic API."),
+                _ApiStatusError(401, "invalid x-api-key"), _ApiStatusError(403, "forbidden")):
+        with pytest.raises(FatalAPIError):
+            generate_narrative(FakeLLM([err]), FACTS)
+    out = generate_narrative(FakeLLM([RuntimeError("500 server error")] * 3), FACTS)      # galat sementara tetap cadangan template
+    assert out["source"] == "template"
