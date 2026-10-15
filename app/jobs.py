@@ -143,7 +143,7 @@ def make_real_deps(patient_mode: bool = False) -> Deps:
 
     key = os.environ.get("ANTHROPIC_API_KEY")
     if not key:
-        raise SystemExit("ANTHROPIC_API_KEY belum diset (environment variable atau .env)")
+        raise RuntimeError("ANTHROPIC_API_KEY belum diset (environment variable atau .env)")
     http = httpx.Client(timeout=30, follow_redirects=True)
     llm = anthropic.Anthropic(api_key=key)
     return Deps(
@@ -174,5 +174,9 @@ if __name__ == "__main__":
     ap.add_argument("--patient", action="store_true",
                     help="bila GDELT memblokir (429), tunggu 15 menit lalu ulangi hari yang sama (untuk backfill pertama)")
     args = ap.parse_args()
-    result = run_daily(make_real_deps(patient_mode=args.patient), force=args.force)
+    try:
+        deps = make_real_deps(patient_mode=args.patient)
+    except RuntimeError as e:
+        raise SystemExit(str(e))
+    result = run_daily(deps, force=args.force)
     print("sudah mutakhir" if result is None else f"as_of={result['as_of']} horizons={list(result['horizons'])}")

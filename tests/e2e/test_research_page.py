@@ -14,6 +14,7 @@ def test_research_sections_render(page, server):
     assert page.locator("#sec-multihorizon table tbody tr").count() == 2
     assert "Belum terbukti lebih baik dari tebakan acak" in page.inner_text("#sec-multihorizon")
     assert page.locator("#sec-holding table tbody tr").count() == 1
+    assert page.locator("#sec-signif table").count() == 2                # McNemar dan Wilcoxon
     assert page.locator("#sec-perm .bar-row").count() == 2
     assert page.locator("#bars3d-canvas").count() == 1
     # backtest tidak diekspor -> pesan jelas, bukan area kosong

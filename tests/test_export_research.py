@@ -28,3 +28,20 @@ def test_build_evidence_labels():
     ev = build_evidence(rows)
     assert ev["3"]["label"] == "Belum terbukti lebih baik dari tebakan acak" and ev["3"]["significant"] is False
     assert ev["30"]["label"].startswith("Signifikan") and ev["30"]["significant"] is True
+
+
+def test_parse_significance_from_stream_output():
+    from scripts.export_research import parse_significance
+    mc = ("A vs C: p-value=0.6465 (tidak signifikan) | hanya A benar=82, hanya C benar=89\n"
+          "D vs E: p-value=0.0457 (signifikan) | hanya D benar=35, hanya E benar=52\n")
+    wl = ("Wilcoxon Signed-Rank Test (berpasangan per seed):\n\n"
+          "C vs F: statistic=5.0000, p-value=0.6250 (tidak signifikan) | mean C=0.4658, mean F=0.4455\n")
+    nb = {"cells": [
+        {"cell_type": "code", "source": ["def run_mcnemar(a):\n"], "outputs": [{"output_type": "stream", "text": [mc]}]},
+        {"cell_type": "code", "source": ['print("Wilcoxon Signed-Rank Test (berpasangan per seed)")'],
+         "outputs": [{"output_type": "stream", "text": [wl]}]}]}
+    out = parse_significance(nb)
+    assert out["mcnemar"][0] == {"a": "A", "b": "C", "p": 0.6465, "verdict": "tidak signifikan", "only_a": 82, "only_b": 89}
+    assert out["mcnemar"][1]["verdict"] == "signifikan"
+    assert out["wilcoxon"][0] == {"a": "C", "b": "F", "statistic": 5.0, "p": 0.625, "verdict": "tidak signifikan",
+                                  "mean_a": 0.4658, "mean_b": 0.4455}

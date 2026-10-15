@@ -67,4 +67,8 @@ def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14)):
     atomic_write_json(content_dir / "permutation_importance.json", [
         {"Fitur": "Vol_30", "Baseline F1": 0.49, "Penurunan F1 (Importance)": 0.0287, "Std": 0.0088},
         {"Fitur": "MACD_Histogram", "Baseline F1": 0.49, "Penurunan F1 (Importance)": 0.0226, "Std": 0.0076}])
+    atomic_write_json(content_dir / "significance.json", {
+        "mcnemar": [{"a": "A", "b": "C", "p": 0.6465, "verdict": "tidak signifikan", "only_a": 82, "only_b": 89}],
+        "wilcoxon": [{"a": "C", "b": "F", "statistic": 5.0, "p": 0.625, "verdict": "tidak signifikan",
+                      "mean_a": 0.4658, "mean_b": 0.4455}]})
     return feats

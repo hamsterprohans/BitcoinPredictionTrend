@@ -1,0 +1,124 @@
+{
+ "mcnemar": [
+  {
+   "a": "A",
+   "b": "C",
+   "p": 0.6465,
+   "verdict": "tidak signifikan",
+   "only_a": 82,
+   "only_b": 89
+  },
+  {
+   "a": "B",
+   "b": "C",
+   "p": 0.8361,
+   "verdict": "tidak signifikan",
+   "only_a": 103,
+   "only_b": 107
+  },
+  {
+   "a": "C",
+   "b": "D",
+   "p": 0.3343,
+   "verdict": "tidak signifikan",
+   "only_a": 164,
+   "only_b": 146
+  },
+  {
+   "a": "C",
+   "b": "E",
+   "p": 1.0,
+   "verdict": "tidak signifikan",
+   "only_a": 180,
+   "only_b": 179
+  },
+  {
+   "a": "D",
+   "b": "E",
+   "p": 0.0857,
+   "verdict": "tidak signifikan",
+   "only_a": 35,
+   "only_b": 52
+  },
+  {
+   "a": "F",
+   "b": "D",
+   "p": 0.3764,
+   "verdict": "tidak signifikan",
+   "only_a": 115,
+   "only_b": 101
+  },
+  {
+   "a": "F",
+   "b": "E",
+   "p": 0.893,
+   "verdict": "tidak signifikan",
+   "only_a": 109,
+   "only_b": 112
+  },
+  {
+   "a": "C",
+   "b": "F",
+   "p": 0.839,
+   "verdict": "tidak signifikan",
+   "only_a": 111,
+   "only_b": 107
+  }
+ ],
+ "wilcoxon": [
+  {
+   "a": "C",
+   "b": "D",
+   "statistic": 3.0,
+   "p": 0.3125,
+   "verdict": "tidak signifikan",
+   "mean_a": 0.4658,
+   "mean_b": 0.4853
+  },
+  {
+   "a": "C",
+   "b": "E",
+   "statistic": 6.0,
+   "p": 0.8125,
+   "verdict": "tidak signifikan",
+   "mean_a": 0.4658,
+   "mean_b": 0.4565
+  },
+  {
+   "a": "C",
+   "b": "F",
+   "statistic": 5.0,
+   "p": 0.625,
+   "verdict": "tidak signifikan",
+   "mean_a": 0.4658,
+   "mean_b": 0.4455
+  },
+  {
+   "a": "D",
+   "b": "E",
+   "statistic": 2.0,
+   "p": 0.1875,
+   "verdict": "tidak signifikan",
+   "mean_a": 0.4853,
+   "mean_b": 0.4565
+  },
+  {
+   "a": "F",
+   "b": "D",
+   "statistic": 1.0,
+   "p": 0.125,
+   "verdict": "tidak signifikan",
+   "mean_a": 0.4455,
+   "mean_b": 0.4853
+  },
+  {
+   "a": "F",
+   "b": "E",
+   "statistic": 5.0,
+   "p": 0.625,
+   "verdict": "tidak signifikan",
+   "mean_a": 0.4455,
+   "mean_b": 0.4565
+  }
+ ]
+}
