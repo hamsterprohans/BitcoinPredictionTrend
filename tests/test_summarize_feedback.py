@@ -68,3 +68,49 @@ def test_empty_csv_gives_clear_message(tmp_path):
     with pytest.raises(SystemExit) as e:
         main([str(src)])
     assert "belum ada responden" in str(e.value).lower()
+
+
+from scripts.summarize_feedback import render_html, segment_summary   # noqa: E402
+
+
+SEG_ROWS = [{"a2": "ya", "b2": "ya"}, {"a2": "ya", "b2": "ya"}, {"a2": "ya", "b2": "tidak"},
+            {"a2": "tidak", "b2": "tidak"}, {"a2": "tidak", "b2": "netral"}, {"a2": "tidak"}]
+
+
+def test_segment_summary_splits_percent_ya_by_group_and_skips_the_grouping_question():
+    seg = segment_summary(SEG_ROWS, "a2")
+    assert seg["groups"] == {"ya": 3, "tidak": 3}
+    b2 = seg["questions"]["b2"]
+    assert b2["ya"] == {"n": 3, "pct_ya": 66.7} and b2["tidak"] == {"n": 2, "pct_ya": 0.0}
+    assert "a2" not in seg["questions"]
+
+
+def test_segment_ignores_rows_without_the_grouping_answer():
+    seg = segment_summary([{"b2": "ya"}, {"a2": "ya", "b2": "ya"}], "a2")
+    assert seg["groups"] == {"ya": 1, "tidak": 0} and seg["questions"]["b2"]["ya"]["n"] == 1
+
+
+def test_markdown_includes_group_comparison_with_small_n_flag(tmp_path):
+    src, out = tmp_path / "h.csv", tmp_path / "r.md"
+    write_csv(src, [{**r, "a3": "ya" if i % 2 else "tidak"} for i, r in enumerate(SEG_ROWS)])
+    main([str(src), "--out", str(out)])
+    md = out.read_text()
+    assert "Perbandingan menurut pengalaman kripto" in md and "Perbandingan menurut pengenalan machine learning" in md
+    assert "66.7% (n=3, n kecil)" in md                                         # n < 5 diberi tanda
+
+
+def test_html_report_has_svg_bars_escapes_text_and_hides_pii(tmp_path):
+    rows = [{"a0": "Budi", "f9": "budi@mail.com", "b2": "ya", "g3": "<script>alert(1)</script>"},
+            {"b2": "ya"}, {"b2": "tidak"}, {"b2": "netral"}]
+    html = render_html(summarize(rows), ["2026-10-16T00:00:00Z"], [])
+    assert html.startswith("<!doctype html>") and "<svg" in html and 'role="img"' in html
+    assert "<script>alert(1)</script>" not in html and "&lt;script&gt;" in html
+    assert "Budi" not in html and "budi@mail.com" not in html
+    assert 'width="50.0%"' in html                                              # ya 2 dari 4 jawaban
+
+
+def test_cli_writes_html_when_requested(tmp_path):
+    src, out, html = tmp_path / "h.csv", tmp_path / "r.md", tmp_path / "r.html"
+    write_csv(src, SEG_ROWS)
+    main([str(src), "--out", str(out), "--html", str(html)])
+    assert "Perbandingan antar kelompok" in html.read_text() and html.stat().st_size > 1000
