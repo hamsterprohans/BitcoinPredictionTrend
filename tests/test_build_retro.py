@@ -200,3 +200,23 @@ def test_rebuild_keeps_unchanged_narratives_and_removes_stale_day_files(tmp_path
                             start=IN["start"], end=IN["end"], allow_mismatch=True)   # ambang lain -> fakta berubah
     write_outputs(tmp_path, changed)
     assert json.loads(files[2].read_text())["narrative"] is None
+
+
+def test_fill_narratives_can_redo_template_fallbacks(tmp_path):
+    from app.explain import build_facts, template_narrative
+    out = outputs()
+    write_outputs(tmp_path, out)
+    files = sorted((tmp_path / "days").glob("*.json"))
+    first = json.loads(files[0].read_text())
+    first["narrative"] = {"text": "t", "source": "template", "attempts": 3, "temperature": None}
+    second = json.loads(files[1].read_text())
+    second["narrative"] = {"text": "l", "source": "llm", "attempts": 1, "temperature": None}
+    from app.store import atomic_write_json
+    atomic_write_json(files[0], first)
+    atomic_write_json(files[1], second)
+    good = template_narrative(build_facts(first, auc=out["series"]["auc"]))
+    llm = FakeLLM([good] * (3 * len(files)))
+    # semua hari kecuali narasi LLM yang sudah ada: yang kosong dan yang berstatus template
+    assert fill_narratives(tmp_path, llm, redo_template=True) == len(files) - 1
+    assert json.loads(files[0].read_text())["narrative"]["source"] == "llm"
+    assert json.loads(files[1].read_text())["narrative"]["text"] == "l"        # narasi LLM tidak disentuh
