@@ -79,5 +79,10 @@ body.no-webgl #hero-canvas,body.no-webgl #horizon-canvas,body.no-webgl #bars3d-c
 @media (max-width:560px){
   .bar-row{grid-template-columns:100px 1fr 56px}
   .chart{height:260px}
-  .topbar nav a{padding:8px 8px}
+  .topbar{gap:6px;padding:12px 12px}
+  .brand{font-size:.95rem}
+  .topbar nav{gap:0}
+  .topbar nav a{padding:8px 7px;font-size:.88rem}
+  .icon-btn{width:36px;height:36px;flex:none}
+  th,td{padding:7px 6px;font-size:.82rem}
 }

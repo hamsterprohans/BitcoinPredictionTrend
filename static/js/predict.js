@@ -1,0 +1,182 @@
+import { $, fmtDate, fmtDateShort, fmtNum, fmtPct, fmtUSD, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion } from "./common.js";
+import { createCharts } from "./chart.js";
+
+initTheme();
+markCapabilities();
+
+const state = { latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null };
+const RANGES = ["1M", "3M", "6M", "YTD", "1Y", "5Y", "MAX"];
+const arrow = (dir) => (dir === "NAIK" ? "▲" : "▼");
+const cls = (dir) => (dir === "NAIK" ? "up" : "down");
+
+function showBanner(text) {
+  const b = $("#banner");
+  b.textContent = text;
+  b.hidden = false;
+}
+
+function renderHeader(d) {
+  $("#price").textContent = fmtUSD(d.close);
+  const ch = $("#change");
+  ch.textContent = `${d.change_pct >= 0 ? "▲" : "▼"} ${fmtPct(d.change_pct)}`;
+  ch.className = "chg mono " + (d.change_pct >= 0 ? "up" : "down");
+  $("#asof").textContent = `Penutupan ${fmtDate(d.as_of)} (UTC)`;
+  $("#stat-sent").textContent = fmtNum(d.inputs.news_sentiment, 2);
+  $("#stat-fg").textContent = `${fmtNum(d.inputs.fear_greed_index, 0)}/100`;
+  $("#stat-news").textContent = String(d.inputs.headline_count);
+  $("#stat-gen").textContent = d.generated_at.replace("T", " ").replace(/\+00:00$/, "");
+  if (d.age_days > 2) {
+    showBanner(`Data terakhir per ${fmtDate(d.as_of)}, lebih dari 2 hari lalu: pembaruan harian mungkin tertunda.`);
+  }
+}
+
+function currentVisual() {
+  const v = state.latest.horizons[state.selected];
+  return { prob: v.prob, threshold: v.threshold, direction: v.direction, sentiment: state.latest.inputs.news_sentiment };
+}
+
+function renderPanel() {
+  const v = state.latest.horizons[state.selected];
+  const dirEl = $("#prediction-direction");
+  dirEl.textContent = v.direction;
+  dirEl.className = "dir mono " + cls(v.direction);
+  const a = $("#prediction-arrow");
+  a.textContent = arrow(v.direction);
+  a.className = "arrow " + cls(v.direction);
+  $("#prediction-prob").textContent = `probabilitas naik ${fmtNum(v.prob * 100, 1)}%`;
+  $("#prediction-meta").textContent = `ambang keputusan ${fmtNum(v.threshold, 4)} · target ${fmtDate(v.target_date)}`;
+
+  const badge = $("#evidence-badge");
+  badge.hidden = false;
+  badge.replaceChildren();
+  if (v.evidence) {
+    badge.className = "badge warn";
+    const ci = `CI95 ${fmtNum(v.evidence.ci_lo, 2)}–${fmtNum(v.evidence.ci_hi, 2)}`;
+    badge.textContent = `${v.evidence.label} · AUC ${fmtNum(v.evidence.auc, 3)} (${ci}) · p Holm ${fmtNum(v.evidence.p_holm, 2)}`;
+  } else {
+    badge.className = "badge";
+    badge.append("Hasil uji statistik prediksi 1 hari: lihat ");
+    const link = document.createElement("a");
+    link.href = "/riset";
+    link.textContent = "halaman Riset";
+    badge.append(link, ".");
+  }
+  state.hero?.setState(currentVisual());
+  renderHistory();
+}
+
+function renderHistory() {
+  const rows = state.history.filter((e) => e.horizons[state.selected]).slice(-30).reverse();
+  const body = $("#history-body");
+  body.replaceChildren();
+  let done = 0, ok = 0;
+  for (const e of rows) {
+    const h = e.horizons[state.selected];
+    const tr = document.createElement("tr");
+    const cells = [fmtDateShort(e.date), `${arrow(h.direction)} ${h.direction}`, `${fmtNum(h.prob * 100, 1)}%`,
+      h.actual ? `${arrow(h.actual)} ${h.actual} ${h.correct ? "✓" : "✗"}` : "menunggu"];
+    cells.forEach((t, i) => {
+      const td = document.createElement("td");
+      td.textContent = t;
+      if (i === 2) td.className = "num mono";
+      if (i === 1) td.className = cls(h.direction);
+      if (i === 3 && h.actual) td.className = h.correct ? "up" : "down";
+      tr.append(td);
+    });
+    if (h.actual) { done++; if (h.correct) ok++; }
+    body.append(tr);
+  }
+  $("#hist-h").textContent = `${state.selected} hari · ` +
+    (done ? `${ok}/${done} benar (${fmtNum((ok / done) * 100, 0)}%)` : "belum ada hasil yang jatuh tempo");
+}
+
+function select(h) {
+  state.selected = String(h);
+  document.querySelectorAll("#horizon-tabs [role=tab]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.h === state.selected)));
+  state.horizon?.select(state.selected);
+  renderPanel();
+}
+
+function buildTabs() {
+  const hs = Object.keys(state.latest.horizons).sort((a, b) => a - b);
+  if (!hs.includes(state.selected)) state.selected = hs[0];
+  const wrap = $("#horizon-tabs");
+  wrap.replaceChildren();
+  hs.forEach((h) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.h = h;
+    b.textContent = `${h} hari`;
+    b.addEventListener("click", () => select(h));
+    b.addEventListener("keydown", (e) => {
+      const i = hs.indexOf(h), n = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1 : null;
+      if (n !== null && hs[n]) { select(hs[n]); wrap.querySelector(`[data-h="${hs[n]}"]`).focus(); }
+    });
+    wrap.append(b);
+  });
+}
+
+function buildRanges() {
+  const wrap = $("#ranges");
+  RANGES.forEach((r) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "range"; b.textContent = r;
+    b.setAttribute("aria-pressed", String(r === "1Y"));
+    b.addEventListener("click", () => {
+      wrap.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      state.charts.setRange(r);
+    });
+    wrap.append(b);
+  });
+}
+
+async function start3D() {
+  if (!hasWebGL()) return;
+  try {
+    const { createHero } = await import("./scene.js");
+    const { createHorizonScene } = await import("./horizon3d.js");
+    const mobile = window.matchMedia("(max-width: 700px)").matches;
+    state.hero = createHero($("#hero-canvas"), { reduced: reducedMotion, mobile, onSlow: () => document.body.classList.add("no-webgl") });
+    state.horizon = createHorizonScene($("#horizon-canvas"), { reduced: reducedMotion, onSelect: select });
+    const hs = Object.entries(state.latest.horizons).sort((a, b) => a[0] - b[0]).map(([h, v]) => ({ h, direction: v.direction }));
+    state.horizon.setHorizons(hs);
+    state.horizon.select(state.selected);
+    renderPanel();
+  } catch (e) {
+    console.warn("Visual 3D dinonaktifkan:", e);
+    document.body.classList.add("no-webgl");
+  }
+}
+
+async function main() {
+  try {
+    state.latest = await getJSON("/api/prediction/latest");
+  } catch (e) {
+    $("#asof").textContent = "";
+    showBanner(e.status === 404
+      ? "Prediksi belum tersedia: job harian belum pernah berhasil dijalankan."
+      : "Gagal memuat prediksi. Coba muat ulang halaman.");
+    return;
+  }
+  renderHeader(state.latest);
+  buildTabs();
+  select(state.selected);
+
+  try {
+    state.history = await getJSON("/api/prediction/history");
+    renderHistory();
+  } catch { /* riwayat opsional */ }
+
+  try {
+    state.charts = createCharts({ priceEl: $("#chart-price"), rsiEl: $("#chart-rsi"), macdEl: $("#chart-macd") });
+    buildRanges();
+    state.charts.setData(await getJSON("/api/prices"));
+    state.charts.setRange("1Y");
+    state.charts.setMarkers(state.history);
+    document.addEventListener("themechange", () => { state.charts.restyle(); state.hero?.setState(currentVisual()); });
+  } catch (e) {
+    console.warn("Grafik harga tidak tersedia:", e);
+  }
+  start3D();
+}
+
+main();
