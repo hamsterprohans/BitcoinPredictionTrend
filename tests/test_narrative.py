@@ -160,3 +160,11 @@ def test_billing_and_auth_errors_abort_instead_of_silently_writing_templates():
             generate_narrative(FakeLLM([err]), FACTS)
     out = generate_narrative(FakeLLM([RuntimeError("500 server error")] * 3), FACTS)      # galat sementara tetap cadangan template
     assert out["source"] == "template"
+
+
+def test_feature_without_stated_influence_is_fine_but_a_wrong_sign_is_not():
+    import re
+    no_deltas = re.sub(r"\s\([+-]\d+,\d poin persentase\)", "", GOOD)
+    assert no_deltas != GOOD and "tanda_pengaruh" not in validate(no_deltas, FACTS)       # menyebut fitur tanpa angka pengaruh: wajar
+    assert validate(no_deltas, FACTS) == []
+    assert "tanda_pengaruh" in validate(GOOD.replace("(+3,2 poin", "(-3,2 poin"), FACTS)   # angka disebut dengan tanda terbalik: ditolak

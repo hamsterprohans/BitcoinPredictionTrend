@@ -190,6 +190,7 @@ NARRATIVE_PROMPT = """Anda menulis penjelasan singkat dalam Bahasa Indonesia unt
 ATURAN KETAT:
 - Gunakan HANYA informasi pada BLOK FAKTA. Tulis angka persis seperti tertulis di sana (jangan membulatkan, jangan menghitung ulang, jangan menambah angka baru).
 - Sebut tanggal, probabilitas (skor model), arah prediksi (naik atau turun), dan sedikitnya dua dari tiga fitur teratas.
+- Untuk setiap fitur yang disebut, tulis pengaruhnya persis seperti di blok fakta, lengkap dengan tanda + atau - (contoh: "pengaruh -8,8 poin persentase").
 - Jangan menyatakan sebab-akibat; fitur hanya "paling memengaruhi skor model".
 - Jangan mengajak membeli atau menjual, dan jangan memakai kata beli, jual, pasti, dijamin, garansi, rekomendasi, sebaiknya.
 - Wajib menulis kalimat persis: "Model belum terbukti lebih baik dari tebakan acak" dan kalimat persis: "Ini bukan saran investasi."
@@ -266,7 +267,9 @@ def validate(text: str, facts: dict) -> list:
     mentioned = _mentioned(text, [t["label"] for t in facts["top"]])
     if len(mentioned) < 2:
         failed.append("fitur_disebut")
-    if any(t["delta"] not in text for t in facts["top"] if t["label"] in mentioned):
+    nums = set(_NUM_RE.findall(text))
+    # angka pengaruh boleh tidak disebut; bila disebut, tandanya (+/-) harus sama dengan blok fakta
+    if any(t["delta"].lstrip("+-") in nums and t["delta"] not in text for t in facts["top"] if t["label"] in mentioned):
         failed.append("tanda_pengaruh")
     if _FORBIDDEN_RE.search(text):
         failed.append("kata_terlarang")
