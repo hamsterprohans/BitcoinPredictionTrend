@@ -163,3 +163,30 @@ def test_text_inputs_are_length_limited(page, server):
             if q["type"] in ("short", "long"):
                 limit = int(page.locator(f"[name='{q['id']}']").get_attribute("maxlength"))
                 assert limit == (200 if q["type"] == "short" else 2000)
+
+
+def test_name_field_is_first_optional_and_sent_trimmed(page, context, server):
+    configured(context)
+    bodies = []
+    page.route("**/rest/v1/feedback_responses", lambda r: (bodies.append(r.request.post_data), r.fulfill(status=201, body="")))
+    survey = load_schema(page, server)
+    first = survey["sections"][0]["questions"][0]
+    assert first["id"] == "a0" and first["type"] == "short" and "nama" in first["text"].lower()
+    assert page.locator("[name='a0']").get_attribute("autocomplete") == "name"
+    assert "tanpa nama" not in page.inner_text("#survey-root").lower()            # teks lama sudah tidak benar
+    fill_required(page, survey)
+    page.click("#survey-submit")                                                  # nama kosong: tetap boleh dikirim
+    page.wait_for_selector("#survey-thanks", state="visible")
+    assert "a0" not in json.loads(bodies[0])["answers"]
+
+
+def test_name_is_sent_when_filled(page, context, server):
+    configured(context)
+    bodies = []
+    page.route("**/rest/v1/feedback_responses", lambda r: (bodies.append(r.request.post_data), r.fulfill(status=201, body="")))
+    survey = load_schema(page, server)
+    fill_required(page, survey)
+    page.locator("[name='a0']").fill("  Budi Santoso  ")
+    page.click("#survey-submit")
+    page.wait_for_selector("#survey-thanks", state="visible")
+    assert json.loads(bodies[0])["answers"]["a0"] == "Budi Santoso"
