@@ -60,8 +60,8 @@ def test_interval_selector_default_daily_and_switch_to_weekly(page, server):
     with page.expect_response(lambda r: "/api/prices" in r.url and "interval=W" in r.url) as resp:
         page.click("#intervals button:has-text('W')")
     assert resp.value.ok
-    assert page.get_attribute("#intervals button:has-text('W')", "aria-pressed") == "true"
-    assert "Mingguan" in page.inner_text("#tf-label")
+    page.wait_for_selector("#intervals button:has-text('W')[aria-pressed='true']")      # halaman memperbarui setelah setData selesai
+    page.wait_for_function("document.getElementById('tf-label').textContent.includes('Mingguan')")
 
 
 def test_without_prediction_still_shows_real_chart_and_last_close(page, make_server):
@@ -114,3 +114,32 @@ def test_demo_data_is_labelled_and_not_mixed_with_live_price(page, make_server):
     assert page.is_hidden("#live-badge")                                   # harga live asli tidak ditempel pada patokan demo
     assert "+115" not in page.inner_text("main")                           # tidak ada persentase campuran
     assert page.inner_text("#price") == "$38.006,74"                       # tetap tampil sebagai angka demo, berlabel
+
+
+def test_live_explain_panels_render_from_latest(page, make_server):
+    url = make_server(BASE_NOW, retro=True)
+    errs = collect_errors(page)
+    page.goto(url + "/")
+    page.wait_for_selector("#sec-explain:not([hidden])")
+    assert page.locator("#live-news li").count() == 3
+    assert page.locator("#live-contrib .bar-row").count() == 13
+    assert "bukan saran investasi" in page.inner_text("#live-narrative")
+    page.wait_for_selector("#live-reliability tbody tr")
+    assert page.locator("#live-reliability tbody tr").count() == 3
+    assert [e for e in errs if "404" not in e] == []
+
+
+def test_live_explain_reliability_explains_when_retro_not_built(page, make_server):
+    url = make_server(BASE_NOW)
+    page.goto(url + "/")
+    page.wait_for_selector("#sec-explain:not([hidden])")
+    page.wait_for_function("document.querySelector('#live-reliability').textContent.length > 0")
+    assert "build_retro" in page.inner_text("#live-reliability")
+
+
+def test_live_explain_section_hidden_without_block(page, make_server):
+    url = make_server(BASE_NOW, explain=False)
+    page.goto(url + "/")
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")
+    page.wait_for_timeout(500)
+    assert page.is_hidden("#sec-explain")

@@ -261,3 +261,22 @@ def generate_narrative(client, facts: dict, retries: int = 3) -> dict:
             return {"text": text, "source": "llm", "attempts": attempt, "temperature": temperature}
         feedback = "\nPERBAIKI: percobaan sebelumnya gagal pada pemeriksaan: " + ", ".join(failed) + "."
     return {"text": template_narrative(facts), "source": "template", "attempts": retries, "temperature": temperature}
+
+
+def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=None, client=None) -> dict:
+    from datetime import date, timedelta
+    X = predictor.build_window(frame)
+    deltas = contributions_batch(predictor.models[1][0], X, replacement_vector(stats, predictor.scaler))[0]
+    last = frame.iloc[-1]
+    values = {f: float(last[f]) for f in FEATURE_ORDER}
+    feats, contrib = feature_rows(values, stats), rank_contributions(deltas)
+    prob, thr = pred["prob"], pred["threshold"]
+    level = level_of(abs(prob - thr), series["level_cuts"]) if series else None
+    rec = {"date": as_of, "target_date": (date.fromisoformat(as_of) + timedelta(days=1)).isoformat(),
+           "prob": prob, "threshold": thr, "level": level, "features": feats, "contributions": contrib}
+    narrative = generate_narrative(client, build_facts(rec, auc=(series or {}).get("auc"))) if client else None
+    titles = (news or {}).get("titles", [])
+    return {"headlines": [{"title": t} for t in titles],
+            "sentiment": {"has_news": bool(titles), "scores": (news or {}).get("scores"),
+                          "used": values["news_sentiment"]},
+            "contributions": contrib, "features": feats, "level": level, "narrative": narrative}

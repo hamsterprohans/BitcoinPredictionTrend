@@ -157,3 +157,12 @@ def test_retrospektif_page_route(paths):
     (static / "retrospektif.html").write_text("<h1>retro</h1>")
     r = TestClient(create_app(live, content, static, now=lambda: NOW)).get("/retrospektif")
     assert r.status_code == 200 and "retro" in r.text
+
+
+def test_retro_status_never_404(paths):
+    from tests.factories import seed_retro
+    live, content, static = paths
+    c = TestClient(create_app(live, content, static, now=lambda: NOW))
+    assert c.get("/api/retro/status").json() == {"built": False, "n": None}
+    out = seed_retro(content)
+    assert c.get("/api/retro/status").json() == {"built": True, "n": out["series"]["n"]}
