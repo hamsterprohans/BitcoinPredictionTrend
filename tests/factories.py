@@ -81,3 +81,36 @@ def seed_prices_only(live_dir, as_of=date(2026, 10, 14)):
     prices = synthetic_prices(as_of)
     prices.to_csv(live_dir / "prices.csv", index=False)
     atomic_write_json(live_dir / "chart.json", frame_to_columns(chart_frame(compute_features(prices))))
+
+
+SENT3_COLS = ["news_sentiment_pemahaman", "news_sentiment_detail", "news_sentiment_bullbear"]
+
+
+def synthetic_retro_inputs(n_days=460, start="2025-01-01", seed=3):
+    rng = np.random.default_rng(seed)
+    dates = pd.date_range(start, periods=n_days)
+    close = 60000 * np.exp(np.cumsum(rng.normal(0.0005, 0.02, n_days)))
+    prices = pd.DataFrame({"date": dates, "close": close})
+    sent3 = pd.DataFrame({"date": dates, **{c: rng.integers(-5, 6, n_days).astype(float) for c in SENT3_COLS}})
+    no_news = set(range(150, 153)) | set(range(5, n_days, 17))          # 3 hari berturut-turut + hari acak tanpa berita
+    rows = [(d, f"judul {i}-{k}", "cryptocompare") for i, d in enumerate(dates) if i not in no_news for k in range(7)]
+    news = pd.DataFrame(rows, columns=["date", "title", "source"])
+    fg = pd.DataFrame({"date": dates, "fear_greed_index": rng.integers(10, 90, n_days).astype(float)})
+    return {"prices": prices, "sent3": sent3, "news": news, "fg": fg, "no_news": no_news, "dates": dates,
+            "start": dates[100], "end": dates[-2]}
+
+
+class FakeRetroModel:
+    """prob = 0.3 + 0.4 * (Fear&Greed terskala hari terakhir jendela): deterministik dan bergantung pada fitur ke-13."""
+    def predict(self, W, verbose=0):
+        return (0.3 + 0.4 * np.asarray(W)[:, -1, 12])[:, None]
+
+
+def fit_scaler(inputs):
+    from sklearn.preprocessing import RobustScaler
+    from scripts.build_retro import assemble_table, split_table
+    from app.features import TECH_FEATURES
+    table = assemble_table(inputs["prices"], inputs["sent3"], set(pd.to_datetime(inputs["news"]["date"]).dt.normalize()),
+                           inputs["fg"])
+    train, _, _ = split_table(table, inputs["start"], inputs["end"])
+    return RobustScaler().fit(train[TECH_FEATURES + ["news_sentiment"]])
