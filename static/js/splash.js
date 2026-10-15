@@ -29,7 +29,7 @@ export function initSplash() {
   if (hasWebGL()) {
     import("./splash-scene.js")
       .then((m) => m.createBitcoinMark($("#splash-canvas"), { reduced: reducedMotion }))
-      .then((s) => { if (done) s.dispose(); else { scene = s; el.dataset.mark = "bitcoin"; } })
+      .then((s) => { if (done) s.dispose(); else { scene = s; el.dataset.mark = "bitcoin"; if (s.ring) el.dataset.ring = "1"; } })
       .catch((e) => { console.warn("Splash 3D dinonaktifkan:", e); document.body.classList.add("no-webgl"); });
   }
 }

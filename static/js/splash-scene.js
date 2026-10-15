@@ -26,8 +26,23 @@ void main() {
   gl_FragColor = vec4(uColor, smoothstep(0.5, 0.0, d) * vA);
 }`;
 
+export const CENTER_Y = 1.7;   // pusat simbol dan cincin pada sumbu y (dunia 3D)
+
+/** Radius cincin: melingkupi seluruh titik simbol dengan sedikit ruang. */
+export function ringRadiusFor(pts, cy = CENTER_Y) {
+  return Math.max(...pts.map(([x, y]) => Math.hypot(x, y - cy))) * 1.16 + 0.1;
+}
+
+/** Titik-titik cincin (pita melingkar setebal `thickness`) seperti lingkaran pada logo Bitcoin. */
+export function ringPoints(n, radius, thickness = 0.16, cy = CENTER_Y) {
+  return Array.from({ length: n }, () => {
+    const th = Math.random() * Math.PI * 2, r = radius + (Math.random() - 0.5) * thickness;
+    return [Math.cos(th) * r, Math.sin(th) * r + cy];
+  });
+}
+
 /** Titik-titik simbol ₿: huruf B ditambah dua garis vertikal di atas dan bawah (tidak bergantung glyph ₿ pada font). */
-export async function sampleBitcoin(maxPts, height = 4.0) {
+export async function sampleBitcoin(maxPts, height = 3.6) {
   try { await Promise.race([document.fonts.load('800 200px "Geist"'), new Promise((r) => setTimeout(r, 900))]); } catch { /* pakai font cadangan */ }
   const W = 360, H = 470, size = 300, base = 365;
   const c = document.createElement("canvas");
@@ -47,18 +62,20 @@ export async function sampleBitcoin(maxPts, height = 4.0) {
   for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) if (data[(y * W + x) * 4 + 3] > 128) px.push([x, y]);
   for (let i = px.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [px[i], px[j]] = [px[j], px[i]]; }
   const scale = height / (cap + 2 * bh), cx = W / 2, cy = base - cap / 2;
-  return px.slice(0, maxPts).map(([x, y]) => [(x - cx) * scale, -(y - cy) * scale + 1.5]);
+  return px.slice(0, maxPts).map(([x, y]) => [(x - cx) * scale, -(y - cy) * scale + CENTER_Y]);
 }
 
 export async function createBitcoinMark(canvas, { reduced = false } = {}) {
-  const pts = await sampleBitcoin(7000);
+  const sym = await sampleBitcoin(7000);
+  const R = ringRadiusFor(sym);
+  const pts = sym.concat(ringPoints(2800, R));      // simbol + cincin
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "low-power" });
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   renderer.setPixelRatio(dpr);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 0.4, 11);
-  camera.lookAt(0, 0.4, 0);
+  camera.position.set(0, CENTER_Y - 0.9, 11);
+  camera.lookAt(0, CENTER_Y - 0.9, 0);
 
   const N = pts.length;
   const pos = new Float32Array(N * 3), start = new Float32Array(N * 3), seed = new Float32Array(N);
@@ -81,6 +98,8 @@ export async function createBitcoinMark(canvas, { reduced = false } = {}) {
     const w = canvas.clientWidth || window.innerWidth, h = canvas.clientHeight || window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
+    // layar sempit: mundurkan kamera agar cincin tidak terpotong
+    camera.position.z = Math.max(11, ((R * 2 + 0.8) / (2 * Math.tan(THREE.MathUtils.degToRad(22.5)) * camera.aspect)));
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);
   }
@@ -99,5 +118,5 @@ export async function createBitcoinMark(canvas, { reduced = false } = {}) {
   }
   if (!reduced) raf = requestAnimationFrame(loop);
 
-  return { dispose() { cancelAnimationFrame(raf); ro.disconnect(); geo.dispose(); mat.dispose(); renderer.dispose(); } };
+  return { ring: true, dispose() { cancelAnimationFrame(raf); ro.disconnect(); geo.dispose(); mat.dispose(); renderer.dispose(); } };
 }
