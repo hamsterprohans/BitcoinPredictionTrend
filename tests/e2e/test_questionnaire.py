@@ -50,7 +50,8 @@ def test_form_renders_every_question_with_correct_controls(page, server):
             assert page.locator(sel).count() == n, q["id"]
 
 
-def test_unconfigured_site_explains_and_never_sends(page, server):
+def test_unconfigured_site_explains_and_never_sends(page, context, server):
+    context.add_init_script("window.__APP_CONFIG__ = { supabaseUrl: '', supabaseAnonKey: '' };")
     sent = []
     page.on("request", lambda r: sent.append(r.url) if "supabase" in r.url else None)
     page.goto(server + "/kuesioner")
