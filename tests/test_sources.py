@@ -155,13 +155,27 @@ def test_cryptocompare_collects_one_utc_day_newest_first_with_filters_and_paging
     def handler(req):
         seen.append(dict(req.url.params))
         assert req.headers["authorization"] == "Apikey SECRET"
-        return httpx.Response(200, json={"Type": 100, "Data": pages.pop(0) if pages else []})
+        return httpx.Response(200, json={"Type": 100, "Data": pages.pop(0)})
 
-    out = fetch_headlines_cryptocompare(client(handler), day, "SECRET", sleep=lambda s: None)
+    out = fetch_headlines_cryptocompare(client(handler), day, "SECRET", sleep=lambda s: None, want=50)
     assert out == ["Bitcoin jumps 5%", "BTC holds $100k"]                   # hari itu saja, terbaru dulu, tersaring, unik
-    assert seen[0]["lTs"] == str(_ts(2026, 10, 15, 0, 0))                    # mulai dari akhir hari (UTC)
+    assert seen[0]["lTs"] == str(_ts(2026, 10, 15, 0, 0)) and seen[0]["categories"] == "BTC"
     assert seen[1]["lTs"] == str(_ts(2026, 10, 14, 21, 0))                   # halaman berikut: mundur dari artikel terlama
     assert len(seen) == 2                                                    # berhenti setelah melewati awal hari
+
+
+def test_cryptocompare_stops_after_one_page_when_enough_headlines_and_respects_rate_limit():
+    from app.sources import fetch_headlines_cryptocompare
+    page = [_art(_ts(2026, 10, 14, 23, 59) - i * 60, f"Bitcoin berita {i}") for i in range(8)]
+    calls, waits = {"n": 0}, []
+
+    def handler(req):
+        calls["n"] += 1
+        return httpx.Response(200, json={"Type": 100, "Data": page})
+
+    out = fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "K", sleep=waits.append)
+    assert len(out) == 8 and calls["n"] == 1                                 # satu panggilan per hari (kuota gratis 100/bulan)
+    assert waits and waits[-1] >= 6                                          # jeda >= 6 dtk (batas 10 panggilan/menit)
 
 
 def test_cryptocompare_without_valid_key_raises_clear_error():
@@ -172,24 +186,34 @@ def test_cryptocompare_without_valid_key_raises_clear_error():
         fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "BAD", sleep=lambda s: None)
 
 
-def test_cryptocompare_retries_429_then_succeeds_and_gives_up_on_empty_pages():
+def test_cryptocompare_throttled_replies_are_retried_never_treated_as_no_news():
     from app.sources import fetch_headlines_cryptocompare
-    calls = {"n": 0}
-    def handler(req):
-        calls["n"] += 1
-        if calls["n"] == 1:
-            return httpx.Response(429, text="slow")
-        return httpx.Response(200, json={"Data": []})                         # tidak ada artikel lagi
+    day_page = [_art(_ts(2026, 10, 14, 20, 0) - i * 60, f"Bitcoin x{i}") for i in range(6)]
+    replies = [httpx.Response(200, json={"Type": 100, "Data": [], "HasWarning": False, "RateLimit": {}}),          # kosong
+               httpx.Response(200, json={"Type": 100, "Data": day_page, "HasWarning": True, "RateLimit": {"x": 1}}),  # peringatan
+               httpx.Response(429, text="slow"),
+               httpx.Response(200, json={"Type": 100, "Data": day_page, "HasWarning": False, "RateLimit": {}})]
     waits = []
-    assert fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "K", sleep=waits.append) == []
-    assert calls["n"] == 2 and waits[0] == 15
+    out = fetch_headlines_cryptocompare(client(lambda req: replies.pop(0)), date(2026, 10, 14), "K", sleep=waits.append)
+    assert len(out) == 6 and not replies and 60 in waits and 120 in waits    # backoff 60 dtk (kosong), 120 dtk (peringatan), 60 dtk (429)
 
 
-def test_cryptocompare_stops_at_max_pages():
+def test_cryptocompare_persistent_throttle_or_empty_day_raises():
     from app.sources import fetch_headlines_cryptocompare
-    n = {"i": 0}
+    def empty(req):
+        return httpx.Response(200, json={"Type": 100, "Data": []})
+    with pytest.raises(SourceError, match="dibatasi|kosong"):
+        fetch_headlines_cryptocompare(client(empty), date(2026, 10, 14), "K", sleep=lambda s: None)
+    def no_btc_in_day(req):
+        return httpx.Response(200, json={"Type": 100, "Data": [_art(_ts(2026, 10, 13, 12, 0), "Bitcoin kemarin")]})
+    with pytest.raises(SourceError, match="tidak ada berita"):
+        fetch_headlines_cryptocompare(client(no_btc_in_day), date(2026, 10, 14), "K", sleep=lambda s: None)
+
+
+def test_cryptocompare_monthly_quota_exhausted_is_reported():
+    from app.sources import fetch_headlines_cryptocompare
     def handler(req):
-        n["i"] += 1
-        return httpx.Response(200, json={"Data": [_art(_ts(2026, 10, 14, 23, 59) - n["i"], f"Bitcoin {n['i']}")]})
-    out = fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "K", sleep=lambda s: None, max_pages=5)
-    assert n["i"] == 5 and len(out) == 5
+        return httpx.Response(200, json={"Type": 100, "Data": [_art(_ts(2026, 10, 14, 12, 0), "Bitcoin ok")]},
+                              headers={"x-ratelimit-remaining": "0"})
+    with pytest.raises(SourceError, match="kuota"):
+        fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "K", sleep=lambda s: None)
