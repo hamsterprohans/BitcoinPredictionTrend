@@ -154,3 +154,31 @@ def test_backfilled_history_rows_are_labeled_as_computed_afterwards(page, server
     assert len(labeled) == 1                                              # hanya entri yang ditandai backfilled
     assert page.locator("#history-body tr:has-text('dihitung susulan') td").first.get_attribute("title") \
         == "Dihitung setelah harinya lewat dari data tersimpan; bukan prediksi yang terbit pada hari itu"
+
+
+def test_open_page_reloads_itself_when_a_new_daily_snapshot_is_published(page, context, server):
+    context.add_init_script("window.__SNAPSHOT_POLL_MS__ = 300;")
+    calls = {"n": 0}
+
+    def handle(route):
+        calls["n"] += 1
+        if calls["n"] == 1:                                              # pemuatan awal: data apa adanya
+            return route.continue_()
+        body = route.fetch().json()
+        body["as_of"] = "2026-10-15"                                     # snapshot baru terbit
+        route.fulfill(json=body)
+    page.route("**/api/prediction/latest", handle)
+    page.goto(server + "/")
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")
+    page.evaluate("window.__stayed = true")
+    page.wait_for_function("!window.__stayed", timeout=8000)             # halaman dimuat ulang sendiri
+    assert calls["n"] >= 2
+
+
+def test_open_page_does_not_reload_when_snapshot_is_unchanged(page, context, server):
+    context.add_init_script("window.__SNAPSHOT_POLL_MS__ = 200;")
+    page.goto(server + "/")
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")
+    page.evaluate("window.__stayed = true")
+    page.wait_for_timeout(1500)
+    assert page.evaluate("window.__stayed") is True

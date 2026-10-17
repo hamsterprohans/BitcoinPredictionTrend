@@ -32,7 +32,7 @@ export function getJSON(url) {
 }
 
 async function rawJSON(url) {
-  const r = await fetch(url);
+  const r = await fetch(url, { cache: "no-cache" });          // selalu validasi ke server (304 bila tak berubah)
   if (!r.ok) { const e = new Error(`HTTP ${r.status}`); e.status = r.status; throw e; }
   return r.json();
 }

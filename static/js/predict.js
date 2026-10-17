@@ -291,7 +291,20 @@ async function refreshLive() {
   }
 }
 
+// ---- Snapshot harian baru: tab yang dibiarkan terbuka memuat ulang sendiri saat data terbaru terbit ----
+function watchSnapshot() {
+  const every = window.__SNAPSHOT_POLL_MS__ ?? 600000;               // 10 menit; data harian hanya berubah sekali sehari
+  setInterval(async () => {
+    if (document.hidden || !state.latest) return;
+    try {
+      const d = await getJSON("/api/prediction/latest");
+      if (d.as_of !== state.latest.as_of) location.reload();
+    } catch { /* gangguan jaringan sesaat: coba lagi pada putaran berikutnya */ }
+  }, every);
+}
+
 function startLive() {
+  watchSnapshot();
   refreshLive();
   setInterval(refreshLive, 30000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshLive(); });
