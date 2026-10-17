@@ -1,0 +1,236 @@
+{
+ "date": "2025-07-10",
+ "target_date": "2025-07-11",
+ "close": 115873.903783752,
+ "prob": 0.5401130318641663,
+ "threshold": 0.4768124222755432,
+ "direction": "NAIK",
+ "actual": "NAIK",
+ "correct": true,
+ "level": "sedang",
+ "margin": 0.06330060958862305,
+ "features": [
+  {
+   "feature": "daily_return",
+   "label": "Return harian",
+   "value": 0.04000381266449504,
+   "value_text": "+4,00%",
+   "percentile": 90,
+   "category": "tinggi",
+   "outside_train_range": false
+  },
+  {
+   "feature": "MA7",
+   "label": "Rata-rata harga 7 hari",
+   "value": 110000.41904700687,
+   "value_text": "US$110.000",
+   "percentile": 100,
+   "category": "tinggi",
+   "outside_train_range": true
+  },
+  {
+   "feature": "MA30",
+   "label": "Rata-rata harga 30 hari",
+   "value": 106954.57899937655,
+   "value_text": "US$106.955",
+   "percentile": 100,
+   "category": "tinggi",
+   "outside_train_range": true
+  },
+  {
+   "feature": "MA90",
+   "label": "Rata-rata harga 90 hari",
+   "value": 101964.22560325344,
+   "value_text": "US$101.964",
+   "percentile": 100,
+   "category": "tinggi",
+   "outside_train_range": true
+  },
+  {
+   "feature": "Vol_7",
+   "label": "Volatilitas 7 hari",
+   "value": 0.018460975152616493,
+   "value_text": "1,85%",
+   "percentile": 22,
+   "category": "rendah",
+   "outside_train_range": false
+  },
+  {
+   "feature": "Vol_30",
+   "label": "Volatilitas 30 hari",
+   "value": 0.016940435777781114,
+   "value_text": "1,69%",
+   "percentile": 8,
+   "category": "rendah",
+   "outside_train_range": false
+  },
+  {
+   "feature": "RSI14",
+   "label": "RSI 14 hari",
+   "value": 70.83751498009036,
+   "value_text": "70,8",
+   "percentile": 90,
+   "category": "tinggi",
+   "outside_train_range": false
+  },
+  {
+   "feature": "MACD",
+   "label": "MACD",
+   "value": 1647.5745139573555,
+   "value_text": "US$+1.647,6",
+   "percentile": 92,
+   "category": "tinggi",
+   "outside_train_range": false
+  },
+  {
+   "feature": "MACD_Signal",
+   "label": "Sinyal MACD",
+   "value": 1005.1898943460405,
+   "value_text": "US$+1.005,2",
+   "percentile": 86,
+   "category": "tinggi",
+   "outside_train_range": false
+  },
+  {
+   "feature": "MACD_Histogram",
+   "label": "Histogram MACD",
+   "value": 642.384619611315,
+   "value_text": "US$+642,4",
+   "percentile": 96,
+   "category": "tinggi",
+   "outside_train_range": false
+  },
+  {
+   "feature": "BB_width",
+   "label": "Lebar Bollinger",
+   "value": 0.1171072325490443,
+   "value_text": "11,7%",
+   "percentile": 22,
+   "category": "rendah",
+   "outside_train_range": false
+  },
+  {
+   "feature": "news_sentiment",
+   "label": "Sentimen berita",
+   "value": 7.666666666666667,
+   "value_text": "+7,67",
+   "percentile": 100,
+   "category": "tinggi",
+   "outside_train_range": false
+  },
+  {
+   "feature": "fear_greed_index_scaled",
+   "label": "Fear & Greed Index",
+   "value": 0.71,
+   "value_text": "71 dari 100",
+   "percentile": 86,
+   "category": "tinggi",
+   "outside_train_range": false
+  }
+ ],
+ "contributions": [
+  {
+   "feature": "news_sentiment",
+   "label": "Sentimen berita",
+   "delta_pp": 18.868
+  },
+  {
+   "feature": "MA30",
+   "label": "Rata-rata harga 30 hari",
+   "delta_pp": 10.738
+  },
+  {
+   "feature": "MA7",
+   "label": "Rata-rata harga 7 hari",
+   "delta_pp": 5.384
+  },
+  {
+   "feature": "Vol_7",
+   "label": "Volatilitas 7 hari",
+   "delta_pp": 4.118
+  },
+  {
+   "feature": "MACD",
+   "label": "MACD",
+   "delta_pp": -3.35
+  },
+  {
+   "feature": "MA90",
+   "label": "Rata-rata harga 90 hari",
+   "delta_pp": -2.183
+  },
+  {
+   "feature": "MACD_Histogram",
+   "label": "Histogram MACD",
+   "delta_pp": -1.713
+  },
+  {
+   "feature": "BB_width",
+   "label": "Lebar Bollinger",
+   "delta_pp": -1.451
+  },
+  {
+   "feature": "RSI14",
+   "label": "RSI 14 hari",
+   "delta_pp": -0.917
+  },
+  {
+   "feature": "MACD_Signal",
+   "label": "Sinyal MACD",
+   "delta_pp": 0.738
+  },
+  {
+   "feature": "daily_return",
+   "label": "Return harian",
+   "delta_pp": 0.482
+  },
+  {
+   "feature": "Vol_30",
+   "label": "Volatilitas 30 hari",
+   "delta_pp": 0.386
+  },
+  {
+   "feature": "fear_greed_index_scaled",
+   "label": "Fear & Greed Index",
+   "delta_pp": 0.239
+  }
+ ],
+ "headlines": [
+  {
+   "title": "Bitcoin Nears $112,000 Amid Whale Support Despite Retail Selling Pressure",
+   "source": "CoinOtag"
+  },
+  {
+   "title": "Bhutan Government Moves $23.7M in Bitcoin to Binance as BTC Hits Record Highs",
+   "source": "The Crypto Basic"
+  },
+  {
+   "title": "Bitcoin Rally Ahead? DXY Breakdown Suggests Capital Shift To Risk-On Assets",
+   "source": "NewsBTC"
+  },
+  {
+   "title": "Bitcoin Nears $112,000 as Keiser Sets 2025 Target for Possible $220,000 Price Milestone",
+   "source": "CoinOtag"
+  },
+  {
+   "title": "Bitcoin Primed for $180K Surge With Fed Shift, Debt Spiral, and Corporate Buying",
+   "source": "Bitcoin.com"
+  }
+ ],
+ "sentiment": {
+  "has_news": true,
+  "scores": {
+   "pemahaman": 8.0,
+   "detail": 7.0,
+   "bullbear": 8.0,
+   "mean": 7.666666666666667
+  },
+  "used": 7.666666666666667
+ },
+ "narrative": {
+  "text": "Model penelitian memprediksi Bitcoin akan naik pada 11 Juli 2025 dengan probabilitas 0,5401 (tingkat keyakinan sedang). Fitur sentimen berita (nilai +7,67) dan rata-rata harga 30 hari (US$106.955) paling memengaruhi skor model dengan pengaruh masing-masing +18,9 dan +10,7 poin persentase. Hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+  "source": "llm",
+  "attempts": 2,
+  "temperature": null
+ }
+}

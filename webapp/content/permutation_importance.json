@@ -1,0 +1,80 @@
+[
+ {
+  "Fitur": "Vol_30",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.028729554032764525,
+  "Std": 0.008847687141366885
+ },
+ {
+  "Fitur": "MACD_Histogram",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.022651901316739508,
+  "Std": 0.00760305406967028
+ },
+ {
+  "Fitur": "RSI14",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.021861124281072897,
+  "Std": 0.013129020631473707
+ },
+ {
+  "Fitur": "fear_greed_index_scaled",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.01647014876796592,
+  "Std": 0.00502209173503482
+ },
+ {
+  "Fitur": "MA90",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.012094839483871401,
+  "Std": 0.01570271762817217
+ },
+ {
+  "Fitur": "MACD_Signal",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.010406291979670867,
+  "Std": 0.022834418452546437
+ },
+ {
+  "Fitur": "daily_return",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.008809964384029345,
+  "Std": 0.002807391317772233
+ },
+ {
+  "Fitur": "MA7",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.008793965574367301,
+  "Std": 0.008560945250914727
+ },
+ {
+  "Fitur": "BB_width",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.006244191105367924,
+  "Std": 0.007048459464524708
+ },
+ {
+  "Fitur": "Vol_7",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.003251790387281095,
+  "Std": 0.006818522587906554
+ },
+ {
+  "Fitur": "news_sentiment_detail",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": 0.0016412213357067883,
+  "Std": 0.00988057183714861
+ },
+ {
+  "Fitur": "MA30",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": -0.004005013078395292,
+  "Std": 0.013102241366782898
+ },
+ {
+  "Fitur": "MACD",
+  "Baseline F1": 0.4949457767217158,
+  "Penurunan F1 (Importance)": -0.010021536730343939,
+  "Std": 0.022592659510225748
+ }
+]
