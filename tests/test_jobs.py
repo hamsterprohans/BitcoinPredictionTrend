@@ -200,3 +200,69 @@ def test_headline_source_prefers_cryptocompare_when_key_present():
     assert name2 == "gdelt"
     _, name3 = make_headline_fetcher(http=object(), env={"CRYPTOCOMPARE_API_KEY": "k2"})
     assert name3 == "cryptocompare"
+
+
+# ---- backfill: hitung susulan hari yang terlewat dari data yang sudah tersimpan (tanpa API baru) ----
+from app.jobs import run_backfill   # noqa: E402
+
+LATER = datetime(2026, 10, 16, 1, 0, tzinfo=timezone.utc)
+
+
+def seeded_after_gap(tmp_path):
+    deps, calls = make_deps(tmp_path)
+    run_daily(deps)                                              # as_of 14 Okt: log sentimen terisi sampai 14 Okt
+    deps.now = lambda: LATER
+    run_daily(deps)                                              # as_of 15 Okt; lalu entri 14 Okt "hilang" (hari terlewat)
+    h = read_json(deps.live_dir / "history.json")
+    atomic_write_json(deps.live_dir / "history.json", [e for e in h if e["date"] != "2026-10-14"])
+    calls["score"].clear()
+    calls["headlines"].clear()
+    return deps, calls
+
+
+def test_backfill_adds_missing_day_flags_it_and_leaves_latest_untouched(tmp_path):
+    deps, calls = seeded_after_gap(tmp_path)
+    latest_before = (deps.live_dir / "latest.json").read_text()
+    entry = run_backfill(deps, date(2026, 10, 14))
+    hist = read_json(deps.live_dir / "history.json")
+    assert [e["date"] for e in hist] == ["2026-10-14", "2026-10-15"]
+    assert hist[0]["backfilled"] is True and "backfilled" not in hist[1]
+    assert entry["date"] == "2026-10-14" and "prob" in hist[0]["horizons"]["1"]
+    assert (deps.live_dir / "latest.json").read_text() == latest_before          # prediksi terbaru tidak berubah
+    assert calls["score"] == [] and calls["headlines"] == []                     # tanpa panggilan berita/LLM
+
+
+def test_backfill_uses_only_data_up_to_that_day(tmp_path):
+    seen = {}
+
+    class Spy(FakePredictor):
+        def predict(self, frame):
+            seen["last"] = frame["date"].max()
+            return super().predict(frame)
+    deps, _ = seeded_after_gap(tmp_path)
+    deps.predictor = Spy()
+    run_backfill(deps, date(2026, 10, 14))
+    assert seen["last"] == pd.Timestamp("2026-10-14")                            # tidak ada kebocoran data setelahnya
+
+
+def test_backfill_evaluates_outcome_when_target_already_known(tmp_path):
+    deps, _ = seeded_after_gap(tmp_path)
+    run_backfill(deps, date(2026, 10, 14))
+    v = read_json(deps.live_dir / "history.json")[0]["horizons"]["1"]
+    assert v["actual"] in ("NAIK", "TURUN") and isinstance(v["correct"], bool)
+
+
+def test_backfill_never_overwrites_a_real_prediction(tmp_path):
+    deps, _ = seeded_after_gap(tmp_path)
+    before = read_json(deps.live_dir / "history.json")
+    assert run_backfill(deps, date(2026, 10, 15)) is None                        # 15 Okt sudah punya prediksi asli
+    assert read_json(deps.live_dir / "history.json") == before
+
+
+def test_backfill_refuses_when_price_or_sentiment_is_missing_and_changes_nothing(tmp_path):
+    deps, _ = seeded_after_gap(tmp_path)
+    before = (deps.live_dir / "history.json").read_text()
+    for bad in (date(2026, 10, 20), date(2026, 8, 1)):                           # di luar harga / di luar log sentimen
+        with pytest.raises(RuntimeError):
+            run_backfill(deps, bad)
+    assert (deps.live_dir / "history.json").read_text() == before

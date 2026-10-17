@@ -96,3 +96,14 @@ systemctl --user disable --now btc-publish.timer   # melepas jadwal
 ```
 
 Kunci API dibaca dari `scripts/.env`. Bila job atau ekspor gagal, situs yang tayang tidak diubah.
+
+## Menutup hari yang terlewat (backfill)
+
+Bila satu hari tidak terproses, hitung susulan dari data tersimpan (tanpa panggilan berita atau LLM baru):
+
+```bash
+python -m app.jobs --backfill 2026-10-15
+```
+
+Hanya data sampai hari itu yang dipakai, `latest.json` tidak berubah, prediksi asli tidak pernah ditimpa, dan barisnya diberi
+label "dihitung susulan" pada tabel riwayat. Bila harga atau sentimen hari itu tidak tersimpan, perintah berhenti.
