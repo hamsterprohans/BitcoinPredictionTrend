@@ -53,6 +53,60 @@
   }
  },
  {
+  "date": "2026-10-15",
+  "close": 82116.23,
+  "horizons": {
+   "1": {
+    "prob": 0.5164821147918701,
+    "direction": "NAIK",
+    "threshold": 0.4768124222755432,
+    "actual": "TURUN",
+    "correct": false
+   },
+   "3": {
+    "prob": 0.4817524552345276,
+    "direction": "TURUN",
+    "threshold": 0.5177493095397949
+   },
+   "5": {
+    "prob": 0.46668251355489093,
+    "direction": "TURUN",
+    "threshold": 0.47828808426856995
+   },
+   "7": {
+    "prob": 0.4785332183043162,
+    "direction": "NAIK",
+    "threshold": 0.47223278880119324
+   },
+   "15": {
+    "prob": 0.42944440245628357,
+    "direction": "TURUN",
+    "threshold": 0.45957493782043457
+   },
+   "20": {
+    "prob": 0.4230318268140157,
+    "direction": "TURUN",
+    "threshold": 0.4715519845485687
+   },
+   "25": {
+    "prob": 0.4174610674381256,
+    "direction": "TURUN",
+    "threshold": 0.4579542577266693
+   },
+   "30": {
+    "prob": 0.44069637854894,
+    "direction": "TURUN",
+    "threshold": 0.4812179505825043
+   },
+   "35": {
+    "prob": 0.42065301537513733,
+    "direction": "TURUN",
+    "threshold": 0.42857804894447327
+   }
+  },
+  "backfilled": true
+ },
+ {
   "date": "2026-10-16",
   "close": 81538.3,
   "horizons": {

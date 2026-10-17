@@ -5,7 +5,7 @@ Pemakaian: python -m app.jobs [--force]
 import argparse
 import os
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Optional
@@ -110,19 +110,8 @@ def run_prices_only(deps: Deps):
     return prices["date"].max().date()
 
 
-def run_daily(deps: Deps, force: bool = False):
-    live = deps.live_dir
-    live.mkdir(parents=True, exist_ok=True)
-    today = deps.now().astimezone(timezone.utc).date()
-
-    prices = refresh_prices(load_prices(live, deps.seed_tsv), deps.fetch_prices, today)
-    prices.to_csv(live / "prices.csv", index=False)
-    as_of = prices["date"].max().date()
-
-    previous = read_json(live / "latest.json")
-    if previous and previous.get("as_of") == as_of.isoformat() and not force:
-        return None
-
+def _compute(deps: Deps, live, prices, as_of):
+    """Inti prediksi untuk satu tanggal: fitur, sentimen, Fear & Greed, model. Mengembalikan (feats, frame, preds, latest, entry)."""
     feats = compute_features(prices)
     window_days = [d.date() for d in feats.dropna(subset=TECH_FEATURES)["date"].iloc[-config.SEQ_LEN:]]
     if len(window_days) < config.SEQ_LEN or (window_days[-1] - window_days[0]).days != config.SEQ_LEN - 1:
@@ -157,6 +146,48 @@ def run_daily(deps: Deps, force: bool = False):
     entry = {"date": as_of.isoformat(), "close": round(close, 2),
              "horizons": {str(h): {k: v[k] for k in ("prob", "direction", "threshold")}
                           for h, v in preds.items()}}
+    return feats, frame, preds, latest, entry
+
+
+def run_backfill(deps: Deps, as_of):
+    """Hitung SUSULAN prediksi satu hari yang terlewat, hanya dari data tersimpan (harga, log sentimen, Fear & Greed).
+
+    Tanpa berita/LLM baru; hanya memakai data sampai `as_of` (tanpa kebocoran). Tidak menyentuh latest.json maupun chart.json,
+    tidak menimpa prediksi asli, dan hasilnya ditandai `backfilled`. Mengembalikan entri riwayat, atau None bila sudah ada.
+    """
+    live = deps.live_dir
+    history = read_json(live / "history.json", [])
+    if any(e["date"] == as_of.isoformat() for e in history):
+        return None
+    all_prices = load_prices(live, deps.seed_tsv)
+    prices = all_prices[all_prices["date"] <= pd.Timestamp(as_of)]
+    if prices.empty or prices["date"].max().date() != as_of:
+        raise RuntimeError(f"Harga tersimpan tidak memuat penutupan {as_of}")
+
+    def _no_fetch(day):
+        raise RuntimeError(f"Sentimen {day} tidak tersimpan; backfill tidak boleh mengarang atau memanggil berita baru")
+    offline = replace(deps, fetch_headlines=_no_fetch, score=None, score_detail=None, explainer=None)
+    _, _, _, _, entry = _compute(offline, live, prices, as_of)
+    entry["backfilled"] = True
+    history = evaluate_history(upsert_history(history, entry), all_prices)
+    atomic_write_json(live / "history.json", history)
+    return entry
+
+
+def run_daily(deps: Deps, force: bool = False):
+    live = deps.live_dir
+    live.mkdir(parents=True, exist_ok=True)
+    today = deps.now().astimezone(timezone.utc).date()
+
+    prices = refresh_prices(load_prices(live, deps.seed_tsv), deps.fetch_prices, today)
+    prices.to_csv(live / "prices.csv", index=False)
+    as_of = prices["date"].max().date()
+
+    previous = read_json(live / "latest.json")
+    if previous and previous.get("as_of") == as_of.isoformat() and not force:
+        return None
+
+    feats, frame, preds, latest, entry = _compute(deps, live, prices, as_of)
     history = upsert_history(read_json(live / "history.json", []), entry)
     history = evaluate_history(history, prices)
 
@@ -233,12 +264,18 @@ if __name__ == "__main__":
     ap.add_argument("--force", action="store_true", help="hitung ulang walau sudah mutakhir")
     ap.add_argument("--patient", action="store_true",
                     help="bila GDELT memblokir (429), tunggu 15 menit lalu ulangi hari yang sama (untuk backfill pertama)")
+    ap.add_argument("--backfill", metavar="YYYY-MM-DD",
+                    help="hitung susulan prediksi hari yang terlewat dari data tersimpan (tanpa API baru)")
     ap.add_argument("--prices-only", action="store_true",
                     help="hanya perbarui harga dan grafik (tanpa API key atau model)")
     args = ap.parse_args()
     if args.prices_only:
         print("harga terakhir:", run_prices_only(make_real_deps(prices_only=True)))
         raise SystemExit(0)
+    if args.backfill:
+        deps = make_real_deps(patient_mode=False)
+        out = run_backfill(deps, date.fromisoformat(args.backfill))
+        raise SystemExit("sudah ada prediksi untuk tanggal itu" if out is None else f"backfill {out['date']} selesai")
     try:
         deps = make_real_deps(patient_mode=args.patient)
     except RuntimeError as e:
