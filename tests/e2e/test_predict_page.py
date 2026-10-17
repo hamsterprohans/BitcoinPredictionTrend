@@ -182,3 +182,28 @@ def test_open_page_does_not_reload_when_snapshot_is_unchanged(page, context, ser
     page.evaluate("window.__stayed = true")
     page.wait_for_timeout(1500)
     assert page.evaluate("window.__stayed") is True
+
+
+def test_chart_gets_a_live_point_for_today_and_follows_the_live_price(browser, make_server):
+    url = make_server(BASE_NOW, live_price=99999.5)
+    ctx = browser.new_context()
+    ctx.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}")
+    page = ctx.new_page()
+    errs = collect_errors(page)
+    page.goto(url + "/")
+    page.wait_for_function("document.body.dataset.chartLive")                 # titik live masuk ke grafik
+    today = page.evaluate("new Date().toISOString().slice(0, 10)")           # jam browser, bukan jam palsu server uji
+    assert page.evaluate("document.body.dataset.chartLive") == f"{today}:99999.5"   # tanggal hari ini (UTC) : harga live
+    page.locator("#intervals button:has-text('W')").click()
+    page.wait_for_function("!document.body.dataset.chartLive")                # W/M: tidak ada titik live (bar berbeda satuan)
+    page.locator("#intervals button:has-text('D')").click()
+    page.wait_for_function("document.body.dataset.chartLive")                 # kembali ke D: titik live dipasang lagi
+    assert not errs, errs
+    ctx.close()
+
+
+def test_no_live_point_when_live_price_is_unavailable(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#chart-price canvas")
+    page.wait_for_timeout(800)
+    assert page.evaluate("document.body.dataset.chartLive || ''") == ""

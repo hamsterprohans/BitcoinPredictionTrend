@@ -143,9 +143,19 @@ function buildRanges() {
   });
 }
 
+// Titik live di grafik harian (seperti TradingView): hanya interval D; W/M memakai bar berbeda satuan.
+function applyLiveToChart() {
+  const ok = state.interval === "D" && state.livePrice != null &&
+    state.charts?.setLive(state.livePrice, new Date().toISOString().slice(0, 10));
+  if (ok) document.body.dataset.chartLive = `${new Date().toISOString().slice(0, 10)}:${state.livePrice}`;
+  else delete document.body.dataset.chartLive;
+}
+
 async function loadPrices(interval) {
   const cols = await getJSON(`/api/prices?interval=${interval}`);
   state.charts.setData(cols);
+  state.interval = interval;                                          // dibutuhkan applyLiveToChart sebelum tombol diperbarui
+  applyLiveToChart();
   state.charts.setRange(state.range);
   state.charts.setMarkers(interval === "D" ? state.history : []);   // penanda prediksi harian hanya pada interval D
   return cols;
@@ -266,6 +276,8 @@ async function refreshLive() {
   const badge = $("#live-badge");
   try {
     const { price } = await getJSON("/api/price/live");
+    state.livePrice = price;
+    applyLiveToChart();
     const pct = (price / state.close - 1) * 100;
     $("#price").textContent = fmtUSD(price);
     const ch = $("#change");
@@ -282,6 +294,9 @@ async function refreshLive() {
       live.textContent = `patokan penutupan ${fmtUSD(state.close)} · harga live ${fmtUSD(price)} (${fmtPct(pct)}); arah prediksi dinilai dari penutupan hari target`;
     }
   } catch {
+    state.livePrice = null;
+    state.charts?.clearLive();
+    applyLiveToChart();
     badge.hidden = true;
     $("#since-close").hidden = true;
     $("#prediction-live").hidden = true;
