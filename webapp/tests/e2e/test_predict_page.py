@@ -144,3 +144,13 @@ def test_live_explain_section_hidden_without_block(page, make_server):
     page.wait_for_selector("#prediction-direction:not(:text('—'))")
     page.wait_for_timeout(500)
     assert page.is_hidden("#sec-explain")
+
+
+def test_backfilled_history_rows_are_labeled_as_computed_afterwards(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    rows = page.locator("#history-body tr")
+    labeled = [r for r in rows.all_inner_texts() if "dihitung susulan" in r]
+    assert len(labeled) == 1                                              # hanya entri yang ditandai backfilled
+    assert page.locator("#history-body tr:has-text('dihitung susulan') td").first.get_attribute("title") \
+        == "Dihitung setelah harinya lewat dari data tersimpan; bukan prediksi yang terbit pada hari itu"

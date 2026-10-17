@@ -85,11 +85,12 @@ function renderHistory() {
   for (const e of rows) {
     const h = e.horizons[state.selected];
     const tr = document.createElement("tr");
-    const cells = [fmtDateShort(e.date), `${arrow(h.direction)} ${h.direction}`, `${fmtNum(h.prob * 100, 1)}%`,
+    const cells = [e.backfilled ? `${fmtDateShort(e.date)} · dihitung susulan` : fmtDateShort(e.date), `${arrow(h.direction)} ${h.direction}`, `${fmtNum(h.prob * 100, 1)}%`,
       h.actual ? `${arrow(h.actual)} ${h.actual} ${h.correct ? "✓" : "✗"}` : "menunggu"];
     cells.forEach((t, i) => {
       const td = document.createElement("td");
       td.textContent = t;
+      if (i === 0 && e.backfilled) td.title = "Dihitung setelah harinya lewat dari data tersimpan; bukan prediksi yang terbit pada hari itu";
       if (i === 2) td.className = "num mono";
       if (i === 1) td.className = cls(h.direction);
       if (i === 3 && h.actual) td.className = h.correct ? "up" : "down";
