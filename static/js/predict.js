@@ -58,21 +58,6 @@ function renderPanel() {
   $("#prediction-prob").textContent = `probabilitas naik ${fmtNum(v.prob * 100, 1)}%`;
   $("#prediction-meta").textContent = `ambang keputusan ${fmtNum(v.threshold, 4)} · target ${fmtDate(v.target_date)}`;
 
-  const badge = $("#evidence-badge");
-  badge.hidden = false;
-  badge.replaceChildren();
-  if (v.evidence) {
-    badge.className = "badge warn";
-    const ci = `CI95 ${fmtNum(v.evidence.ci_lo, 2)}–${fmtNum(v.evidence.ci_hi, 2)}`;
-    badge.textContent = `${v.evidence.label} · AUC ${fmtNum(v.evidence.auc, 3)} (${ci}) · p Holm ${fmtNum(v.evidence.p_holm, 2)}`;
-  } else {
-    badge.className = "badge warn";
-    badge.append("Belum terbukti lebih baik dari tebakan acak (akurasi uji Model F ≈ 50%). Rincian uji ada di ");
-    const link = document.createElement("a");
-    link.href = "/riset";
-    link.textContent = "halaman Riset";
-    badge.append(link, ".");
-  }
   state.hero?.setState(currentVisual());
   renderHistory();
 }
