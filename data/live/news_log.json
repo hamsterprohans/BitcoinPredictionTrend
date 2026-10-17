@@ -328,5 +328,35 @@
    "bullbear": 2,
    "mean": 1.0
   }
+ },
+ "2026-10-15": {
+  "titles": [
+   "Bitcoin (BTC) Reclaims $82,000 After 3% Rebound in 90 Minutes",
+   "BitFuFu may abandon its 80 MW Ethiopia Bitcoin mine purchase over a power dispute",
+   "Grayscale Says Bitcoin (BTC) Volatility Falls to 43%, Inside S&P 500 Range",
+   "Citigroup Lifts Bitcoin (BTC) 12-Month Target to $113,000 From $82,000",
+   "BlackRock's IBIT Rebounds From $45.11, Lifting Bitcoin (BTC) Back Above $80,000"
+  ],
+  "scores": {
+   "pemahaman": 7,
+   "detail": 6,
+   "bullbear": 6,
+   "mean": 6.333333333333333
+  }
+ },
+ "2026-10-16": {
+  "titles": [
+   "Chainalysis finds scammer lost $4.8 million in Bitcoin in Ledger theft",
+   "Bitcoin struggles below $82,000 as traders eye $84,200 breakout for bullish reversal",
+   "Bitcoin (BTC) Dipped Below $81,000 Intraday on Thursday as Nasdaq Slid",
+   "Bitcoin set for a two-week losing streak as ’uptober’ trend fails to materialize",
+   "Bitcoin (BTC) Mining Difficulty Jumps 5.92% to 140.58T, Highest Since March"
+  ],
+  "scores": {
+   "pemahaman": -5,
+   "detail": -2,
+   "bullbear": -3,
+   "mean": -3.3333333333333335
+  }
  }
 }
