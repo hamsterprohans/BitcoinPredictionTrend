@@ -67,7 +67,7 @@ Probabilitas prediksi tetap resmi harian (dari penutupan hari penuh), tidak dipe
 GitHub Pages tidak menjalankan Python, jadi situs diekspor menjadi berkas statis:
 
 ```bash
-python -m scripts.export_static --base /BitcoinPredictionTugasAkhir --out dist
+python -m scripts.export_static --base /BitcoinPredictionTrend --out dist
 ```
 
 Hasilnya (`dist/`) dipublikasikan pada branch `gh-pages`. Data API dibekukan saat ekspor, sehingga prediksi harian dan

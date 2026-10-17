@@ -30,7 +30,7 @@ def test_runs_job_then_export_then_saves_state_then_force_pushes_gh_pages(tmp_pa
     i_exp = next(i for i, x in enumerate(c) if "scripts.export_static" in x)
     i_push = next(i for i, x in enumerate(c) if "push" in x and "gh-pages" in x)
     assert i_job < i_exp < i_push
-    assert any("--base /BitcoinPredictionTugasAkhir" in x for x in c)         # subpath situs dari nama repo
+    assert any("--base /BitcoinPredictionTrend" in x for x in c)         # subpath situs dari nama repo
     assert "--force" in c[i_push] and REPO_URL in c[i_push]
     assert any(x.startswith("git add data/live") for x in c)                  # keadaan harian disimpan
 
@@ -64,3 +64,9 @@ def test_timer_units_run_daily_after_utc_close_and_catch_up_missed_runs():
     assert "scripts.publish_site" in service and "@WEBAPP@" in service      # jalur diisi oleh install-timer.sh
     assert 'ExecStart="@WEBAPP@/.venv/bin/python"' in service                # path berspasi harus dikutip
     assert (d / "install-timer.sh").read_text().startswith("#!/usr/bin/env bash")
+
+
+def test_default_repo_and_site_url_follow_the_new_repository(tmp_path, capsys):
+    assert REPO_URL == "https://github.com/hamsterprohans/BitcoinPredictionTrend.git"
+    publish(run=Recorder(), out=tmp_path / "dist", python="py", skip_job=True)
+    assert "https://hamsterprohans.github.io/BitcoinPredictionTrend/" in capsys.readouterr().err

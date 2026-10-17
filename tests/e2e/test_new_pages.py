@@ -39,7 +39,7 @@ def test_about_page_shows_only_approved_facts(page, server):
     for fact in ("Hans Christian Cakrawangsa", "5026231130", "Sistem Informasi", "Institut Teknologi Sepuluh Nopember",
                  "Renny Pradina Kusumawardani"):
         assert fact in text, fact
-    assert page.locator("a[href*='github.com/hanscakrawangsa15']").count() == 1
+    assert page.locator("a[href='https://github.com/hamsterprohans/BitcoinPredictionTrend']").count() == 1
 
 
 def test_about_page_has_photo_summary_and_linkedin_link(page, server):

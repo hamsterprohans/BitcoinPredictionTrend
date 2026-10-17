@@ -12,7 +12,7 @@ from pathlib import Path
 
 from app import config
 
-REPO_URL = "https://github.com/hanscakrawangsa15/BitcoinPredictionTugasAkhir.git"
+REPO_URL = "https://github.com/hamsterprohans/BitcoinPredictionTrend.git"
 
 
 def _step(run, label, args, cwd=None):
@@ -38,7 +38,8 @@ def publish(run=subprocess.run, out: Path | None = None, python: str = sys.execu
     _step(run, "Commit publikasi", ["git", "-c", "user.name=btc-publish", "-c", "user.email=btc-publish@localhost",
                                     "commit", "-q", "-m", "Publikasi situs statis (harian)"], cwd=out)
     _step(run, "Push gh-pages", ["git", "push", "--force", repo_url, "gh-pages"], cwd=out)
-    print(f"Situs diperbarui: https://hanscakrawangsa15.github.io{base}/", file=sys.stderr)
+    owner = repo_url.split("github.com/", 1)[1].split("/", 1)[0]
+    print(f"Situs diperbarui: https://{owner}.github.io{base}/", file=sys.stderr)
 
 
 def _commit_state(run, web):
