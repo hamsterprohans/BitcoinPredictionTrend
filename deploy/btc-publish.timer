@@ -1,0 +1,11 @@
+[Unit]
+Description=Jalankan pembaruan harian Bitcoin Trend
+
+[Timer]
+# 03:00 UTC (10:00 WIB): penutupan harian UTC sudah tersedia. Persistent: bila komputer mati saat jadwal, dijalankan saat menyala.
+OnCalendar=*-*-* 03:00:00 UTC
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
