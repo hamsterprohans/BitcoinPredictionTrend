@@ -73,7 +73,7 @@ if __name__ == "__main__":
     from app import config
     from app.main import create_app
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", default="", help="subpath situs, mis. /BitcoinPredictionTugasAkhir (kosong untuk user.github.io)")
+    ap.add_argument("--base", default="", help="subpath situs, mis. /BitcoinPredictionTrend (kosong untuk user.github.io)")
     ap.add_argument("--out", default="dist")
     a = ap.parse_args()
     rep = export_static(create_app(), config.STATIC_DIR, config.CONTENT_DIR, a.out, a.base)
