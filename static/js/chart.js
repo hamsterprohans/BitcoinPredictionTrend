@@ -96,5 +96,15 @@ export function createCharts({ priceEl, rsiEl, macdEl }) {
     Object.values(bb).forEach((s) => s.applyOptions({ color: cssVar("--text-2") }));
   }
 
-  return { setData, setRange, setMarkers, restyle, dispose: () => charts.forEach((c) => c.remove()) };
+  // Titik "hari ini" dari harga live: hanya SETELAH penutupan terakhir (update() menolak waktu lampau). Bukan penutupan resmi.
+  function setLive(price, day) {
+    const last = cols?.date[cols.date.length - 1];
+    if (last == null || day <= last) return false;
+    area.update({ time: day, value: price });
+    return true;
+  }
+
+  function clearLive() { if (cols) area.setData(series("close")); }
+
+  return { setData, setLive, clearLive, setRange, setMarkers, restyle, dispose: () => charts.forEach((c) => c.remove()) };
 }
