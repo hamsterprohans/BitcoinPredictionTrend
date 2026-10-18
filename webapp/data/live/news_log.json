@@ -358,5 +358,20 @@
    "bullbear": -3,
    "mean": -3.3333333333333335
   }
+ },
+ "2026-10-17": {
+  "titles": [
+   "Strive Bitcoin Holdings Reach 35,595 BTC As Wall Street Raises Price Target 27%",
+   "Bloomberg Strategist Calls Bitcoin a “Stock-Market Puppet,” Maintains $10,000 Target",
+   "Bitcoin Price at $81,500 Leaves Bulls and Bears at a Standoff",
+   "XRP remains 62.5% below 2018 peak as Bitcoin, Ethereum reach new highs",
+   "CoinDesk Says XRP Has Failed to Make Holders Rich Like Bitcoin and Ethereum"
+  ],
+  "scores": {
+   "pemahaman": 6,
+   "detail": 4,
+   "bullbear": 5,
+   "mean": 5.0
+  }
  }
 }
