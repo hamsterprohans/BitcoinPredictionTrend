@@ -33,7 +33,10 @@ def load_workflow():
 def test_workflow_runs_daily_and_manually_with_least_privilege():
     wf = load_workflow()
     on = wf.get("on") or wf[True]                                          # PyYAML membaca kunci 'on' sebagai True
-    assert on["schedule"][0]["cron"].split()[2:] == ["*", "*", "*"] and "workflow_dispatch" in on
+    crons = [c["cron"].split() for c in on["schedule"]]
+    assert all(c[2:] == ["*", "*", "*"] for c in crons) and "workflow_dispatch" in on          # semuanya harian
+    assert len(crons) >= 3                                                                      # GitHub bisa menunda/melewatkan jadwal: beberapa kesempatan per hari
+    assert len({c[1] for c in crons}) == len(crons) and all(c[0] != "0" for c in crons)       # jam berbeda; tidak tepat di menit 0 (padat)
     assert wf["permissions"] == {"contents": "write"}
     assert wf["concurrency"]["cancel-in-progress"] is False
 
@@ -59,3 +62,9 @@ def test_live_state_is_tracked_but_backups_are_not():
     ignore = (WEBAPP / ".gitignore").read_text().splitlines()
     assert "data/live/" not in ignore
     assert "data/live/_*/" in ignore
+
+
+def test_publish_runs_every_time_so_a_failed_earlier_publish_self_heals():
+    steps = {s.get("name"): s for s in load_workflow()["jobs"]["update"]["steps"]}
+    for name in ("Ekspor situs statis", "Publikasi ke gh-pages"):
+        assert "if" not in steps[name], name        # tidak bergantung pada 'ada perubahan data': run berikutnya memulihkan publikasi yang gagal
