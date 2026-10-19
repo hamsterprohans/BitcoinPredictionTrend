@@ -53,7 +53,26 @@ export function markCapabilities() {
   document.body.dataset.motion = reducedMotion ? "reduced" : "full";
 }
 
+// Menu hamburger (layar sempit): buka/tutup dengan tombol, Escape, atau klik di luar menu.
+function initNav() {
+  const btn = $("#nav-toggle"), bar = $(".topbar");
+  if (!btn || !bar) return;
+  const set = (open) => {
+    bar.classList.toggle("nav-open", open);
+    btn.setAttribute("aria-expanded", String(open));
+    btn.setAttribute("aria-label", open ? "Tutup menu navigasi" : "Buka menu navigasi");
+  };
+  btn.addEventListener("click", () => set(btn.getAttribute("aria-expanded") !== "true"));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && btn.getAttribute("aria-expanded") === "true") { set(false); btn.focus(); }
+  });
+  document.addEventListener("click", (e) => {
+    if (btn.getAttribute("aria-expanded") === "true" && !bar.contains(e.target)) set(false);
+  });
+}
+
 export function initTheme() {
+  initNav();
   let t = "dark";
   try { t = localStorage.getItem("theme") || "dark"; } catch { /* penyimpanan diblokir: abaikan */ }
   document.documentElement.dataset.theme = t;
