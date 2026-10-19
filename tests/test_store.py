@@ -29,12 +29,21 @@ def test_sentiment_log_empty(tmp_path):
     assert load_sentiment_log(tmp_path).empty
 
 
-def test_upsert_replaces_same_date_and_sorts():
-    h = [{"date": "2026-10-13", "v": 1}, {"date": "2026-10-14", "v": 1}]
-    h = upsert_history(h, {"date": "2026-10-13", "v": 2})
-    h = upsert_history(h, {"date": "2026-10-12", "v": 3})
+def test_upsert_adds_new_dates_sorted():
+    h = [{"date": "2026-10-13", "horizons": {}}, {"date": "2026-10-14", "horizons": {}}]
+    h = upsert_history(h, {"date": "2026-10-12", "horizons": {}})
     assert [e["date"] for e in h] == ["2026-10-12", "2026-10-13", "2026-10-14"]
-    assert h[1]["v"] == 2
+
+
+def test_upsert_never_overwrites_an_issued_prediction_but_may_add_new_horizons():
+    old = {"date": "2026-10-13", "close": 100.0, "horizons": {"1": {"prob": 0.6, "direction": "NAIK", "threshold": 0.5}}}
+    new = {"date": "2026-10-13", "close": 999.0, "backfilled": True, "horizons": {
+        "1": {"prob": 0.3, "direction": "TURUN", "threshold": 0.5}, "3": {"prob": 0.7, "direction": "NAIK", "threshold": 0.5}}}
+    out = upsert_history([old], new)
+    assert out[0]["close"] == 100.0 and "backfilled" not in out[0]               # penerbitan pertama yang berlaku
+    assert out[0]["horizons"]["1"] == {"prob": 0.6, "direction": "NAIK", "threshold": 0.5}
+    assert out[0]["horizons"]["3"]["direction"] == "NAIK"                         # horizon baru boleh ditambahkan
+    assert old["horizons"].get("3") is None                                       # tidak memutasi masukan
 
 
 def test_evaluate_history_fills_only_matured_horizons():
@@ -44,9 +53,9 @@ def test_evaluate_history_fills_only_matured_horizons():
         "1": {"direction": "NAIK"}, "3": {"direction": "NAIK"}, "7": {"direction": "TURUN"}}}]
     out = evaluate_history(hist, prices)
     h = out[0]["horizons"]
-    assert h["1"] == {"direction": "NAIK", "actual": "NAIK", "correct": True}
+    assert h["1"] == {"direction": "NAIK", "actual": "NAIK", "correct": True, "locked": True}   # dikunci setelah dibandingkan
     assert h["3"]["actual"] == "NAIK" and h["3"]["correct"] is True   # 105 > 100
-    assert "actual" not in h["7"]                                      # belum jatuh tempo
+    assert "actual" not in h["7"] and "locked" not in h["7"]           # belum jatuh tempo: belum dikunci
 
 
 def test_frame_to_columns_nan_to_null_and_json_safe():
@@ -65,3 +74,17 @@ def test_news_log_roundtrip(tmp_path):
     assert read_news_entry(tmp_path, date(2026, 10, 14)) == {"titles": ["a", "b"], "scores": scores}
     assert read_news_entry(tmp_path, date(2026, 10, 13))["scores"] is None
     assert read_news_entry(tmp_path, date(2026, 1, 1)) is None
+
+
+def test_evaluated_result_is_final_even_if_prices_are_later_revised():
+    prices = pd.DataFrame({"date": pd.date_range("2026-10-01", periods=2), "close": [100, 101]})
+    hist = evaluate_history([{"date": "2026-10-01", "horizons": {"1": {"direction": "NAIK"}}}], prices)
+    revised = pd.DataFrame({"date": pd.date_range("2026-10-01", periods=2), "close": [100, 90]})
+    again = evaluate_history(hist, revised)
+    assert again[0]["horizons"]["1"] == {"direction": "NAIK", "actual": "NAIK", "correct": True, "locked": True}
+
+
+def test_old_evaluated_entries_without_flag_get_locked():
+    prices = pd.DataFrame({"date": pd.date_range("2026-10-01", periods=2), "close": [100, 101]})
+    hist = [{"date": "2026-10-01", "horizons": {"1": {"direction": "NAIK", "actual": "NAIK", "correct": True}}}]
+    assert evaluate_history(hist, prices)[0]["horizons"]["1"]["locked"] is True

@@ -266,3 +266,20 @@ def test_backfill_refuses_when_price_or_sentiment_is_missing_and_changes_nothing
         with pytest.raises(RuntimeError):
             run_backfill(deps, bad)
     assert (deps.live_dir / "history.json").read_text() == before
+
+
+def test_forced_rerun_cannot_change_an_already_issued_prediction(tmp_path):
+    class Drifting(FakePredictor):                                # jawabannya berbeda pada tiap panggilan
+        n = 0
+
+        def predict(self, frame):
+            Drifting.n += 1
+            return {h: {"prob": 0.9 if Drifting.n == 1 else 0.1, "threshold": 0.5,
+                        "direction": "NAIK" if Drifting.n == 1 else "TURUN"} for h in (1, 3)}
+    deps, _ = make_deps(tmp_path, predictor=Drifting())
+    run_daily(deps)
+    before = read_json(deps.live_dir / "history.json")[-1]["horizons"]["1"].copy()
+    assert before["direction"] == "NAIK"
+    run_daily(deps, force=True)                                   # hitung ulang: prediksi kini TURUN, tetapi riwayat tidak boleh berubah
+    assert read_json(deps.live_dir / "history.json")[-1]["horizons"]["1"] == before
+    assert read_json(deps.live_dir / "latest.json")["horizons"]["1"]["direction"] == "NAIK"    # kartu utama pun mengikuti yang sudah terbit

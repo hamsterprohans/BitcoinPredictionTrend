@@ -8,14 +8,16 @@
     "direction": "NAIK",
     "threshold": 0.4768124222755432,
     "actual": "NAIK",
-    "correct": true
+    "correct": true,
+    "locked": true
    },
    "3": {
     "prob": 0.4795147975285848,
     "direction": "TURUN",
     "threshold": 0.5177493095397949,
     "actual": "TURUN",
-    "correct": true
+    "correct": true,
+    "locked": true
    },
    "5": {
     "prob": 0.4669564565022786,
@@ -63,14 +65,16 @@
     "direction": "NAIK",
     "threshold": 0.4768124222755432,
     "actual": "TURUN",
-    "correct": false
+    "correct": false,
+    "locked": true
    },
    "3": {
     "prob": 0.4817524552345276,
     "direction": "TURUN",
     "threshold": 0.5177493095397949,
     "actual": "TURUN",
-    "correct": true
+    "correct": true,
+    "locked": true
    },
    "5": {
     "prob": 0.46668251355489093,
@@ -119,7 +123,8 @@
     "direction": "NAIK",
     "threshold": 0.4768124222755432,
     "actual": "TURUN",
-    "correct": false
+    "correct": false,
+    "locked": true
    },
    "3": {
     "prob": 0.4830656548341115,
@@ -172,7 +177,8 @@
     "direction": "NAIK",
     "threshold": 0.4768124222755432,
     "actual": "NAIK",
-    "correct": true
+    "correct": true,
+    "locked": true
    },
    "3": {
     "prob": 0.4842817783355713,

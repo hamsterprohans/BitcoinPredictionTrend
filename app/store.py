@@ -1,3 +1,4 @@
+import copy
 import csv
 import json
 import os
@@ -48,7 +49,15 @@ def append_sentiment(live_dir, day: date, raw, count: int) -> None:
 
 
 def upsert_history(history: list, entry: dict) -> list:
-    out = [e for e in history if e["date"] != entry["date"]] + [entry]
+    """Tambah entri baru. Prediksi yang SUDAH terbit untuk suatu tanggal tidak pernah ditimpa; hanya horizon baru yang boleh ditambah."""
+    existing = next((e for e in history if e["date"] == entry["date"]), None)
+    if existing is None:
+        out = history + [entry]
+    else:
+        merged = copy.deepcopy(existing)
+        for h, v in entry.get("horizons", {}).items():
+            merged.setdefault("horizons", {}).setdefault(h, v)
+        out = [merged if e["date"] == entry["date"] else e for e in history]
     return sorted(out, key=lambda e: e["date"])
 
 
@@ -58,12 +67,14 @@ def evaluate_history(history: list, prices: pd.DataFrame) -> list:
         d = pd.Timestamp(e["date"])
         for h, v in e["horizons"].items():
             if "actual" in v:
+                v["locked"] = True                      # hasil yang sudah dibandingkan dengan kenyataan bersifat final
                 continue
             target = d + pd.Timedelta(days=int(h))
             if target in close.index and d in close.index:
                 actual = "NAIK" if close[target] > close[d] else "TURUN"
                 v["actual"] = actual
                 v["correct"] = v["direction"] == actual
+                v["locked"] = True
     return history
 
 
