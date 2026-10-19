@@ -8,6 +8,12 @@ create table if not exists public.feedback_responses (
                  check (jsonb_typeof(answers) = 'object' and pg_column_size(answers) < 30000)
 );
 
+-- Nama wajib diisi: baris BARU tanpa nama ditolak di database (pemeriksaan di browser saja bisa dilewati).
+-- NOT VALID: hanya berlaku untuk baris baru, jadi jawaban lama (dikirim sebelum nama wajib) tidak ikut diperiksa ulang.
+alter table public.feedback_responses drop constraint if exists feedback_name_required;
+alter table public.feedback_responses add constraint feedback_name_required
+  check (length(btrim(coalesce(answers->>'a0', ''))) > 0) not valid;
+
 alter table public.feedback_responses enable row level security;
 
 -- Pengunjung (anon key) hanya boleh MENAMBAH baris. Tidak ada kebijakan select/update/delete:
