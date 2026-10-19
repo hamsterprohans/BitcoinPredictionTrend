@@ -30,14 +30,14 @@ function renderQuestion(q) {
   if (OPTIONS[q.type]) {
     const row = el("div", { class: "choices", role: "radiogroup", "aria-label": q.text });
     for (const v of OPTIONS[q.type]) {
-      const input = el("input", { type: "radio", name: q.id, value: v });
+      const input = el("input", { type: "radio", name: q.id, value: v, "aria-required": "true" });
       row.append(el("label", { class: "choice" }, input, el("span", { text: LABEL[v] })));
     }
     wrap.append(row);
   } else if (q.type === "short") {
-    wrap.append(el("input", { type: "text", name: q.id, maxlength: LIMIT.short, autocomplete: q.autocomplete || "off", "aria-label": q.text }));
+    wrap.append(el("input", { type: "text", name: q.id, maxlength: LIMIT.short, autocomplete: q.autocomplete || "off", "aria-label": q.text, "aria-required": "true" }));
   } else {
-    wrap.append(el("textarea", { name: q.id, rows: 4, maxlength: LIMIT.long, "aria-label": q.text }));
+    wrap.append(el("textarea", { name: q.id, rows: 4, maxlength: LIMIT.long, "aria-label": q.text, "aria-required": "true" }));
   }
   wrap.append(el("p", { class: "q-err", hidden: true, text: "Pertanyaan ini belum dijawab." }));
   return wrap;
@@ -58,7 +58,7 @@ function render(root) {
     el("p", { id: "survey-error", class: "survey-error", role: "alert", hidden: true }),
     el("p", { id: "survey-status", class: "muted", role: "status" }),
     el("button", { id: "survey-submit", class: "btn-link", type: "submit", text: "Kirim jawaban" }),
-    el("p", { class: "muted small", text: "Nama dan email bersifat opsional; isi email hanya bila bersedia diwawancara. Data dipakai untuk pengembangan tugas akhir ini saja." }));
+    el("p", { class: "muted small", text: "Semua pertanyaan wajib diisi. Data dipakai untuk pengembangan tugas akhir ini saja." }));
   root.replaceChildren(form);
   return form;
 }
@@ -80,7 +80,7 @@ function collect(form) {
   for (const q of SURVEY.sections.flatMap((s) => s.questions)) {
     if (!visible(form, q)) continue;
     const v = val(form, q);
-    if (v == null) { if (OPTIONS[q.type]) missing.push(q); continue; }
+    if (v == null) { missing.push(q); continue; }                    // semua soal yang tampil wajib, termasuk teks dan nama
     answers[q.id] = v;
   }
   return { answers, missing };
@@ -132,9 +132,9 @@ function main() {
       for (const q of missing) {
         const f = form.querySelector(`[data-qid='${q.id}']`);
         f.querySelector(".q-err").hidden = false;
-        f.querySelectorAll("input").forEach((n) => n.setAttribute("aria-invalid", "true"));
+        f.querySelectorAll("input, textarea").forEach((n) => n.setAttribute("aria-invalid", "true"));
       }
-      form.querySelector(`[data-qid='${missing[0].id}'] input`).focus();
+      form.querySelector(`[data-qid='${missing[0].id}'] input, [data-qid='${missing[0].id}'] textarea`).focus();
       return;
     }
     err.hidden = true;
