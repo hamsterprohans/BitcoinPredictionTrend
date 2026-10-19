@@ -215,3 +215,17 @@ def test_history_shows_no_lock_wording_but_keeps_the_outcome(page, server):
     assert not any("dikunci" in t for t in texts)                          # tulisan "dikunci" dihapus atas permintaan pemilik
     assert page.locator("#history-body td[title*='dikunci' i]").count() == 0
     assert any("✓" in t or "✗" in t for t in texts)                        # hasil tetap tampil; penguncian ada di data/kode (tes store & jobs)
+
+
+def test_survey_promo_section_with_button_leads_to_questionnaire(page, server):
+    page.goto(server + "/")
+    promo = page.locator("#sec-survey")
+    assert promo.count() == 1
+    assert "kuesioner" in promo.inner_text().lower() and "5 menit" in promo.inner_text()
+    assert page.locator("#sec-hist").evaluate("(h, s) => h.compareDocumentPosition(s) & Node.DOCUMENT_POSITION_FOLLOWING",
+                                              promo.element_handle())                      # di bawah riwayat, di atas footer
+    btn = promo.locator("a.btn-link[href='/kuesioner']")
+    assert btn.is_visible() and btn.inner_text() == "Isi kuesioner"
+    btn.click()
+    page.wait_for_url("**/kuesioner")
+    assert page.locator("#survey-root").count() == 1
