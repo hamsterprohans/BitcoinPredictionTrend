@@ -90,13 +90,17 @@ body.no-webgl #hero-canvas,body.no-webgl #horizon-canvas,body.no-webgl #bars3d-c
 /* judul riwayat: keterangan pada baris sendiri */
 #hist-h{display:block;margin-top:4px;font-size:.85rem}
 
-/* navigasi 5 tautan: baris kedua di layar sempit */
+/* navigasi: hamburger di layar sempit (<=760px), tautan inline di desktop */
+.nav-toggle{display:none}
 @media (max-width:760px){
-  .topbar{flex-wrap:wrap}
+  .topbar{flex-wrap:wrap;z-index:30}
   .brand{order:1}
-  .icon-btn{order:2;margin-left:auto}
-  .topbar nav{order:3;width:100%;margin-left:0;overflow-x:auto;scrollbar-width:none}
-  .topbar nav a{white-space:nowrap}
+  .nav-toggle{display:inline-flex;align-items:center;justify-content:center;order:2;margin-left:auto}
+  #theme-toggle{order:3;margin-left:0}
+  .topbar nav{display:none;order:4;position:absolute;top:100%;left:12px;right:12px;width:auto;margin-left:0;flex-direction:column;gap:2px;
+    padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+  .topbar.nav-open nav{display:flex}
+  .topbar nav a{padding:12px 14px;font-size:1rem}
 }
 
 main:focus{outline:none}
