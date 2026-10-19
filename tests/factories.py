@@ -61,7 +61,7 @@ def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14), demo=False, e
         d = as_of - timedelta(days=i)
         hist.append({"date": d.isoformat(), "close": 1.0, **({"backfilled": True} if i == 3 else {}), "horizons": {
             "1": {"prob": 0.5, "threshold": 0.4557, "direction": "NAIK",
-                  "actual": "NAIK" if i % 2 else "TURUN", "correct": bool(i % 2)},
+                  "actual": "NAIK" if i % 2 else "TURUN", "correct": bool(i % 2), "locked": True},
             "7": {"prob": 0.4, "threshold": 0.5, "direction": "TURUN"}}})
     atomic_write_json(live_dir / "history.json", hist)
     atomic_write_json(content_dir / "multihorizon_evidence.json", {

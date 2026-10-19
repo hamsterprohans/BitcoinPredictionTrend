@@ -206,3 +206,13 @@ def test_no_live_point_when_live_price_is_unavailable(page, server):
     page.wait_for_selector("#chart-price canvas")
     page.wait_for_timeout(800)
     assert page.evaluate("document.body.dataset.chartLive || ''") == ""
+
+
+def test_history_rows_with_known_outcome_are_marked_locked(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    for r in page.locator("#history-body tr").all():
+        txt = r.inner_text()
+        known = "✓" in txt or "✗" in txt
+        assert ("dikunci" in txt) == known, txt                           # terkunci tepat bila sudah dibandingkan dengan kenyataan
+    assert page.locator("#history-body td[title*='tidak dapat berubah']").count() >= 1

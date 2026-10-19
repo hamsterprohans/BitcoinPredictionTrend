@@ -190,6 +190,11 @@ def run_daily(deps: Deps, force: bool = False):
     feats, frame, preds, latest, entry = _compute(deps, live, prices, as_of)
     history = upsert_history(read_json(live / "history.json", []), entry)
     history = evaluate_history(history, prices)
+    issued = next(e for e in history if e["date"] == entry["date"])          # prediksi pertama yang terbit berlaku (terkunci)
+    for h, v in latest["horizons"].items():
+        kept = issued["horizons"].get(h)
+        if kept:
+            v.update({k: kept[k] for k in ("prob", "direction", "threshold")})
 
     atomic_write_json(live / "chart.json", frame_to_columns(chart_frame(feats)))
     atomic_write_json(live / "history.json", history)
