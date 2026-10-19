@@ -2,7 +2,12 @@ name: Pembaruan harian
 
 on:
   schedule:
-    - cron: "30 2 * * *"      # 02:30 UTC (09:30 WIB): penutupan harian UTC sudah tersedia
+    # Beberapa kesempatan per hari: GitHub sering menunda (kadang berjam-jam) atau melewatkan jadwal. Job idempoten: bila data
+    # hari itu sudah ada, ia langsung selesai. Penutupan harian UTC tersedia sejak 00:00 UTC.
+    - cron: "17 1 * * *"
+    - cron: "47 3 * * *"
+    - cron: "17 6 * * *"
+    - cron: "47 9 * * *"
   workflow_dispatch:
 
 permissions:
