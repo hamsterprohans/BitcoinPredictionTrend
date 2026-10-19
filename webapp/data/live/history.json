@@ -68,7 +68,9 @@
    "3": {
     "prob": 0.4817524552345276,
     "direction": "TURUN",
-    "threshold": 0.5177493095397949
+    "threshold": 0.5177493095397949,
+    "actual": "TURUN",
+    "correct": true
    },
    "5": {
     "prob": 0.46668251355489093,
@@ -168,7 +170,9 @@
    "1": {
     "prob": 0.5191898941993713,
     "direction": "NAIK",
-    "threshold": 0.4768124222755432
+    "threshold": 0.4768124222755432,
+    "actual": "NAIK",
+    "correct": true
    },
    "3": {
     "prob": 0.4842817783355713,
@@ -207,6 +211,57 @@
    },
    "35": {
     "prob": 0.42174065113067627,
+    "direction": "TURUN",
+    "threshold": 0.42857804894447327
+   }
+  }
+ },
+ {
+  "date": "2026-10-18",
+  "close": 81935.17,
+  "horizons": {
+   "1": {
+    "prob": 0.5280191898345947,
+    "direction": "NAIK",
+    "threshold": 0.4768124222755432
+   },
+   "3": {
+    "prob": 0.4861454466978709,
+    "direction": "TURUN",
+    "threshold": 0.5177493095397949
+   },
+   "5": {
+    "prob": 0.4608370363712311,
+    "direction": "TURUN",
+    "threshold": 0.47828808426856995
+   },
+   "7": {
+    "prob": 0.47184207042058307,
+    "direction": "TURUN",
+    "threshold": 0.47223278880119324
+   },
+   "15": {
+    "prob": 0.4292962849140167,
+    "direction": "TURUN",
+    "threshold": 0.45957493782043457
+   },
+   "20": {
+    "prob": 0.4254976610342662,
+    "direction": "TURUN",
+    "threshold": 0.4715519845485687
+   },
+   "25": {
+    "prob": 0.42018765211105347,
+    "direction": "TURUN",
+    "threshold": 0.4579542577266693
+   },
+   "30": {
+    "prob": 0.44179441531499225,
+    "direction": "TURUN",
+    "threshold": 0.4812179505825043
+   },
+   "35": {
+    "prob": 0.4208296835422516,
     "direction": "TURUN",
     "threshold": 0.42857804894447327
    }

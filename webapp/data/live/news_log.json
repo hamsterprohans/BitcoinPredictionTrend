@@ -373,5 +373,20 @@
    "bullbear": 5,
    "mean": 5.0
   }
+ },
+ "2026-10-18": {
+  "titles": [
+   "Bitcoin (BTC) Flows Into US Institutions With a 53,200 BTC Net Inflow This Year",
+   "Bitcoin, Ethereum, and XRP face make-or-break support levels, analyst warns",
+   "On-Chain Analyst Darkfost Finds No Historical Case for a Bitcoin (BTC) Fall to $10,000",
+   "New whales now account for 1/3 of Bitcoin’s whale realized cap as on-chain indicators point BTC’s target at $89,000",
+   "US Is Importing Bitcoin and Exporting Digital Dollars: What Does it Mean?"
+  ],
+  "scores": {
+   "pemahaman": 6,
+   "detail": 5,
+   "bullbear": 6,
+   "mean": 5.666666666666667
+  }
  }
 }
