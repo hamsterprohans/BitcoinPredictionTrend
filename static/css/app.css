@@ -198,3 +198,12 @@ body.no-webgl #splash-canvas{display:none}
 #survey-submit{cursor:pointer;background:transparent;font:inherit;font-weight:600}
 #survey-submit:disabled{opacity:.45;cursor:not-allowed}
 .small{font-size:.85rem}
+
+/* ---- Ajakan mengisi kuesioner (halaman prediksi) ---- */
+.survey-promo{display:flex;gap:20px;align-items:center;justify-content:space-between;border-color:color-mix(in srgb,var(--gold) 45%,var(--line));
+  background:color-mix(in srgb,var(--gold) 6%,var(--surface))}
+.survey-promo p{margin:0 0 10px;color:var(--text-2)}
+.promo-list{margin:0;padding-left:1.1rem;color:var(--text-2)}
+.promo-btn{flex:none;white-space:nowrap;font-size:1.05rem;padding:12px 22px;background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.promo-btn:hover{background:color-mix(in srgb,var(--gold) 85%,#fff);color:var(--on-gold)}
+@media (max-width:640px){.survey-promo{flex-direction:column;align-items:stretch}.promo-btn{text-align:center}}

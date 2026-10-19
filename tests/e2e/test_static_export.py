@@ -50,6 +50,7 @@ def test_static_prediction_page_and_interval_work_under_subpath(page, static_sit
         status=200, content_type="application/json", headers={"access-control-allow-origin": "*"},
         body='{"data":{"amount":"99999.5"}}'))
     page.goto(static_site + "/")
+    assert page.locator("#sec-survey a[href='/sub/kuesioner']").count() == 1       # tombol promosi mengikuti subpath github.io
     page.wait_for_selector("#price")
     page.wait_for_function("document.querySelector('#live-badge') && !document.querySelector('#live-badge').hidden")
     assert "99.999,50" in page.inner_text("#price")                      # harga live dari Coinbase langsung di browser
