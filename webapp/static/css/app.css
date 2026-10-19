@@ -1,6 +1,6 @@
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.55}
+html{-webkit-text-size-adjust:100%;font-size:calc(16px * var(--text-scale,1.15))}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:1rem;line-height:1.55}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .muted{color:var(--text-2);font-weight:400}
 a{color:var(--gold)}
@@ -8,10 +8,10 @@ a{color:var(--gold)}
 
 #hero-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .topbar,main,.footer{position:relative;z-index:1}
-.topbar{display:flex;align-items:center;gap:16px;padding:14px 16px;max-width:1100px;margin:0 auto}
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 16px;max-width:1100px;margin:0 auto}
 .brand{font-weight:700;color:var(--gold);text-decoration:none;font-size:1.1rem;letter-spacing:-.01em}
 .topbar nav{display:flex;gap:4px;margin-left:auto}
-.topbar nav a{color:var(--text-2);text-decoration:none;padding:8px 12px;border-radius:10px}
+.topbar nav a{color:var(--text-2);text-decoration:none;padding:8px 9px;border-radius:10px;white-space:nowrap}
 .topbar nav a:hover,.topbar nav a[aria-current]{color:var(--text);background:var(--surface)}
 .icon-btn{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:12px;width:40px;height:40px;cursor:pointer;font-size:1.1rem}
 
@@ -90,18 +90,27 @@ body.no-webgl #hero-canvas,body.no-webgl #horizon-canvas,body.no-webgl #bars3d-c
 /* judul riwayat: keterangan pada baris sendiri */
 #hist-h{display:block;margin-top:4px;font-size:.85rem}
 
-/* navigasi: hamburger di layar sempit (<=760px), tautan inline di desktop */
+/* navigasi: hamburger di layar sempit (<=760px) atau bila header tidak muat (kelas .compact dari JS); tautan inline bila muat */
 .nav-toggle{display:none}
 @media (max-width:760px){
   .topbar{flex-wrap:wrap;z-index:30}
   .brand{order:1}
   .nav-toggle{display:inline-flex;align-items:center;justify-content:center;order:2;margin-left:auto}
-  #theme-toggle{order:3;margin-left:0}
-  .topbar nav{display:none;order:4;position:absolute;top:100%;left:12px;right:12px;width:auto;margin-left:0;flex-direction:column;gap:2px;
+  .text-size{order:3}
+  #theme-toggle{order:4;margin-left:0}
+  .topbar nav{display:none;order:5;position:absolute;top:100%;left:12px;right:12px;width:auto;margin-left:0;flex-direction:column;gap:2px;
     padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
   .topbar.nav-open nav{display:flex}
   .topbar nav a{padding:12px 14px;font-size:1rem}
 }
+.topbar.compact{flex-wrap:wrap;z-index:30}
+.topbar.compact .nav-toggle{display:inline-flex;align-items:center;justify-content:center;order:2;margin-left:auto}
+.topbar.compact .text-size{order:3}
+.topbar.compact #theme-toggle{order:4;margin-left:0}
+.topbar.compact nav{display:none;order:5;position:absolute;top:100%;left:12px;right:12px;width:auto;margin-left:0;flex-direction:column;gap:2px;
+  padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+.topbar.compact.nav-open nav{display:flex}
+.topbar.compact nav a{padding:12px 14px;font-size:1rem}
 
 main:focus{outline:none}
 
@@ -207,3 +216,22 @@ body.no-webgl #splash-canvas{display:none}
 .promo-btn{flex:none;white-space:nowrap;font-size:1.05rem;padding:12px 22px;background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
 .promo-btn:hover{background:color-mix(in srgb,var(--gold) 85%,#fff);color:var(--on-gold)}
 @media (max-width:640px){.survey-promo{flex-direction:column;align-items:stretch}.promo-btn{text-align:center}}
+
+/* ---- Banner himbauan (atas semua halaman) ---- */
+.notice-bar{position:relative;z-index:31;padding:7px 16px;text-align:center;font-size:.85rem;line-height:1.4;color:var(--text);
+  background:color-mix(in srgb,var(--gold) 16%,var(--surface));border-bottom:1px solid color-mix(in srgb,var(--gold) 40%,var(--line))}
+
+/* ---- Kontrol ukuran teks ---- */
+.text-size{display:flex;gap:4px}
+.text-size .icon-btn{font-weight:700;font-size:1rem;line-height:1;font-family:var(--font)}
+.text-size .icon-btn small{font-size:.65em;vertical-align:baseline}
+.text-size .icon-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ---- Tooltip grafik harga ---- */
+.chart-tip{position:absolute;z-index:5;pointer-events:none;min-width:170px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);
+  background:color-mix(in srgb,var(--surface-2) 96%,transparent);box-shadow:0 8px 24px rgba(0,0,0,.45);font-size:.85rem;line-height:1.4}
+.chart-tip .tip-date{color:var(--text-2);font-family:var(--mono);font-size:.78rem;margin-bottom:3px}
+.chart-tip .tip-row{display:flex;align-items:center;gap:8px;font-family:var(--mono)}
+.chart-tip .tip-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
+.chart-tip .tip-price{font-weight:700;color:var(--text)}
+.chart-tip .tip-chg{margin-top:2px;font-size:.8rem}

@@ -1,4 +1,4 @@
-import { cssVar } from "./common.js";
+import { cssVar, fmtPct, textScale } from "./common.js";
 
 const LC = window.LightweightCharts;
 const RANGE_DAYS = { "1M": 30, "3M": 90, "6M": 182, "1Y": 365, "5Y": 1826 };
@@ -9,10 +9,18 @@ function hexA(hex, a) {
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
 }
 
+const ID_NUM = new Intl.NumberFormat("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const usd = (v) => "$" + ID_NUM.format(v);
+const toIso = (t) => (typeof t === "string" ? t : `${t.year}-${String(t.month).padStart(2, "0")}-${String(t.day).padStart(2, "0")}`);
+const longDate = (iso, month = "long") =>
+  new Date(iso + "T00:00:00Z").toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month, year: "numeric", timeZone: "UTC" });
+const fontPx = () => Math.round(11 * textScale());
+
 export function createCharts({ priceEl, rsiEl, macdEl }) {
   const base = () => ({
     autoSize: true,
-    layout: { background: { type: "solid", color: "transparent" }, textColor: cssVar("--text-2"), fontFamily: cssVar("--mono"), fontSize: 11 },
+    layout: { background: { type: "solid", color: "transparent" }, textColor: cssVar("--text-2"), fontFamily: cssVar("--mono"), fontSize: fontPx() },
+    localization: { timeFormatter: (t) => longDate(toIso(t), "short") },          // label tanggal pada sumbu saat hover
     grid: { vertLines: { color: cssVar("--line") }, horzLines: { color: cssVar("--line") } },
     rightPriceScale: { borderColor: cssVar("--line") },
     timeScale: { borderColor: cssVar("--line"), rightOffset: 4 },
@@ -49,12 +57,14 @@ export function createCharts({ priceEl, rsiEl, macdEl }) {
   }));
 
   let cols = null;
+  let liveDay = null;
   // Titik tanpa nilai menjadi "whitespace" agar semua grafik punya indeks logis yang sejajar.
   const series = (key, map = (v) => ({ value: v })) =>
     cols.date.map((time, i) => (cols[key][i] == null ? { time } : { time, ...map(cols[key][i]) }));
 
   function setData(c) {
     cols = c;
+    liveDay = null;
     area.setData(series("close"));
     Object.entries(ma).forEach(([k, s]) => s.setData(series(k)));
     Object.entries(bb).forEach(([k, s]) => s.setData(series(k)));
@@ -101,10 +111,50 @@ export function createCharts({ priceEl, rsiEl, macdEl }) {
     const last = cols?.date[cols.date.length - 1];
     if (last == null || day <= last) return false;
     area.update({ time: day, value: price });
+    liveDay = day;
     return true;
   }
 
-  function clearLive() { if (cols) area.setData(series("close")); }
+  function clearLive() { liveDay = null; if (cols) area.setData(series("close")); }
+
+  // Tooltip hover: tanggal lengkap + harga + perubahan dari titik sebelumnya (seperti grafik harga pada umumnya).
+  const tip = document.createElement("div");
+  tip.id = "chart-tooltip"; tip.className = "chart-tip"; tip.hidden = true;
+  priceEl.style.position = "relative";
+  priceEl.append(tip);
+  price.subscribeCrosshairMove((p) => {
+    const v = p.seriesData?.get(area);
+    if (!p.point || !p.time || !v || v.value == null) { tip.hidden = true; return; }
+    const iso = toIso(p.time), i = cols ? cols.date.indexOf(iso) : -1;
+    const isLive = i < 0 && liveDay === iso;
+    const prev = isLive ? cols.close[cols.close.length - 1] : (i > 0 ? cols.close[i - 1] : null);
+    tip.dataset.date = iso;
+    const row = document.createElement("div");
+    row.className = "tip-row";
+    const dot = document.createElement("span"); dot.className = "tip-dot";
+    const label = document.createElement("span"); label.textContent = isLive ? "Harga live:" : "Harga:";
+    const val = document.createElement("span"); val.className = "tip-price"; val.textContent = usd(v.value);
+    row.append(dot, label, val);
+    const date = document.createElement("div"); date.className = "tip-date"; date.textContent = longDate(iso);
+    const kids = [date, row];
+    if (prev) {
+      const pct = (v.value / prev - 1) * 100, chg = document.createElement("div");
+      chg.className = "tip-chg " + (pct >= 0 ? "up" : "down");
+      chg.textContent = `${pct >= 0 ? "▲" : "▼"} ${fmtPct(pct)} dari ${isLive ? "penutupan terakhir" : "hari sebelumnya"}`;
+      kids.push(chg);
+    }
+    tip.replaceChildren(...kids);
+    tip.hidden = false;
+    const W = priceEl.clientWidth, H = priceEl.clientHeight, tw = tip.offsetWidth, th = tip.offsetHeight;
+    let x = p.point.x + 16;
+    if (x + tw > W - 4) x = p.point.x - tw - 16;                     // balik ke kiri titik bila mepet tepi kanan
+    let y = p.point.y - th - 12;
+    if (y < 4) y = p.point.y + 16;                                    // balik ke bawah titik bila mepet atas
+    tip.style.left = Math.max(4, Math.min(x, W - tw - 4)) + "px";
+    tip.style.top = Math.max(4, Math.min(y, H - th - 4)) + "px";
+  });
+  priceEl.addEventListener("mouseleave", () => { tip.hidden = true; });
+  document.addEventListener("textscalechange", () => charts.forEach((c) => c.applyOptions({ layout: { fontSize: fontPx() } })));
 
   return { setData, setLive, clearLive, setRange, setMarkers, restyle, dispose: () => charts.forEach((c) => c.remove()) };
 }
