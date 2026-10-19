@@ -53,6 +53,43 @@ export function markCapabilities() {
   document.body.dataset.motion = reducedMotion ? "reduced" : "full";
 }
 
+// Ukuran teks: 4 tingkat (skala terhadap 16px), disimpan di peramban. Bawaan sudah lebih besar (115%) agar ramah banyak kalangan.
+export const TEXT_LEVELS = [1, 1.15, 1.3, 1.5];
+const DEFAULT_LEVEL = 1;
+
+function storedLevel() {
+  try {
+    const n = Number(localStorage.getItem("text-level"));
+    return Number.isInteger(n) && n >= 0 && n < TEXT_LEVELS.length && localStorage.getItem("text-level") !== null ? n : DEFAULT_LEVEL;
+  } catch { return DEFAULT_LEVEL; }
+}
+
+export function textScale() { return Number(getComputedStyle(document.documentElement).getPropertyValue("--text-scale")) || TEXT_LEVELS[DEFAULT_LEVEL]; }
+
+function applyTextLevel(n) {
+  document.documentElement.style.setProperty("--text-scale", String(TEXT_LEVELS[n]));
+  document.documentElement.dataset.textLevel = String(n);
+  const dec = document.querySelector("#font-dec"), inc = document.querySelector("#font-inc");
+  if (dec) dec.disabled = n <= 0;
+  if (inc) inc.disabled = n >= TEXT_LEVELS.length - 1;
+  document.dispatchEvent(new CustomEvent("textscalechange"));
+}
+
+applyTextLevel(storedLevel());      // sedini mungkin, sebelum render pertama
+
+function initTextSize() {
+  const dec = $("#font-dec"), inc = $("#font-inc");
+  if (!dec || !inc) return;
+  const step = (d) => {
+    const n = Math.min(TEXT_LEVELS.length - 1, Math.max(0, Number(document.documentElement.dataset.textLevel) + d));
+    try { localStorage.setItem("text-level", String(n)); } catch { /* abaikan */ }
+    applyTextLevel(n);
+  };
+  dec.addEventListener("click", () => step(-1));
+  inc.addEventListener("click", () => step(1));
+  applyTextLevel(storedLevel());    // sinkronkan keadaan tombol setelah DOM siap
+}
+
 // Menu hamburger (layar sempit): buka/tutup dengan tombol, Escape, atau klik di luar menu.
 function initNav() {
   const btn = $("#nav-toggle"), bar = $(".topbar");
@@ -63,6 +100,16 @@ function initNav() {
     btn.setAttribute("aria-label", open ? "Tutup menu navigasi" : "Buka menu navigasi");
   };
   btn.addEventListener("click", () => set(btn.getAttribute("aria-expanded") !== "true"));
+  // Bila tautan tidak muat sebaris (teks diperbesar / layar sedang), beralih ke hamburger; kembali bila sudah muat.
+  const fit = () => {
+    bar.classList.remove("compact");
+    if (!matchMedia("(max-width: 760px)").matches && bar.scrollWidth > bar.clientWidth + 1) bar.classList.add("compact");
+    if (!bar.classList.contains("compact") && !matchMedia("(max-width: 760px)").matches) set(false);
+  };
+  fit();
+  addEventListener("resize", fit);
+  document.addEventListener("textscalechange", fit);
+  document.fonts?.ready.then(fit);
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && btn.getAttribute("aria-expanded") === "true") { set(false); btn.focus(); }
   });
@@ -73,6 +120,7 @@ function initNav() {
 
 export function initTheme() {
   initNav();
+  initTextSize();
   let t = "dark";
   try { t = localStorage.getItem("theme") || "dark"; } catch { /* penyimpanan diblokir: abaikan */ }
   document.documentElement.dataset.theme = t;

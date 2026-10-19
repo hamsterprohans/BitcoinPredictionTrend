@@ -230,3 +230,41 @@ def test_survey_promo_section_with_button_leads_to_questionnaire(page, server):
     btn.click()
     page.wait_for_url("**/kuesioner")
     assert page.locator("#survey-root").count() == 1
+
+
+def test_hovering_the_chart_shows_detailed_date_and_price_tooltip(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#chart-price canvas")
+    page.wait_for_timeout(500)
+    cols = page.evaluate("fetch('/api/prices?interval=D').then(r => r.json())")
+    page.locator("#chart-price").scroll_into_view_if_needed()                              # grafik di bawah lipatan layar
+    box = page.locator("#chart-price").bounding_box()
+    page.mouse.move(box["x"] + box["width"] * 0.55, box["y"] + box["height"] * 0.5)
+    page.mouse.move(box["x"] + box["width"] * 0.56, box["y"] + box["height"] * 0.5)
+    tip = page.locator("#chart-tooltip")
+    tip.wait_for(state="visible")
+    date = tip.get_attribute("data-date")
+    assert date in cols["date"]                                                             # tanggal titik data sungguhan
+    expected_date = page.evaluate("(d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', "
+                                  "{weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'})", date)
+    text = tip.inner_text()
+    assert expected_date in text                                                            # mis. "Selasa, 14 Juli 2026"
+    price = cols["close"][cols["date"].index(date)]
+    shown = page.evaluate("(p) => '$' + new Intl.NumberFormat('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(p)", price)
+    assert "Harga" in text and shown in text                                                # harga penutupan titik itu, dua desimal
+    page.mouse.move(box["x"] + box["width"] / 2, box["y"] - 200)                            # keluar dari grafik
+    page.wait_for_selector("#chart-tooltip", state="hidden")
+
+
+def test_tooltip_stays_inside_the_chart_near_the_edges(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#chart-price canvas")
+    page.wait_for_timeout(500)
+    page.locator("#chart-price").scroll_into_view_if_needed()
+    box = page.locator("#chart-price").bounding_box()
+    for fx in (0.04, 0.88):                                                                  # kiri dan tepi kanan data (data berakhir ~89%)
+        page.mouse.move(box["x"] + box["width"] * fx, box["y"] + box["height"] * 0.4)
+        page.mouse.move(box["x"] + box["width"] * fx + 1, box["y"] + box["height"] * 0.4)
+        page.locator("#chart-tooltip").wait_for(state="visible")
+        t = page.locator("#chart-tooltip").bounding_box()
+        assert t["x"] >= box["x"] - 1 and t["x"] + t["width"] <= box["x"] + box["width"] + 1
