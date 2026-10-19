@@ -192,7 +192,7 @@ body.no-webgl #splash-canvas{display:none}
 .choice input:checked+span{background:color-mix(in srgb,var(--gold) 18%,transparent);border-color:var(--gold);color:var(--gold);font-weight:600}
 .choice input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
 .q input[type=text],.q textarea{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--text);font:inherit}
-.q input[aria-invalid=true]+span{border-color:var(--down,#e5766a)}
+.q input[aria-invalid=true]+span,.q input[type=text][aria-invalid=true],.q textarea[aria-invalid=true]{border-color:var(--down,#e5766a)}
 .q-err,.survey-error{color:var(--down,#e5766a);margin:6px 0 0;font-size:.9rem}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 #survey-submit{cursor:pointer;background:transparent;font:inherit;font-weight:600}

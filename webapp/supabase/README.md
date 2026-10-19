@@ -8,3 +8,6 @@
 
 Membaca hasil: Table Editor atau view `feedback_flat` (hanya pemilik proyek). Unduh CSV dari tombol Export.
 Contoh ringkasan: `select g1, count(*) from feedback_flat group by g1;` (ganti kolom sesuai view).
+
+Catatan: setelah nama dan semua pertanyaan dijadikan wajib, jalankan ulang `schema.sql` (aman diulang) agar database juga menolak
+baris baru tanpa nama. Jawaban lama tetap tersimpan.
