@@ -360,7 +360,9 @@ def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=Non
     titles = (news or {}).get("titles", [])
     rec["sentiment"] = {"has_news": bool(titles)}
     narrative = generate_narrative(client, build_facts(rec, auc=(series or {}).get("auc"))) if client else None
-    return {"headlines": [{"title": t} for t in titles],
+    urls = (news or {}).get("urls") or []
+    return {"headlines": [{"title": t, **({"url": urls[i]} if i < len(urls) and urls[i] else {})}
+                          for i, t in enumerate(titles)],
             "sentiment": {"has_news": bool(titles), "scores": (news or {}).get("scores"),
                           "used": values["news_sentiment"]},
             "contributions": contrib, "features": feats, "level": level, "narrative": narrative}

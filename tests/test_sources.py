@@ -217,3 +217,10 @@ def test_cryptocompare_monthly_quota_exhausted_is_reported():
                               headers={"x-ratelimit-remaining": "0"})
     with pytest.raises(SourceError, match="kuota"):
         fetch_headlines_cryptocompare(client(handler), date(2026, 10, 14), "K", sleep=lambda s: None)
+
+
+def test_judul_membawa_url_dan_tetap_sama_dengan_str():
+    from app.sources import Judul
+    j = Judul("Bitcoin naik", "https://contoh.com/a")
+    assert j == "Bitcoin naik" and j.url == "https://contoh.com/a"
+    assert Judul("x", "javascript:alert(1)").url is None and Judul("x").url is None

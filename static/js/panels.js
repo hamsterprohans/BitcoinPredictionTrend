@@ -11,7 +11,19 @@ export function renderNews(root, headlines, sentiment, opts = {}) {
   root.replaceChildren();
   if (headlines?.length) {
     const ul = el("ul", undefined, "news-list");
-    headlines.forEach((h) => ul.append(el("li", h.title)));
+    headlines.forEach((h) => {
+      const li = el("li");
+      if (/^https?:\/\//.test(h.url || "")) {
+        const a = el("a", h.title);
+        a.href = h.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        li.append(a);
+      } else {
+        li.textContent = h.title;
+      }
+      ul.append(li);
+    });
     root.append(ul);
     if (opts.approx) {
       root.append(el("p", "Contoh judul berita hari itu: belum tentu sama dengan lima judul yang dinilai " +
