@@ -107,3 +107,12 @@ python -m app.jobs --backfill 2026-10-15
 
 Hanya data sampai hari itu yang dipakai, `latest.json` tidak berubah, prediksi asli tidak pernah ditimpa, dan barisnya diberi
 label "dihitung susulan" pada tabel riwayat. Bila harga atau sentimen hari itu tidak tersimpan, perintah berhenti.
+
+## Melengkapi tautan berita yang tersimpan tanpa URL
+
+```bash
+python -m app.jobs --fill-urls 2026-10-19
+```
+
+Satu panggilan ke sumber berita (kuota gratis hanya 100 per bulan). Hanya mengisi URL yang kosong, mencocokkan menurut judul, dan
+tidak mengubah judul atau skor yang sudah dinilai. Berita yang diambil mulai sekarang sudah menyimpan URL otomatis.
