@@ -4,7 +4,7 @@ from datetime import date
 import numpy as np
 import pandas as pd
 
-from app.store import (append_sentiment, atomic_write_json, evaluate_history,
+from app.store import (append_news, append_sentiment, atomic_write_json, evaluate_history,
                        frame_to_columns, load_sentiment_log, read_json, upsert_history)
 
 
@@ -88,3 +88,12 @@ def test_old_evaluated_entries_without_flag_get_locked():
     prices = pd.DataFrame({"date": pd.date_range("2026-10-01", periods=2), "close": [100, 101]})
     hist = [{"date": "2026-10-01", "horizons": {"1": {"direction": "NAIK", "actual": "NAIK", "correct": True}}}]
     assert evaluate_history(hist, prices)[0]["horizons"]["1"]["locked"] is True
+
+
+def test_append_news_stores_urls_only_when_any_exists(tmp_path):
+    append_news(tmp_path, date(2026, 10, 14), ["A", "B"], None, urls=["https://x.com/a", None])
+    append_news(tmp_path, date(2026, 10, 15), ["C"], None, urls=[None])
+    append_news(tmp_path, date(2026, 10, 16), ["D"], None)
+    log = read_json(tmp_path / "news_log.json")
+    assert log["2026-10-14"]["urls"] == ["https://x.com/a", None] and log["2026-10-14"]["titles"] == ["A", "B"]
+    assert "urls" not in log["2026-10-15"] and "urls" not in log["2026-10-16"]

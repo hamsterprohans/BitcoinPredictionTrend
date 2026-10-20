@@ -283,3 +283,18 @@ def test_forced_rerun_cannot_change_an_already_issued_prediction(tmp_path):
     run_daily(deps, force=True)                                   # hitung ulang: prediksi kini TURUN, tetapi riwayat tidak boleh berubah
     assert read_json(deps.live_dir / "history.json")[-1]["horizons"]["1"] == before
     assert read_json(deps.live_dir / "latest.json")["horizons"]["1"]["direction"] == "NAIK"    # kartu utama pun mengikuti yang sudah terbit
+
+
+def test_news_log_keeps_the_original_article_urls_next_to_titles(tmp_path):
+    from app.sources import Judul
+    deps, _ = make_deps(tmp_path, headlines=lambda d: [Judul(f"Bitcoin {i}", f"https://contoh.com/{i}") for i in range(7)])
+    run_daily(deps)
+    log = read_json(deps.live_dir / "news_log.json")["2026-10-14"]
+    assert log["titles"] == [f"Bitcoin {i}" for i in range(5)]                  # lima judul pertama, str biasa (JSON aman)
+    assert log["urls"] == [f"https://contoh.com/{i}" for i in range(5)]         # sejajar dengan judul
+
+
+def test_news_log_without_urls_stays_backward_compatible(tmp_path):
+    deps, _ = make_deps(tmp_path)                                               # judul str biasa (tanpa atribut url)
+    run_daily(deps)
+    assert "urls" not in read_json(deps.live_dir / "news_log.json")["2026-10-14"]

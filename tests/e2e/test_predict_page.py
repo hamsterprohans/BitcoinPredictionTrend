@@ -268,3 +268,16 @@ def test_tooltip_stays_inside_the_chart_near_the_edges(page, server):
         page.locator("#chart-tooltip").wait_for(state="visible")
         t = page.locator("#chart-tooltip").bounding_box()
         assert t["x"] >= box["x"] - 1 and t["x"] + t["width"] <= box["x"] + box["width"] + 1
+
+
+def test_headlines_link_to_the_original_articles_safely(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#live-news li")
+    items = page.locator("#live-news li")
+    assert items.count() == 3
+    link = items.nth(0).locator("a")
+    assert link.get_attribute("href") == "https://contoh.com/berita-0" and link.inner_text() == "Judul berita 0"
+    assert link.get_attribute("target") == "_blank"
+    assert set(link.get_attribute("rel").split()) >= {"noopener", "noreferrer"}              # tab asal tidak bisa dibajak
+    assert items.nth(1).locator("a").count() == 0 and items.nth(1).inner_text() == "Judul berita 1"   # javascript: tidak menjadi tautan
+    assert items.nth(2).locator("a").count() == 0                                            # tanpa URL: teks biasa

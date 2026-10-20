@@ -235,3 +235,9 @@ body.no-webgl #splash-canvas{display:none}
 .chart-tip .tip-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
 .chart-tip .tip-price{font-weight:700;color:var(--text)}
 .chart-tip .tip-chg{margin-top:2px;font-size:.8rem}
+
+/* ---- Tautan berita asli ---- */
+.news-list a{color:var(--text);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--gold) 55%,transparent);text-underline-offset:3px}
+.news-list a:hover{color:var(--gold)}
+.news-list a::after{content:" \2197";font-size:.8em;color:var(--gold)}
+.news-list a:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}

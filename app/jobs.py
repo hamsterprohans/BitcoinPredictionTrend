@@ -93,7 +93,7 @@ def ensure_sentiment(live_dir: Path, days: list, fetch_headlines, score, score_d
             raw = score(heads) if heads else None
         append_sentiment(live_dir, day, raw, len(heads))
         if heads:
-            append_news(live_dir, day, heads[:5], detail)
+            append_news(live_dir, day, heads[:5], detail, urls=[getattr(h, "url", None) for h in heads[:5]])
         log.loc[ts, "raw"] = np.nan if raw is None else raw
         log.loc[ts, "count"] = len(heads)
     return log.sort_index()
