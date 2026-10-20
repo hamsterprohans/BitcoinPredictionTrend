@@ -298,3 +298,71 @@ def test_news_log_without_urls_stays_backward_compatible(tmp_path):
     deps, _ = make_deps(tmp_path)                                               # judul str biasa (tanpa atribut url)
     run_daily(deps)
     assert "urls" not in read_json(deps.live_dir / "news_log.json")["2026-10-14"]
+
+
+# ---- melengkapi URL berita yang tersimpan tanpa tautan (satu panggilan sumber, hanya mengisi yang kosong) ----
+from app.jobs import fill_missing_urls   # noqa: E402
+from app.sources import Judul, SourceError   # noqa: E402
+
+
+def seeded_news(tmp_path, with_urls=False):
+    live = tmp_path / "live"
+    live.mkdir()
+    entry = {"titles": ["Bitcoin A", "Bitcoin B", "Bitcoin C"], "scores": {"mean": 1.0}}
+    if with_urls:
+        entry["urls"] = ["https://old.com/a", None, None]
+    atomic_write_json(live / "news_log.json", {"2026-10-19": entry, "2026-10-18": {"titles": ["X"], "scores": None}})
+    atomic_write_json(live / "latest.json", {"as_of": "2026-10-19", "explain": {
+        "headlines": [{"title": "Bitcoin A"}, {"title": "Bitcoin B"}, {"title": "Bitcoin C"}]}})
+    return live
+
+
+def test_fill_missing_urls_aligns_by_title_not_by_order(tmp_path):
+    live = seeded_news(tmp_path)
+    fetched = [Judul("Bitcoin C", "https://c.com/1"), Judul("Bitcoin A", "https://a.com/1"), Judul("Lain", "https://z.com/1")]
+    assert fill_missing_urls(live, date(2026, 10, 19), lambda d: fetched) == 2
+    log = read_json(live / "news_log.json")["2026-10-19"]
+    assert log["titles"] == ["Bitcoin A", "Bitcoin B", "Bitcoin C"]                      # judul yang sudah dinilai tak berubah
+    assert log["urls"] == ["https://a.com/1", None, "https://c.com/1"]                    # B tidak ditemukan: tanpa tautan, tidak dikarang
+    heads = read_json(live / "latest.json")["explain"]["headlines"]
+    assert heads[0]["url"] == "https://a.com/1" and "url" not in heads[1] and heads[2]["url"] == "https://c.com/1"
+
+
+def test_fill_missing_urls_does_not_call_the_source_when_every_url_exists(tmp_path):
+    live = seeded_news(tmp_path)
+    log = read_json(live / "news_log.json")
+    log["2026-10-19"]["urls"] = ["https://a.com", "https://b.com", "https://c.com"]
+    atomic_write_json(live / "news_log.json", log)
+
+    def boom(day):
+        raise AssertionError("tidak boleh memanggil sumber (hemat kuota)")
+    assert fill_missing_urls(live, date(2026, 10, 19), boom) == 0
+    assert read_json(live / "news_log.json")["2026-10-19"]["urls"] == ["https://a.com", "https://b.com", "https://c.com"]
+
+
+def test_fill_missing_urls_keeps_existing_urls_and_only_fills_blanks(tmp_path):
+    live = seeded_news(tmp_path, with_urls=True)
+    atomic_write_json(live / "news_log.json", {"2026-10-19": {"titles": ["Bitcoin A", "Bitcoin B"], "scores": None,
+                                                              "urls": ["https://old.com/a", None]}})
+    fetched = [Judul("Bitcoin A", "https://NEW.com/a"), Judul("Bitcoin B", "https://b.com/1")]
+    assert fill_missing_urls(live, date(2026, 10, 19), lambda d: fetched) == 1
+    assert read_json(live / "news_log.json")["2026-10-19"]["urls"] == ["https://old.com/a", "https://b.com/1"]
+
+
+def test_fill_missing_urls_unknown_day_or_source_failure_changes_nothing(tmp_path):
+    live = seeded_news(tmp_path)
+    before = (live / "news_log.json").read_text(), (live / "latest.json").read_text()
+    assert fill_missing_urls(live, date(2026, 10, 1), lambda d: [Judul("Bitcoin A", "https://a.com")]) == 0   # tak ada entri hari itu
+
+    def fail(day):
+        raise SourceError("dibatasi")
+    with pytest.raises(SourceError):
+        fill_missing_urls(live, date(2026, 10, 19), fail)
+    assert ((live / "news_log.json").read_text(), (live / "latest.json").read_text()) == before
+
+
+def test_fill_missing_urls_leaves_latest_alone_when_it_is_another_day(tmp_path):
+    live = seeded_news(tmp_path)
+    atomic_write_json(live / "latest.json", {"as_of": "2026-10-20", "explain": {"headlines": [{"title": "Bitcoin A"}]}})
+    fill_missing_urls(live, date(2026, 10, 19), lambda d: [Judul("Bitcoin A", "https://a.com/1")])
+    assert "url" not in read_json(live / "latest.json")["explain"]["headlines"][0]
