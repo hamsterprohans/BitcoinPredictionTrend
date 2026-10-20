@@ -20,7 +20,7 @@ main{max-width:1100px;margin:0 auto;padding:8px 16px 48px}
 .pair{margin:0;color:var(--text-2)}
 .sym{color:var(--gold);font-weight:700;margin-right:6px}
 .price-row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.price{font-size:clamp(2.6rem,10vw,4.8rem);line-height:1.05;margin:6px 0;font-weight:600;letter-spacing:-.02em}
+.price{font-size:min(4.8rem,11.5vw);overflow-wrap:anywhere;line-height:1.05;margin:6px 0;font-weight:600;letter-spacing:-.02em}
 .chg{font-size:1.1rem}
 .chg.up,.dir.up,.arrow.up{color:var(--up)}
 .chg.down,.dir.down,.arrow.down{color:var(--down)}
@@ -77,7 +77,7 @@ body.no-webgl{background:radial-gradient(1100px 520px at 75% -10%,color-mix(in s
 body.no-webgl #hero-canvas,body.no-webgl #horizon-canvas,body.no-webgl #bars3d-canvas{display:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:560px){
-  .bar-row{grid-template-columns:100px 1fr 56px}
+  .bar-row{grid-template-columns:minmax(0,1.25fr) minmax(40px,1fr) max-content}   /* label lentur, angka tak pernah terpotong */
   .chart{height:260px}
   .topbar{gap:6px;padding:12px 12px}
   .brand{font-size:.95rem}
@@ -162,7 +162,7 @@ body.no-webgl #splash-canvas{display:none}
 .day-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px;margin-top:14px}
 .day-summary dt{color:var(--text-2);font-size:.8rem}
 .day-summary dd{margin:2px 0 0;font-size:1.05rem}
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:18px}   /* min(...,100%): tak melebihi kartu di ponsel */
 .news-list{margin:0 0 10px;padding-left:1.1rem}
 .news-list li{margin:4px 0}
 .dv{position:relative;height:10px;border-radius:6px;background:var(--surface-2);overflow:hidden}
@@ -241,3 +241,8 @@ body.no-webgl #splash-canvas{display:none}
 .news-list a:hover{color:var(--gold)}
 .news-list a::after{content:" \2197";font-size:.8em;color:var(--gold)}
 .news-list a:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+
+/* ---- Ketahanan tata letak di ponsel: isi kartu tidak boleh melebihi kartunya ---- */
+.card,.grid-2>*{min-width:0}
+.card :is(li,p,h2,h3,dd,dt,td,th,.narr,.news-list a,.bar-row>*){overflow-wrap:anywhere}
+.news-list{padding-left:1.1rem}

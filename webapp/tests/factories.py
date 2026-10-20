@@ -34,7 +34,7 @@ def _explain_block():
            "features": feats, "contributions": contrib}
     return {"headlines": [{"title": "Judul berita 0", "url": "https://contoh.com/berita-0"},
                           {"title": "Judul berita 1", "url": "javascript:alert(1)"},        # skema berbahaya: tidak boleh jadi tautan
-                          {"title": "Judul berita 2"}],                                      # tanpa URL: teks biasa
+                          {"title": "Judul berita 2 SuperPanjangTanpaSpasiBitcoin(BTC)Worth$72.64MtoCoinbasePrimeAndMore"}],   # tanpa URL; kata panjang menguji pembungkusan
             "sentiment": {"has_news": True, "scores": {"pemahaman": 3, "detail": 2, "bullbear": 1, "mean": 2.0}, "used": 1.67},
             "contributions": contrib, "features": feats, "level": "tinggi",
             "narrative": {"text": template_narrative(build_facts(rec, auc=0.52)), "source": "llm",
