@@ -281,3 +281,26 @@ def test_headlines_link_to_the_original_articles_safely(page, server):
     assert set(link.get_attribute("rel").split()) >= {"noopener", "noreferrer"}              # tab asal tidak bisa dibajak
     assert items.nth(1).locator("a").count() == 0 and items.nth(1).inner_text() == "Judul berita 1"   # javascript: tidak menjadi tautan
     assert items.nth(2).locator("a").count() == 0                                            # tanpa URL: teks biasa
+
+
+def test_explanation_panel_spans_the_full_card_width_without_empty_side(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#live-narrative .narr")
+    card = page.locator("#sec-explain").bounding_box()
+    panel = page.locator("#live-narrative").bounding_box()
+    pad = 2 * 18                                                           # padding kartu kiri+kanan
+    assert panel["width"] >= card["width"] - pad - 2                       # selebar isi kartu: tidak ada kolom kosong di samping
+    narr = page.locator("#live-narrative .narr").bounding_box()
+    assert narr["width"] >= card["width"] - pad - 2
+
+
+def test_explanation_panel_stays_single_column_on_phone(browser, server):
+    ctx = browser.new_context(viewport={"width": 390, "height": 844})
+    ctx.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}")
+    page = ctx.new_page()
+    page.goto(server + "/")
+    page.wait_for_selector("#live-narrative .narr")
+    assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+    card = page.locator("#sec-explain").bounding_box()
+    assert page.locator("#live-narrative .narr").bounding_box()["width"] <= card["width"]
+    ctx.close()
