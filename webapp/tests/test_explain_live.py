@@ -52,3 +52,9 @@ def test_live_explain_without_news_and_with_llm_falls_back_to_template():
     assert ex["headlines"] == [] and ex["sentiment"]["has_news"] is False and ex["sentiment"]["scores"] is None
     assert ex["level"] is None
     assert ex["narrative"]["source"] == "template" and "bukan saran investasi" in ex["narrative"]["text"]
+
+
+def test_headlines_memuat_url_bila_ada():
+    news = {**NEWS, "urls": ["https://contoh.com/a", None]}
+    ex = build_live_explain(predictor=FakePredictor(), frame=_frame(), pred=PRED, news=news, as_of="2026-10-14", stats=_stats(), series=SERIES)
+    assert ex["headlines"][0]["url"] == "https://contoh.com/a" and "url" not in ex["headlines"][1]

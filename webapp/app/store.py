@@ -93,9 +93,11 @@ def _news_path(live_dir) -> Path:
     return Path(live_dir) / "news_log.json"
 
 
-def append_news(live_dir, day: date, titles: list, scores) -> None:
+def append_news(live_dir, day: date, titles: list, scores, urls=None) -> None:
     log = read_json(_news_path(live_dir), {})
-    log[day.isoformat()] = {"titles": list(titles), "scores": scores}
+    log[day.isoformat()] = {"titles": [str(t) for t in titles], "scores": scores}
+    if urls and any(urls):
+        log[day.isoformat()]["urls"] = list(urls)          # sejajar dengan titles; None = tanpa tautan
     atomic_write_json(_news_path(live_dir), log)
 
 

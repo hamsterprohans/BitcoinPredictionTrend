@@ -18,6 +18,16 @@ SPONSOR_KEYWORDS = ["presale", "sponsored", "roi", "magacoin", "airdrop", "token
                     "% climb", "% roi", "best crypto to buy", "x return", "x gains"]
 
 
+class Judul(str):
+    """Judul berita (str biasa) yang membawa URL artikel asli di atribut `url` (None bila tidak ada)."""
+    url = None
+
+    def __new__(cls, title, url=None):
+        obj = super().__new__(cls, title)
+        obj.url = url if isinstance(url, str) and url.startswith(("http://", "https://")) else None
+        return obj
+
+
 class SourceError(RuntimeError):
     pass
 
@@ -124,7 +134,7 @@ def fetch_headlines_cryptocompare(http: httpx.Client, day: date, api_key: str, s
             if not BTC_RE.search(title) or _is_sponsored(title):
                 continue
             seen.add(title)
-            out.append(title)
+            out.append(Judul(title, a.get("url")))
         sleep(page_pause)                                   # <= 10 panggilan/menit
         oldest = min(int(a.get("published_on", cursor)) for a in arts)
         if len(out) >= want or oldest < start or oldest >= cursor:
@@ -162,7 +172,7 @@ def fetch_headlines(http: httpx.Client, day: date, sleep=time.sleep,
             if not title or title in seen or not BTC_RE.search(title) or _is_sponsored(title):
                 continue
             seen.add(title)
-            out.append(title)
+            out.append(Judul(title, a.get("url")))
         sleep(min_interval)  # GDELT: >= 5 detik antar permintaan
         return out
     raise SourceError(f"GDELT 429/balasan kosong berulang untuk {day}")
