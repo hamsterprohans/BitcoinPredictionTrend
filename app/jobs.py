@@ -149,6 +149,42 @@ def _compute(deps: Deps, live, prices, as_of):
     return feats, frame, preds, latest, entry
 
 
+def fill_missing_urls(live_dir: Path, day: date, fetch_headlines) -> int:
+    """Lengkapi URL artikel untuk berita `day` yang tersimpan tanpa tautan. Mengembalikan jumlah URL yang terisi.
+
+    Hanya memanggil sumber bila ada URL kosong (hemat kuota), mencocokkan menurut JUDUL (bukan urutan), tidak mengubah judul/skor
+    yang sudah dinilai, tidak menimpa URL yang ada, dan tidak mengarang URL untuk judul yang tidak ditemukan. Bila sumber gagal,
+    tidak ada berkas yang berubah.
+    """
+    live = Path(live_dir)
+    log = read_json(live / "news_log.json", {})
+    entry = log.get(day.isoformat())
+    if not entry:
+        return 0
+    titles = entry.get("titles", [])
+    urls = list(entry.get("urls") or [None] * len(titles))
+    urls += [None] * (len(titles) - len(urls))
+    if all(urls):
+        return 0
+    found = {str(h): getattr(h, "url", None) for h in fetch_headlines(day)}
+    filled = 0
+    for i, t in enumerate(titles):
+        if not urls[i] and found.get(t):
+            urls[i] = found[t]
+            filled += 1
+    if not filled:
+        return 0
+    entry["urls"] = urls
+    atomic_write_json(live / "news_log.json", log)
+    latest = read_json(live / "latest.json")
+    if latest and latest.get("as_of") == day.isoformat():
+        for h, u in zip(latest.get("explain", {}).get("headlines", []), urls):
+            if u and "url" not in h:
+                h["url"] = u
+        atomic_write_json(live / "latest.json", latest)
+    return filled
+
+
 def run_backfill(deps: Deps, as_of):
     """Hitung SUSULAN prediksi satu hari yang terlewat, hanya dari data tersimpan (harga, log sentimen, Fear & Greed).
 
@@ -271,12 +307,24 @@ if __name__ == "__main__":
                     help="bila GDELT memblokir (429), tunggu 15 menit lalu ulangi hari yang sama (untuk backfill pertama)")
     ap.add_argument("--backfill", metavar="YYYY-MM-DD",
                     help="hitung susulan prediksi hari yang terlewat dari data tersimpan (tanpa API baru)")
+    ap.add_argument("--fill-urls", metavar="YYYY-MM-DD",
+                    help="lengkapi URL artikel berita tanggal itu yang tersimpan tanpa tautan (satu panggilan sumber berita)")
     ap.add_argument("--prices-only", action="store_true",
                     help="hanya perbarui harga dan grafik (tanpa API key atau model)")
     args = ap.parse_args()
     if args.prices_only:
         print("harga terakhir:", run_prices_only(make_real_deps(prices_only=True)))
         raise SystemExit(0)
+    if args.fill_urls:
+        from . import sources
+        import httpx
+        key = os.environ.get("COINDESK_API_KEY") or os.environ.get("CRYPTOCOMPARE_API_KEY")
+        if not key:
+            raise SystemExit("COINDESK_API_KEY belum diset (environment variable atau .env)")
+        http = httpx.Client(timeout=30, follow_redirects=True)
+        n = fill_missing_urls(config.LIVE_DIR, date.fromisoformat(args.fill_urls),
+                              lambda day: sources.fetch_headlines_cryptocompare(http, day, key))
+        raise SystemExit(f"{n} URL berita dilengkapi untuk {args.fill_urls}")
     if args.backfill:
         deps = make_real_deps(patient_mode=False)
         out = run_backfill(deps, date.fromisoformat(args.backfill))
