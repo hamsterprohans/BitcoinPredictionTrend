@@ -185,7 +185,7 @@ def test_open_page_does_not_reload_when_snapshot_is_unchanged(page, context, ser
 
 def test_chart_gets_a_live_point_for_today_and_follows_the_live_price(browser, make_server):
     url = make_server(BASE_NOW, live_price=99999.5)
-    ctx = browser.new_context()
+    ctx = browser.new_context(bypass_csp=True)
     ctx.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}")
     page = ctx.new_page()
     errs = collect_errors(page)
@@ -295,7 +295,7 @@ def test_explanation_panel_spans_the_full_card_width_without_empty_side(page, se
 
 
 def test_explanation_panel_stays_single_column_on_phone(browser, server):
-    ctx = browser.new_context(viewport={"width": 390, "height": 844})
+    ctx = browser.new_context(bypass_csp=True, viewport={"width": 390, "height": 844})
     ctx.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}")
     page = ctx.new_page()
     page.goto(server + "/")

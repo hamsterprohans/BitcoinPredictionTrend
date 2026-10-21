@@ -66,3 +66,20 @@ def test_static_prediction_page_and_interval_work_under_subpath(page, static_sit
     page.wait_for_load_state("networkidle")
     assert not failed, failed
     assert not [e for e in errs if "status of 404" not in e], errs      # 404 backtest.json: lihat catatan di atas
+
+
+def test_static_export_keeps_strict_csp_with_base_script_external(browser, static_site):
+    ctx = browser.new_context(bypass_csp=False)                                    # CSP benar-benar ditegakkan
+    ctx.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}")
+    page = ctx.new_page()
+    violations = []
+    page.on("console", lambda m: violations.append(m.text) if "Content Security Policy" in m.text or "Refused to" in m.text else None)
+    page.goto(static_site + "/")
+    page.wait_for_selector("#price")
+    page.wait_for_timeout(500)
+    assert page.evaluate("window.__STATIC_BASE__") == "/sub"                      # tetap terpasang, tetapi dari berkas, bukan inline
+    assert page.evaluate("document.querySelectorAll('script:not([src])').length") == 0
+    csp = page.evaluate("document.querySelector('meta[http-equiv=Content-Security-Policy]').content")
+    assert "script-src 'self'" in csp and "unsafe-inline'" not in csp.split("script-src")[1].split(";")[0]
+    assert violations == [], violations
+    ctx.close()

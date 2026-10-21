@@ -2,6 +2,7 @@
 <html lang="id" data-theme="dark">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.coinbase.com https://pzpldabfnatehnsjqxqw.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Metodologi — Bitcoin Trend</title>
   <meta name="description" content="Cara kerja sistem prediksi tren Bitcoin: data, fitur, model LSTM, evaluasi, dan batasannya.">
@@ -50,9 +51,6 @@
     </article>
   </main>
   <footer class="footer"><p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir.</p></footer>
-  <script type="module">
-    import { initTheme } from "/static/js/common.js";
-    initTheme();
-  </script>
+  <script type="module" src="/static/js/theme-only.js"></script>
 </body>
 </html>

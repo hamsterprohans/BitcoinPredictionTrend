@@ -7,7 +7,7 @@ ROOT_PX = "parseFloat(getComputedStyle(document.documentElement).fontSize)"
 
 
 def mobile_page(browser, width=390):
-    ctx = browser.new_context(viewport={"width": width, "height": 844})
+    ctx = browser.new_context(bypass_csp=True, viewport={"width": width, "height": 844})
     ctx.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}")
     return ctx, ctx.new_page()
 

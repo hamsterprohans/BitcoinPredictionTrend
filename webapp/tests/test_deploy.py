@@ -77,3 +77,45 @@ def test_schedule_is_dense_in_the_hours_right_after_the_utc_close():
     assert sum(1 for h in hours if h < 7) >= 5                                   # padat sesaat setelah penutupan 00:00 UTC (data harian terbit cepat)
     gaps = [b - a for a, b in zip(hours, hours[1:])]
     assert max(gaps) <= 6                                                        # tak ada celah panjang sepanjang hari
+
+
+# ---- keamanan rantai pasok: dependensi dan aksi pihak ketiga tak boleh berubah diam-diam saat kunci API terpasang ----
+import re   # noqa: E402
+
+LOCK = WEBAPP / "requirements.lock"
+
+
+def lock_entries():
+    text = LOCK.read_text().replace("\\\n", " ")
+    return {m.group(1).lower(): (m.group(2), m.group(3)) for m in
+            re.finditer(r"^([A-Za-z0-9_.\-\[\]]+)==([^\s;]+)[^\n]*?((?:--hash=sha256:[0-9a-f]{64}\s*)+)", text, re.M)}
+
+
+def test_every_action_is_pinned_to_a_full_commit_sha():
+    for s in load_workflow()["jobs"]["update"]["steps"]:
+        if "uses" in s:
+            assert re.fullmatch(r"[\w.\-]+/[\w.\-]+@[0-9a-f]{40}", s["uses"]), s["uses"]       # tag (v4) bisa dipindahkan; SHA tidak
+
+
+def test_lock_pins_every_runtime_requirement_exactly_with_sha256_hashes():
+    entries = lock_entries()
+    names = [re.split(r"[<>=\[]", l.strip())[0].lower() for l in (WEBAPP / "requirements.txt").read_text().splitlines()
+             if l.strip() and not l.startswith("#")]
+    for n in names:
+        assert n in entries, f"{n} tidak terkunci"
+    assert all(len(re.findall(r"sha256:", h)) >= 1 for _, h in entries.values())
+    assert len(entries) >= 40                                                                    # termasuk dependensi transitif, bukan hanya 5 paket
+
+
+def test_workflow_installs_only_from_the_hashed_lock():
+    steps = {s.get("name"): s for s in load_workflow()["jobs"]["update"]["steps"]}
+    install = steps["Pasang dependensi"]["run"]
+    assert "--require-hashes" in install and "requirements.lock" in install
+    assert "requirements.txt" not in install                                                     # tanpa versi longgar (>=)
+
+
+def test_dependabot_watches_actions_and_python_packages():
+    cfg = yaml.safe_load((WEBAPP / "deploy" / "dependabot.yml").read_text())
+    ecos = {u["package-ecosystem"]: u for u in cfg["updates"]}
+    assert {"github-actions", "pip"} <= set(ecos)
+    assert ecos["pip"]["directory"] == "/webapp" and ecos["github-actions"]["directory"] == "/"
