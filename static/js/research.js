@@ -1,4 +1,4 @@
-import { $, fmtNum, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion } from "./common.js";
+import { $, cssVar, fmtDate, fmtNum, fmtPct, fmtUSD, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion, textScale } from "./common.js";
 
 initTheme();
 markCapabilities();
@@ -13,14 +13,14 @@ function el(tag, text, className) {
 function renderTable(container, rows, spec, { highlight } = {}) {
   const table = el("table");
   const thead = el("thead"), hr = el("tr");
-  spec.forEach((c) => hr.append(el("th", c.label, c.num ? "num" : "")));
+  spec.forEach((c) => hr.append(el("th", c.label, [c.num ? "num" : "", c.cls || ""].join(" ").trim())));
   thead.append(hr);
   const tbody = el("tbody");
   rows.forEach((r) => {
     const tr = el("tr", undefined, highlight && highlight(r) ? "hl" : "");
     spec.forEach((c) => {
       const v = c.get ? c.get(r) : r[c.key];
-      tr.append(el("td", v == null ? "—" : typeof v === "number" ? fmtNum(v, c.d ?? 2) : String(v), c.num ? "num mono" : ""));
+      tr.append(el("td", v == null ? "—" : typeof v === "number" ? fmtNum(v, c.d ?? 2) : String(v), [c.num ? "num mono" : "", c.cls || ""].join(" ").trim()));
     });
     tbody.append(tr);
   });
@@ -120,12 +120,153 @@ FIGS.forEach((n) => {
   figs.append(img);
 });
 
+// ---- Backtesting: strategi model (long-only) vs buy and hold (proposal Bab 3.1.9) ----
+const NA = "—";
+const pctOrNA = (v, d = 1) => (v == null ? NA : fmtPct(v, d));
+const BT_ROWS = [
+  ["Modal akhir (modal awal $1.000)", (m) => fmtUSD(m.final_equity)],
+  ["Total return", (m) => fmtPct(m.total_return_pct, 1)],
+  ["Maximum drawdown", (m) => fmtPct(m.max_drawdown_pct, 1)],
+  ["Sharpe ratio", (m) => (m.sharpe == null ? NA : fmtNum(m.sharpe, 2))],
+  ["Win rate (per transaksi)", (m) => (m.win_rate_pct == null ? NA : fmtNum(m.win_rate_pct, 0) + "%")],
+  ["Rata-rata untung per transaksi", (m) => pctOrNA(m.avg_win_pct)],
+  ["Rata-rata rugi per transaksi", (m) => pctOrNA(m.avg_loss_pct)],
+  ["Jumlah transaksi", (m) => String(m.n_trades)],
+  ["Hari berada di pasar", (m) => fmtNum(m.days_in_market_pct, 0) + "%"],
+];
+
+function btFinding(d) {
+  const m = d.model, b = d.buy_and_hold, c = d.model_at_classification_threshold, thr = fmtNum(d.trading_threshold.value, 2);
+  const tail = " Ini simulasi pada data historis, bukan bukti kinerja di pasar nyata; pembuktian memerlukan forward testing.";
+  if (Math.abs(m.final_equity - b.final_equity) < 0.01 && m.days_in_market_pct >= 99.9) {
+    return `Dengan ambang trading ${thr} yang dipilih di data validasi, model memberi sinyal beli hampir setiap hari (${fmtNum(m.days_in_market_pct, 0)}% hari), ` +
+      `sehingga hasilnya sama dengan buy and hold: ${fmtUSD(m.final_equity)} dari modal $1.000 (${fmtPct(m.total_return_pct, 1)}). ` +
+      `Varian dengan ambang klasifikasi ${fmtNum(d.classification_threshold, 4)} berakhir di ${fmtUSD(c.final_equity)} (${fmtPct(c.total_return_pct, 1)}), ` +
+      `tetapi hasil itu sangat bergantung pada ambang (lihat tabel kepekaan).` + tail;
+  }
+  const rel = m.final_equity > b.final_equity ? "lebih tinggi" : "lebih rendah";
+  return `Pada periode uji, strategi model dengan ambang trading ${thr} menghasilkan ${fmtUSD(m.final_equity)} (${fmtPct(m.total_return_pct, 1)}), ` +
+    `${rel} daripada buy and hold: ${fmtUSD(b.final_equity)} (${fmtPct(b.total_return_pct, 1)}).` + tail;
+}
+
+function btReading(d) {
+  const b = d.buy_and_hold, rets = d.sensitivity.map((r) => r.total_return_pct);
+  const market = b.total_return_pct < 0
+    ? `Harga turun ${fmtPct(b.total_return_pct, 1)} sepanjang periode uji. Pada pasar turun, berada di posisi tunai pada sebagian hari otomatis terlihat lebih baik, apa pun alasannya.`
+    : `Harga naik ${fmtPct(b.total_return_pct, 1)} sepanjang periode uji. Pada pasar naik, berada di posisi tunai pada sebagian hari mengurangi keuntungan.`;
+  return [
+    "Strategi hanya bisa mengungguli buy and hold bila sinyalnya benar-benar memisahkan hari naik dari hari turun. Akurasi uji model hanya sekitar 50% (lihat bagian Ablation), sehingga keunggulan di simulasi mudah terjadi karena kebetulan.",
+    market,
+    `Hasil berubah drastis menurut ambang: dari ${fmtPct(Math.min(...rets), 1)} sampai ${fmtPct(Math.max(...rets), 1)} (tabel kepekaan). Hasil yang berubah banyak oleh pergeseran kecil ambang bukan tanda sinyal yang stabil.`,
+  ];
+}
+
+function btTable(d) {
+  const heads = ["Metrik", `Model (ambang trading ${fmtNum(d.trading_threshold.value, 2)})`,
+    `Model (ambang klasifikasi ${fmtNum(d.classification_threshold, 4)})`, "Buy and hold"];
+  const table = el("table"), thead = el("thead"), hr = el("tr"), body = el("tbody");
+  table.id = "bt-table";
+  heads.forEach((h, i) => hr.append(el("th", h, i ? "num" : "")));
+  thead.append(hr);
+  table.append(thead);
+  BT_ROWS.forEach(([label, f]) => {
+    const tr = el("tr"), th = el("th", label);
+    th.scope = "row";
+    tr.append(th);
+    [d.model, d.model_at_classification_threshold, d.buy_and_hold].forEach((m) => tr.append(el("td", f(m), "num mono")));
+    body.append(tr);
+  });
+  table.append(body);
+  const wrap = el("div", undefined, "table-wrap");
+  wrap.append(table);
+  return wrap;
+}
+
+function btChart(box, d) {
+  const LC = window.LightweightCharts;
+  if (!LC) return;
+  const fontSize = () => Math.round(11 * textScale());
+  const chart = LC.createChart(box, {
+    autoSize: true,
+    layout: { background: { type: "solid", color: "transparent" }, textColor: cssVar("--text-2"), fontFamily: cssVar("--mono"), fontSize: fontSize() },
+    grid: { vertLines: { color: cssVar("--line") }, horzLines: { color: cssVar("--line") } },
+    rightPriceScale: { borderColor: cssVar("--line") }, timeScale: { borderColor: cssVar("--line") },
+    handleScroll: false, handleScale: false,
+    localization: { priceFormatter: (v) => fmtUSD(v) },
+  });
+  const line = (color, extra = {}) => chart.addLineSeries({ color, lineWidth: 2, priceLineVisible: false, lastValueVisible: true, ...extra });
+  const pts = (key) => d.curve.date.map((time, i) => ({ time, value: d.curve[key][i] }));
+  const series = [
+    [line(cssVar("--text-2"), { lineStyle: LC.LineStyle.Dashed }), "buy_hold"],          // di bawah: terlihat bila persis tertutup model
+    [line(cssVar("--gold")), "model"],
+    [line("#7aa7ff"), "model_classification"],
+  ];
+  series.forEach(([s, key]) => s.setData(pts(key)));
+  chart.timeScale().fitContent();
+  document.addEventListener("themechange", () => {
+    chart.applyOptions({ layout: { textColor: cssVar("--text-2") }, grid: { vertLines: { color: cssVar("--line") }, horzLines: { color: cssVar("--line") } } });
+    series[0][0].applyOptions({ color: cssVar("--text-2") });
+    series[1][0].applyOptions({ color: cssVar("--gold") });
+  });
+  document.addEventListener("textscalechange", () => chart.applyOptions({ layout: { fontSize: fontSize() } }));
+}
+
+function renderBacktest(box, d) {
+  const per = d.period;
+  box.append(el("p", `Strategi long-only: beli saat prediksi NAIK, tunai saat TURUN. Modal awal $1.000, ${d.costs}. ` +
+    `Periode uji ${fmtDate(per.start)} sampai ${fmtDate(per.end)} (${per.n_days} hari). Ambang trading dipilih dari grid 0,05 sampai 0,90 pada data validasi ` +
+    `(${d.trading_threshold.val_n_days} hari), lalu diterapkan ke data uji.`, "muted"));
+  const finding = el("p", btFinding(d), "finding");
+  finding.id = "bt-finding";
+  finding.setAttribute("role", "note");
+  box.append(finding);
+
+  const chartBox = el("div", undefined, "chart mid");
+  chartBox.id = "bt-chart";
+  box.append(el("h3", "Kurva ekuitas (modal awal $1.000)", "small muted"), chartBox);
+  const legend = el("p", undefined, "bt-legend mono small");
+  [["Model (ambang trading)", "--gold"], ["Model (ambang klasifikasi)", "#7aa7ff"], ["Buy and hold (garis putus-putus)", "--text-2"]].forEach(([t, c]) => {
+    const item = el("span", t), dot = el("i");
+    dot.style.background = c.startsWith("--") ? `var(${c})` : c;
+    item.prepend(dot);
+    legend.append(item);
+  });
+  box.append(legend);
+  btChart(chartBox, d);
+
+  box.append(el("h3", "Perbandingan metrik", "small muted"), btTable(d));
+  const reading = el("ul", undefined, "bt-reading");
+  reading.id = "bt-reading";
+  btReading(d).forEach((t) => reading.append(el("li", t)));
+  box.append(el("h3", "Cara membaca hasil ini", "small muted"), reading);
+
+  box.append(el("h3", "Kepekaan terhadap ambang trading (data uji)", "small muted"));
+  const sens = el("div", "", "");
+  box.append(sens);
+  renderTable(sens, d.sensitivity, [
+    { label: "Ambang", get: (r) => fmtNum(r.threshold, 2), num: true },
+    { label: "Modal akhir", get: (r) => fmtUSD(r.final_equity), num: true },
+    { label: "Total return", get: (r) => fmtPct(r.total_return_pct, 1), num: true },
+    { label: "Sharpe", get: (r) => (r.sharpe == null ? NA : fmtNum(r.sharpe, 2)), num: true, cls: "hide-sm" },
+    { label: "Max drawdown", get: (r) => fmtPct(r.max_drawdown_pct, 1), num: true, cls: "hide-sm" },
+    { label: "Transaksi", get: (r) => String(r.n_trades), num: true },
+  ], { highlight: (r) => Math.abs(r.threshold - d.trading_threshold.value) < 1e-9 });
+  sens.querySelector("table").id = "bt-sensitivity";
+
+  box.append(el("h3", "Catatan dan keterbatasan", "small muted"));
+  const cav = el("ul", undefined, "bt-caveats");
+  cav.id = "bt-caveats";
+  d.caveats.forEach((t) => cav.append(el("li", t)));
+  box.append(cav);
+}
+
 (async () => {
   const box = $("#sec-backtest");
   try {
-    const d = await getJSON("/api/research/backtest");
-    box.append(el("pre", JSON.stringify(d, null, 1), "mono"));
-  } catch {
-    unavailable(box, "Belum tersedia: output sel backtest pada notebook belum diekspor.");
+    renderBacktest(box, await getJSON("/api/research/backtest"));
+  } catch (e) {
+    if (e.status !== 404) console.warn("Backtest:", e);                       // galat tampilan/data terlihat di konsol, bukan ditelan
+    if (e.status === 404) unavailable(box, "Belum tersedia: hasil backtest belum dibangun (jalankan python -m scripts.build_backtest).");
+    else unavailable(box, "Backtest gagal ditampilkan.");
   }
 })();

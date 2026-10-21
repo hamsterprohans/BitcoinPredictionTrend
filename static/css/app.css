@@ -244,7 +244,7 @@ body.no-webgl #splash-canvas{display:none}
 
 /* ---- Ketahanan tata letak di ponsel: isi kartu tidak boleh melebihi kartunya ---- */
 .card,.grid-2>*{min-width:0}
-.card :is(li,p,h2,h3,dd,dt,td,th,.narr,.news-list a,.bar-row>*){overflow-wrap:anywhere}
+.card :is(li,p,h2,h3,dd,dt,.narr,.news-list a,.bar-row>*){overflow-wrap:anywhere}   /* bukan sel tabel: angka tidak boleh terpecah */
 .news-list{padding-left:1.1rem}
 
 /* ---- Tabel riwayat: kolom 'Prediksi untuk' (target) dengan asal penutupan di bawahnya ---- */
@@ -255,3 +255,15 @@ body.no-webgl #splash-canvas{display:none}
   #sec-hist .hist-src{max-width:7.5em;font-size:.68rem}
   #sec-hist .th-full{display:none}#sec-hist .th-short{display:inline}
 }
+
+/* ---- Backtesting (halaman Riset) ---- */
+.finding{margin:12px 0;padding:12px 14px;border-left:3px solid var(--gold);background:color-mix(in srgb,var(--gold) 7%,transparent);border-radius:0 10px 10px 0}
+.bt-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:6px 0 14px}
+.bt-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.bt-reading,.bt-caveats{margin:0 0 12px;padding-left:1.1rem}
+.bt-reading li,.bt-caveats li{margin:5px 0}
+#bt-table th[scope=row]{text-align:left;font-weight:500;color:var(--text-2);white-space:normal}
+#bt-table td,#bt-table thead th:not(:first-child){white-space:normal}
+@media (max-width:560px){#bt-table th,#bt-table td,#bt-sensitivity th,#bt-sensitivity td{padding:7px 3px;font-size:.72rem}
+  #bt-table thead th,#bt-sensitivity th{white-space:normal;line-height:1.2;vertical-align:bottom;font-size:.66rem}
+  .hide-sm{display:none}}

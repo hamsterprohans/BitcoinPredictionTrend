@@ -102,3 +102,16 @@ def test_history_table_fits_without_sideways_scroll_on_phones(browser, server, w
     fits = page.evaluate("(() => { const w = document.querySelector('#sec-hist .table-wrap'); return w.scrollWidth <= w.clientWidth + 1; })()")
     assert fits, f"tabel riwayat bergulir ke samping @{width}"
     ctx.close()
+
+
+def test_backtest_section_fits_on_a_phone(browser, make_server):
+    from tests.factories import backtest_fixture
+    url = make_server(BASE_NOW, backtest=backtest_fixture())
+    ctx, page = phone(browser, 360)
+    page.goto(url + "/riset")
+    page.wait_for_selector("#bt-table")
+    page.wait_for_selector("#bt-chart canvas")
+    assert_fits(page, "/riset backtest @360")
+    for sel in ("#bt-table", "#bt-sensitivity"):
+        assert page.evaluate("(s) => { const w = document.querySelector(s).closest('.table-wrap'); return w.scrollWidth <= w.clientWidth + 1; }", sel), f"{sel} bergulir ke samping"
+    ctx.close()

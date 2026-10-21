@@ -148,3 +148,31 @@ def seed_retro(content_dir):
                             "source": "llm", "attempts": 1, "temperature": 0.1}
     write_outputs(Path(content_dir) / "retro", out)
     return out
+
+
+def backtest_fixture(kind="always_long"):
+    """content/backtest.json tetap (skema nyata). always_long: ambang validasi membuat model = buy and hold, seperti hasil nyata."""
+    def m(final, ret, trades, win, aw, al, mdd, sharpe, inmkt):
+        return {"final_equity": final, "total_return_pct": ret, "n_trades": trades, "win_rate_pct": win, "avg_win_pct": aw,
+                "avg_loss_pct": al, "max_drawdown_pct": mdd, "sharpe": sharpe, "days_in_market_pct": inmkt}
+    bh = m(794.38, -20.562, 1, 0.0, None, -20.562, -49.1, -0.1984, 100.0)
+    cls = m(985.31, -1.469, 11, 36.36, 9.2, -6.1, -26.0, 0.12, 56.0)
+    model = bh if kind == "always_long" else m(1056.13, 5.613, 2, 100.0, 5.6, None, -5.7, 0.51, 20.0)
+    thr = 0.35 if kind == "always_long" else 0.60
+    rets = [(0.05, -20.6, 1), (0.10, -20.6, 1), (0.15, -20.6, 1), (0.20, -20.6, 1), (0.25, -20.6, 1), (0.30, -20.6, 1), (0.35, -20.6, 1),
+            (0.40, -38.8, 4), (0.45, -31.2, 16), (0.50, -7.5, 11), (0.55, 0.2, 9), (0.60, 5.6, 2), (0.65, 0.0, 0), (0.70, 0.0, 0),
+            (0.75, 0.0, 0), (0.80, 0.0, 0), (0.85, 0.0, 0), (0.90, 0.0, 0)]
+    sens = [{"threshold": t, "final_equity": round(1000 * (1 + r / 100), 2), "total_return_pct": r, "sharpe": None if n == 0 else 0.1,
+             "max_drawdown_pct": -10.0, "n_trades": n} for t, r, n in rets]
+    return {"generated_at": "2026-10-21T00:00:00+00:00", "strategy": "long-only", "capital": 1000.0,
+            "costs": "tanpa biaya transaksi dan slippage", "period": {"start": "2025-02-21", "end": "2026-04-29", "n_days": 433},
+            "classification_threshold": 0.4768, "trading_threshold": {"value": thr, "selected_on": "validasi",
+                                                                      "val_final_equity": 2654.44, "val_n_days": 432},
+            "model": model, "model_at_classification_threshold": cls, "buy_and_hold": bh, "sensitivity": sens,
+            "curve": {"date": ["2025-02-21", "2025-02-22", "2025-02-23", "2025-02-24"], "model": [1000, 1010, 990, 980],
+                      "model_classification": [1000, 1000, 1000, 1005], "buy_hold": [1000, 1010, 990, 980]},
+            "checks": {"recall": 0.56, "collapsed": False, "range": [0.15, 0.85]},
+            "parity_with_retro": {"checked": True, "max_abs_prob_diff": 5e-07},
+            "caveats": ["Simulasi pada data historis periode uji (433 hari); bukan bukti kinerja di pasar nyata. Pembuktian memerlukan forward testing.",
+                        "Tanpa biaya transaksi dan slippage.", "Ambang trading dipilih dari data validasi.",
+                        "Satu jalur sejarah dan satu periode.", "Buy and hold = beli di awal periode uji."]}

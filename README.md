@@ -133,3 +133,14 @@ tidak mengubah judul atau skor yang sudah dinilai. Berita yang diambil mulai sek
 - **Supabase:** kunci publik hanya bisa INSERT. Database menolak kunci jawaban yang tak dikenal, nilai non-teks, jawaban lebih dari 2000
   karakter, nama kosong, dan lebih dari 120 kiriman per 10 menit (jalankan ulang `supabase/schema.sql` setelah perubahan).
 - **Rahasia:** `scripts/.env` tidak pernah masuk git. Kunci API hanya hidup di GitHub Secrets dan `.env` lokal.
+
+## Backtesting: strategi model vs buy and hold
+
+```bash
+python -m scripts.build_backtest        # menulis content/backtest.json (tampil di halaman Riset)
+```
+
+Sesuai proposal (Bab 3.1.9): long-only (beli saat prediksi NAIK, tunai saat TURUN), modal awal $1.000, tanpa biaya transaksi dan slippage.
+Ambang trading dipilih dari grid 0,05 sampai 0,90 pada data **validasi**, lalu diterapkan ke data uji; pembanding buy and hold. Metrik: total
+return, win rate, rata-rata untung/rugi per transaksi, maximum drawdown, Sharpe (risk-free 0, dianualkan akar 365), dan tabel kepekaan ambang.
+Bila hasilnya berubah (model atau data baru), jalankan ulang perintah di atas lalu ekspor situs.

@@ -1,3 +1,4 @@
+import json
 import socket
 import threading
 import time
@@ -32,7 +33,7 @@ def _serve(app):
 def make_server(tmp_path_factory):
     started = []
 
-    def _make(now, seed=True, chart_only=False, live_price=None, demo=False, retro=False, explain=True):
+    def _make(now, seed=True, chart_only=False, live_price=None, demo=False, retro=False, explain=True, backtest=None):
         base = tmp_path_factory.mktemp("e2e")
         live, content = base / "live", base / "content"
         live.mkdir()
@@ -43,6 +44,8 @@ def make_server(tmp_path_factory):
             seed_live_dir(live, content, demo=demo, explain=explain)
         if retro:
             seed_retro(content)
+        if backtest is not None:
+            (content / "backtest.json").write_text(json.dumps(backtest))
         def fetch_live():                       # tes tidak boleh menyentuh jaringan
             if live_price is None:
                 raise RuntimeError("harga live tidak tersedia")
