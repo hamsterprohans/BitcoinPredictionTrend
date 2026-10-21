@@ -83,3 +83,10 @@ def test_retro_day_load_failure_clears_stale_panels(page, make_server):
     page.wait_for_function("document.querySelector('#panel-news').textContent.includes('Gagal memuat')")
     assert page.locator("#panel-contrib .bar-row").count() == 0                  # tidak ada sisa panel hari sebelumnya
     assert "Gagal memuat" in page.inner_text("#panel-narrative")
+
+
+def test_retro_summary_label_says_which_close_the_prediction_is_built_from(page, make_server):
+    page.goto(make_server(BASE_NOW, retro=True) + "/retrospektif")
+    page.wait_for_selector("#day-date:not(:text('—'))")
+    labels = page.locator(".day-summary dt").all_inner_texts()
+    assert "Tanggal prediksi" not in labels and labels[0] == "Dibuat dari penutupan"       # bukan tanggal yang diprediksi
