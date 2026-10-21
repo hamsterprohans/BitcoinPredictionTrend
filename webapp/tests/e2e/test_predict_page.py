@@ -328,3 +328,29 @@ def test_history_target_date_follows_the_selected_horizon(page, server):
     target = page.evaluate("(d) => new Date(new Date(d + 'T00:00:00Z').getTime() + 7 * 86400000).toISOString().slice(0, 10)", first["date"])
     expected = page.evaluate("(d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'})", target)
     assert expected in page.locator("#history-body tr").first.locator("td").first.inner_text()
+
+
+def _with_news_source(page, source):
+    def handle(route):
+        body = route.fetch().json()
+        body["explain"]["news_source"] = source
+        route.fulfill(json=body)
+    page.route("**/api/prediction/latest", handle)
+
+
+def test_fallback_news_source_is_disclosed_next_to_the_headlines(page, server):
+    _with_news_source(page, "rss")
+    page.goto(server + "/")
+    page.wait_for_selector("#live-news li")
+    note = page.locator("#live-news .source-note")
+    assert note.count() == 1
+    text = note.inner_text()
+    assert "cadangan" in text.lower() and "RSS" in text and "sedikit berbeda" in text         # jujur soal pergeseran distribusi
+
+
+@pytest.mark.parametrize("source", [None, "cryptocompare"])
+def test_primary_news_source_shows_no_fallback_note(page, server, source):
+    _with_news_source(page, source)
+    page.goto(server + "/")
+    page.wait_for_selector("#live-news li")
+    assert page.locator("#live-news .source-note").count() == 0
