@@ -70,12 +70,21 @@ function renderHistory() {
   for (const e of rows) {
     const h = e.horizons[state.selected];
     const tr = document.createElement("tr");
-    const cells = [e.backfilled ? `${fmtDateShort(e.date)} · dihitung susulan` : fmtDateShort(e.date), `${arrow(h.direction)} ${h.direction}`, `${fmtNum(h.prob * 100, 1)}%`,
+    const target = new Date(Date.parse(e.date + "T00:00:00Z") + Number(state.selected) * 86400000).toISOString().slice(0, 10);
+    const cells = [null, `${arrow(h.direction)} ${h.direction}`, `${fmtNum(h.prob * 100, 1)}%`,
       h.actual ? `${arrow(h.actual)} ${h.actual} ${h.correct ? "✓" : "✗"}` : "menunggu"];
     cells.forEach((t, i) => {
       const td = document.createElement("td");
-      td.textContent = t;
-      if (i === 0 && e.backfilled) td.title = "Dihitung setelah harinya lewat dari data tersimpan; bukan prediksi yang terbit pada hari itu";
+      if (i === 0) {                                             // yang diprediksi (target) + asal data penutupan di baris kecil
+        td.textContent = fmtDateShort(target);
+        const sub = document.createElement("small");
+        sub.className = "muted hist-src";
+        sub.textContent = `dari penutupan ${fmtDateShort(e.date)}${e.backfilled ? " · dihitung susulan" : ""}`;
+        td.append(document.createElement("br"), sub);
+        if (e.backfilled) td.title = "Dihitung setelah harinya lewat dari data tersimpan; bukan prediksi yang terbit pada hari itu";
+      } else {
+        td.textContent = t;
+      }
       if (i === 2) td.className = "num mono";
       if (i === 1) td.className = cls(h.direction);
       if (i === 3 && h.actual) td.className = h.correct ? "up" : "down";

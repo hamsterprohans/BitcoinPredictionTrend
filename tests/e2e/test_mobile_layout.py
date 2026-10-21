@@ -92,3 +92,13 @@ def test_retro_page_fits_on_a_phone(browser, make_server):
     page.wait_for_timeout(400)
     assert_fits(page, "/retrospektif @360")
     ctx.close()
+
+
+@pytest.mark.parametrize("width", [360, 390, 412])
+def test_history_table_fits_without_sideways_scroll_on_phones(browser, server, width):
+    ctx, page = phone(browser, width)
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    fits = page.evaluate("(() => { const w = document.querySelector('#sec-hist .table-wrap'); return w.scrollWidth <= w.clientWidth + 1; })()")
+    assert fits, f"tabel riwayat bergulir ke samping @{width}"
+    ctx.close()

@@ -304,3 +304,27 @@ def test_explanation_panel_stays_single_column_on_phone(browser, server):
     card = page.locator("#sec-explain").bounding_box()
     assert page.locator("#live-narrative .narr").bounding_box()["width"] <= card["width"]
     ctx.close()
+
+
+def test_history_rows_are_labeled_by_the_date_they_predict_with_the_source_close_shown(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    assert page.locator("#sec-hist thead th").first.inner_text() == "Prediksi untuk"        # bukan 'Tanggal prediksi' (ambigu)
+    hist = page.evaluate("fetch('/api/prediction/history').then(r => r.json())")
+    first = max((e for e in hist if e["horizons"].get('1')), key=lambda e: e["date"])
+    fmt = "(d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'})"
+    target = page.evaluate("(d) => new Date(new Date(d + 'T00:00:00Z').getTime() + 86400000).toISOString().slice(0, 10)", first["date"])
+    cell = page.locator("#history-body tr").first.locator("td").first.inner_text()
+    assert page.evaluate(fmt, target) in cell                                              # tanggal TARGET (hari yang diprediksi) di baris teratas
+    assert f"dari penutupan {page.evaluate(fmt, first['date'])}" in cell                   # asal data penutupan tetap jelas
+
+
+def test_history_target_date_follows_the_selected_horizon(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    page.click("#horizon-tabs [role=tab]:has-text('7 hari')")
+    hist = page.evaluate("fetch('/api/prediction/history').then(r => r.json())")
+    first = max((e for e in hist if e["horizons"].get('7')), key=lambda e: e["date"])
+    target = page.evaluate("(d) => new Date(new Date(d + 'T00:00:00Z').getTime() + 7 * 86400000).toISOString().slice(0, 10)", first["date"])
+    expected = page.evaluate("(d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'})", target)
+    assert expected in page.locator("#history-body tr").first.locator("td").first.inner_text()

@@ -246,3 +246,12 @@ body.no-webgl #splash-canvas{display:none}
 .card,.grid-2>*{min-width:0}
 .card :is(li,p,h2,h3,dd,dt,td,th,.narr,.news-list a,.bar-row>*){overflow-wrap:anywhere}
 .news-list{padding-left:1.1rem}
+
+/* ---- Tabel riwayat: kolom 'Prediksi untuk' (target) dengan asal penutupan di bawahnya ---- */
+.hist-src{font-size:.74rem;line-height:1.3;display:block;white-space:normal;max-width:16em}
+.th-short{display:none}
+@media (max-width:560px){
+  #sec-hist th,#sec-hist td{padding:7px 2px;font-size:.75rem}
+  #sec-hist .hist-src{max-width:7.5em;font-size:.68rem}
+  #sec-hist .th-full{display:none}#sec-hist .th-short{display:inline}
+}
