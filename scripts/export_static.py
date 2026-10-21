@@ -18,8 +18,7 @@ PAGES = {"index.html": "/", "latar-belakang.html": "/latar-belakang", "retrospek
 
 def _rebase_html(text: str, base: str) -> str:
     text = re.sub(r'((?:href|src)=")/(?!/)', lambda m: m.group(1) + base + "/", text)
-    text = text.replace('"three":"/static/', f'"three":"{base}/static/')
-    return text.replace("<head>", f'<head>\n  <script>window.__STATIC_BASE__="{base}"</script>', 1)
+    return text.replace("<head>", f'<head>\n  <script src="{base}/static/js/base.js"></script>', 1)   # berkas, bukan inline: CSP script-src 'self'
 
 
 def _rebase_css(text: str, base: str) -> str:
@@ -33,6 +32,7 @@ def export_static(app, static_dir, content_dir, out, base: str) -> dict:
         shutil.rmtree(out)
     out.mkdir(parents=True)
     shutil.copytree(static_dir, out / "static", ignore=shutil.ignore_patterns("*.html"))
+    (out / "static" / "js" / "base.js").write_text(f'window.__STATIC_BASE__ = "{base}";\n')   # subpath situs (dibaca common.js)
     for css in (out / "static" / "css").glob("*.css"):
         css.write_text(_rebase_css(css.read_text(), base))
     client = TestClient(app)

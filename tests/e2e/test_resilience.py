@@ -14,7 +14,7 @@ HTMLCanvasElement.prototype.getContext = function (t, ...a) {
 
 
 def test_without_webgl_data_still_readable(browser, server):
-    ctx = browser.new_context()
+    ctx = browser.new_context(bypass_csp=True)
     page = ctx.new_page()
     page.add_init_script(NO_WEBGL)
     errs = collect_errors(page)
@@ -30,7 +30,7 @@ def test_without_webgl_data_still_readable(browser, server):
 
 
 def test_reduced_motion_marked_and_no_errors(browser, server):
-    ctx = browser.new_context(reduced_motion="reduce")
+    ctx = browser.new_context(bypass_csp=True, reduced_motion="reduce")
     page = ctx.new_page()
     errs = collect_errors(page)
     page.goto(server + "/")
@@ -42,7 +42,7 @@ def test_reduced_motion_marked_and_no_errors(browser, server):
 
 @pytest.mark.parametrize("path", ["/", "/retrospektif", "/riset", "/metodologi", "/tentang"])
 def test_no_horizontal_scroll_on_phone(browser, server, path):
-    ctx = browser.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=2)
+    ctx = browser.new_context(bypass_csp=True, viewport={"width": 390, "height": 844}, device_scale_factor=2)
     page = ctx.new_page()
     page.goto(server + path)
     page.wait_for_load_state("networkidle")
@@ -51,7 +51,7 @@ def test_no_horizontal_scroll_on_phone(browser, server, path):
 
 
 def test_reduced_motion_still_renders_hero_scene(browser, server):
-    ctx = browser.new_context(reduced_motion="reduce")
+    ctx = browser.new_context(bypass_csp=True, reduced_motion="reduce")
     page = ctx.new_page()
     warnings = []
     page.on("console", lambda m: warnings.append(m.text) if m.type == "warning" else None)

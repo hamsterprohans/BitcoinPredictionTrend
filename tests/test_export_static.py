@@ -36,18 +36,20 @@ def test_exports_pages_api_and_assets(tmp_path):
 
 def test_no_root_absolute_references_remain(tmp_path):
     out, _ = build(tmp_path)
-    bad = re.compile(r"""(?:href|src)=["']/(?!sub/)|url\(["']?/(?!sub/)|"three":"/(?!sub/)""")
+    bad = re.compile(r"""(?:href|src)=["']/(?!sub/)|url\(["']?/(?!sub/)""")
     for f in list(out.glob("*.html")) + list(out.glob("static/css/*.css")):
         assert not bad.search(f.read_text()), f
     html = (out / "index.html").read_text()
-    assert 'window.__STATIC_BASE__="/sub"' in html
-    assert 'href="/sub/riset"' in html and '"three":"/sub/static/vendor/three.module.min.js"' in html
+    assert "window.__STATIC_BASE__" not in html and 'src="/sub/static/js/base.js"' in html       # tanpa skrip inline (CSP ketat)
+    assert (out / "static/js/base.js").read_text().strip() == 'window.__STATIC_BASE__ = "/sub";'
+    assert 'href="/sub/riset"' in html and "importmap" not in html                              # three.js diimpor lewat path relatif
     assert "url(\"/sub/static/fonts/Geist-Variable.woff2\")" in (out / "static/css/tokens.css").read_text()
 
 
 def test_root_base_keeps_paths_and_latest_has_as_of(tmp_path):
     out, report = build(tmp_path, base="")
-    assert 'window.__STATIC_BASE__=""' in (out / "index.html").read_text()
+    assert 'src="/static/js/base.js"' in (out / "index.html").read_text()
+    assert (out / "static/js/base.js").read_text().strip() == 'window.__STATIC_BASE__ = "";'
     assert 'href="/riset"' in (out / "index.html").read_text()
     assert json.loads((out / "api/prediction/latest.json").read_text())["as_of"]
     assert report["pages"] == 7 and report["api_files"] > 5

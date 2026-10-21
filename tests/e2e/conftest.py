@@ -63,6 +63,13 @@ def server(make_server):
 
 
 @pytest.fixture(scope="session")
+def browser_context_args(browser_context_args):
+    """Tes fungsional berjalan dengan bypass_csp: wait_for_function mengevaluasi teks di dalam halaman (eval) yang diblokir CSP ketat.
+    Perilaku CSP diuji terpisah dengan konteks TANPA bypass (test_security_csp.py, test_static_export.py)."""
+    return {**browser_context_args, "bypass_csp": True}
+
+
+@pytest.fixture(scope="session")
 def browser_type_launch_args(browser_type_launch_args):
     return {**browser_type_launch_args, "args": ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"]}
 
