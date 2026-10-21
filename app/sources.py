@@ -1,7 +1,9 @@
 """Pengambil data eksternal. Sumber sama dengan data latih: Coin Metrics, alternative.me, GDELT."""
+import email.utils
 import re
 import time
-from datetime import date
+import xml.etree.ElementTree as ET
+from datetime import date, datetime, timedelta, timezone
 
 import httpx
 import pandas as pd
@@ -19,12 +21,14 @@ SPONSOR_KEYWORDS = ["presale", "sponsored", "roi", "magacoin", "airdrop", "token
 
 
 class Judul(str):
-    """Judul berita (str biasa) yang membawa URL artikel asli di atribut `url` (None bila tidak ada)."""
+    """Judul berita (str biasa) yang membawa URL artikel asli (`url`) dan asal sumbernya (`source`); None bila tidak ada."""
     url = None
+    source = None
 
-    def __new__(cls, title, url=None):
+    def __new__(cls, title, url=None, source=None):
         obj = super().__new__(cls, title)
         obj.url = url if isinstance(url, str) and url.startswith(("http://", "https://")) else None
+        obj.source = source
         return obj
 
 
@@ -134,7 +138,7 @@ def fetch_headlines_cryptocompare(http: httpx.Client, day: date, api_key: str, s
             if not BTC_RE.search(title) or _is_sponsored(title):
                 continue
             seen.add(title)
-            out.append(Judul(title, a.get("url")))
+            out.append(Judul(title, a.get("url"), "cryptocompare"))
         sleep(page_pause)                                   # <= 10 panggilan/menit
         oldest = min(int(a.get("published_on", cursor)) for a in arts)
         if len(out) >= want or oldest < start or oldest >= cursor:
@@ -172,7 +176,72 @@ def fetch_headlines(http: httpx.Client, day: date, sleep=time.sleep,
             if not title or title in seen or not BTC_RE.search(title) or _is_sponsored(title):
                 continue
             seen.add(title)
-            out.append(Judul(title, a.get("url")))
+            out.append(Judul(title, a.get("url"), "gdelt"))
         sleep(min_interval)  # GDELT: >= 5 detik antar permintaan
         return out
     raise SourceError(f"GDELT 429/balasan kosong berulang untuk {day}")
+
+
+# ---- Sumber cadangan: RSS outlet kripto (gratis, tanpa kunci; outlet yang sama dengan yang dikumpulkan CryptoCompare) ----
+RSS_FEEDS = {
+    "coindesk": "https://www.coindesk.com/arc/outboundfeeds/rss/",
+    "cointelegraph": "https://cointelegraph.com/rss/tag/bitcoin",
+    "decrypt": "https://decrypt.co/feed",
+    "bitcoinmagazine": "https://bitcoinmagazine.com/.rss/full/",
+    "theblock": "https://www.theblock.co/rss.xml",
+    "cryptonews": "https://cryptonews.com/news/feed/",
+}
+MAX_FEED_BYTES = 2_000_000
+
+
+def _rss_items(content: bytes):
+    for it in ET.fromstring(content).iter("item"):
+        yield (it.findtext("title") or "").strip(), (it.findtext("link") or "").strip(), it.findtext("pubDate")
+
+
+def fetch_headlines_rss(http: httpx.Client, day: date, feeds: dict | None = None, want: int = 5) -> list:
+    """Judul berita BTC satu hari UTC dari feed RSS beberapa outlet, terbaru dulu, tanpa duplikat (maks `want`).
+
+    Disaring seperti korpus latih (menyebut Bitcoin/BTC, bukan sponsor, unik). Satu feed yang gagal/rusak/terlalu besar dilewati;
+    bila semua gagal atau hari itu kosong, SourceError (bukan "tanpa berita"). Feed hanya memuat berita terbaru, jadi ini cocok untuk
+    hari yang baru berakhir, bukan untuk mengisi hari yang sudah lama.
+    """
+    feeds = RSS_FEEDS if feeds is None else feeds
+    start = datetime(day.year, day.month, day.day, tzinfo=timezone.utc)
+    end = start + timedelta(days=1)
+    found, errors, ok = [], [], 0
+    for name, url in feeds.items():
+        try:
+            r = http.get(url, headers=UA, timeout=15)
+            r.raise_for_status()
+            if len(r.content) > MAX_FEED_BYTES:
+                raise ValueError("balasan terlalu besar")
+            items = list(_rss_items(r.content))
+        except (httpx.HTTPError, ET.ParseError, ValueError) as e:
+            errors.append(f"{name}: {type(e).__name__}")
+            continue
+        ok += 1
+        for title, link, pub in items:
+            try:
+                ts = email.utils.parsedate_to_datetime(pub) if pub else None
+            except (TypeError, ValueError):
+                ts = None
+            if ts is None or not title:
+                continue
+            ts = (ts.replace(tzinfo=timezone.utc) if ts.tzinfo is None else ts).astimezone(timezone.utc)
+            if not (start <= ts < end) or not BTC_RE.search(title) or _is_sponsored(title):
+                continue
+            found.append((ts, title, link))
+    if not ok:
+        raise SourceError(f"RSS: semua feed gagal ({'; '.join(errors)})")
+    out, seen = [], set()
+    for ts, title, link in sorted(found, key=lambda x: x[0], reverse=True):
+        if title.casefold() in seen:
+            continue
+        seen.add(title.casefold())
+        out.append(Judul(title, link, "rss"))
+        if len(out) >= want:
+            break
+    if not out:
+        raise SourceError(f"RSS: tidak ada berita BTC untuk {day} di {ok} feed yang terbaca")
+    return out

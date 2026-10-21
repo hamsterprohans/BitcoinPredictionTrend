@@ -10,6 +10,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Optional
 
+import httpx
 import numpy as np
 import pandas as pd
 
@@ -34,6 +35,20 @@ class Deps:
     explainer: Optional[Callable[[dict], Optional[dict]]] = None
 
 
+def with_fallback(primary, secondary):
+    """Coba `primary`; bila gagal (SourceError/galat HTTP), coba `secondary`. Bila keduanya gagal, SourceError memuat KEDUA penyebab."""
+    def _fetch(day):
+        try:
+            return primary(day)
+        except (SourceError, httpx.HTTPError) as e1:
+            print(f"[{day}] sumber utama gagal: {e1}; mencoba sumber cadangan", flush=True)
+            try:
+                return secondary(day)
+            except (SourceError, httpx.HTTPError) as e2:
+                raise SourceError(f"{e1} | cadangan: {e2}") from e2
+    return _fetch
+
+
 def patient(fetch, cooldown: int = 900, max_waits: int = 48, sleep=time.sleep):
     """Bungkus fetch_headlines: bila GDELT memblokir, tunggu lalu ulangi HARI YANG SAMA (tanpa melewati hari)."""
     def _fetch(day):
@@ -49,16 +64,18 @@ def patient(fetch, cooldown: int = 900, max_waits: int = 48, sleep=time.sleep):
 
 
 def make_headline_fetcher(http, env=None, patient_mode: bool = False):
-    """Pilih sumber berita live: CryptoCompare bila ada API key (sumber korpus latih), selain itu GDELT."""
+    """Rantai sumber berita live. Dengan API key: CryptoCompare (sumber korpus latih), cadangan RSS outlet kripto.
+    Tanpa key: RSS, cadangan GDELT (sering memblokir). Judul membawa `.source` agar asalnya tercatat di news_log."""
     from . import sources
     env = os.environ if env is None else env
     key = env.get("COINDESK_API_KEY") or env.get("CRYPTOCOMPARE_API_KEY")
+    rss = lambda day: sources.fetch_headlines_rss(http, day)  # noqa: E731
     if key:
-        base = lambda day: sources.fetch_headlines_cryptocompare(http, day, key)  # noqa: E731
-        name = "cryptocompare"
+        cc = lambda day: sources.fetch_headlines_cryptocompare(http, day, key)  # noqa: E731
+        base, name = with_fallback(cc, rss), "cryptocompare (cadangan: rss)"
     else:
-        base = lambda day: sources.fetch_headlines(http, day)  # noqa: E731
-        name = "gdelt"
+        gdelt = lambda day: sources.fetch_headlines(http, day)  # noqa: E731
+        base, name = with_fallback(rss, gdelt), "rss (cadangan: gdelt)"
     return (patient(base) if patient_mode else base), name
 
 
@@ -93,7 +110,8 @@ def ensure_sentiment(live_dir: Path, days: list, fetch_headlines, score, score_d
             raw = score(heads) if heads else None
         append_sentiment(live_dir, day, raw, len(heads))
         if heads:
-            append_news(live_dir, day, heads[:5], detail, urls=[getattr(h, "url", None) for h in heads[:5]])
+            append_news(live_dir, day, heads[:5], detail, urls=[getattr(h, "url", None) for h in heads[:5]],
+                        source=getattr(heads[0], "source", None))
         log.loc[ts, "raw"] = np.nan if raw is None else raw
         log.loc[ts, "count"] = len(heads)
     return log.sort_index()

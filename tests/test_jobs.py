@@ -195,11 +195,11 @@ def test_prediction_is_published_before_the_explainer_runs(tmp_path):
 def test_headline_source_prefers_cryptocompare_when_key_present():
     from app.jobs import make_headline_fetcher
     fetch, name = make_headline_fetcher(http=object(), env={"COINDESK_API_KEY": "k"})
-    assert name == "cryptocompare"
+    assert name.startswith("cryptocompare")
     fetch2, name2 = make_headline_fetcher(http=object(), env={})
-    assert name2 == "gdelt"
+    assert name2.startswith("rss")                       # tanpa kunci: RSS lebih andal daripada GDELT (sering memblokir)
     _, name3 = make_headline_fetcher(http=object(), env={"CRYPTOCOMPARE_API_KEY": "k2"})
-    assert name3 == "cryptocompare"
+    assert name3.startswith("cryptocompare")
 
 
 # ---- backfill: hitung susulan hari yang terlewat dari data yang sudah tersimpan (tanpa API baru) ----
@@ -366,3 +366,67 @@ def test_fill_missing_urls_leaves_latest_alone_when_it_is_another_day(tmp_path):
     atomic_write_json(live / "latest.json", {"as_of": "2026-10-20", "explain": {"headlines": [{"title": "Bitcoin A"}]}})
     fill_missing_urls(live, date(2026, 10, 19), lambda d: [Judul("Bitcoin A", "https://a.com/1")])
     assert "url" not in read_json(live / "latest.json")["explain"]["headlines"][0]
+
+
+# ---- rantai sumber berita: CryptoCompare -> RSS (-> GDELT) ----
+def test_headline_chain_names_and_order():
+    from app.jobs import make_headline_fetcher
+    _, with_key = make_headline_fetcher(http=object(), env={"COINDESK_API_KEY": "k"})
+    _, no_key = make_headline_fetcher(http=object(), env={})
+    assert with_key == "cryptocompare (cadangan: rss)"
+    assert no_key == "rss (cadangan: gdelt)"
+
+
+def test_headline_chain_falls_back_to_rss_when_cryptocompare_is_limited(monkeypatch):
+    from app import sources
+    from app.jobs import make_headline_fetcher
+    calls = []
+    def cc(http, day, key, **kw):
+        calls.append("cc")
+        raise SourceError("CryptoCompare: kuota bulanan habis")
+    def rss(http, day, **kw):
+        calls.append("rss")
+        return [Judul("Bitcoin via rss", "https://x.com/1", "rss")]
+    monkeypatch.setattr(sources, "fetch_headlines_cryptocompare", cc)
+    monkeypatch.setattr(sources, "fetch_headlines_rss", rss)
+    fetch, _ = make_headline_fetcher(http=object(), env={"COINDESK_API_KEY": "k"})
+    out = fetch(date(2026, 10, 20))
+    assert calls == ["cc", "rss"] and [str(h) for h in out] == ["Bitcoin via rss"] and out[0].source == "rss"
+
+
+def test_headline_chain_does_not_touch_rss_when_the_primary_works(monkeypatch):
+    from app import sources
+    from app.jobs import make_headline_fetcher
+    monkeypatch.setattr(sources, "fetch_headlines_cryptocompare", lambda http, day, key, **kw: [Judul("Bitcoin cc", None, "cryptocompare")])
+    def boom(*a, **k):
+        raise AssertionError("RSS tidak boleh dipanggil")
+    monkeypatch.setattr(sources, "fetch_headlines_rss", boom)
+    fetch, _ = make_headline_fetcher(http=object(), env={"COINDESK_API_KEY": "k"})
+    assert [str(h) for h in fetch(date(2026, 10, 20))] == ["Bitcoin cc"]
+
+
+def test_headline_chain_reports_every_failure_when_all_sources_fail(monkeypatch):
+    from app import sources
+    from app.jobs import make_headline_fetcher
+    def fail(msg):
+        def _f(*a, **k):
+            raise SourceError(msg)
+        return _f
+    monkeypatch.setattr(sources, "fetch_headlines_cryptocompare", fail("CC dibatasi"))
+    monkeypatch.setattr(sources, "fetch_headlines_rss", fail("RSS kosong"))
+    fetch, _ = make_headline_fetcher(http=object(), env={"COINDESK_API_KEY": "k"})
+    with pytest.raises(SourceError) as e:
+        fetch(date(2026, 10, 20))
+    assert "CC dibatasi" in str(e.value) and "RSS kosong" in str(e.value)                    # kedua penyebab terlihat di log
+
+
+def test_news_log_records_which_source_supplied_the_headlines(tmp_path):
+    deps, _ = make_deps(tmp_path, headlines=lambda d: [Judul(f"Bitcoin {i}", f"https://x.com/{i}", "rss") for i in range(3)])
+    run_daily(deps)
+    assert read_json(deps.live_dir / "news_log.json")["2026-10-14"]["source"] == "rss"
+
+
+def test_news_log_has_no_source_key_when_headlines_do_not_declare_one(tmp_path):
+    deps, _ = make_deps(tmp_path)
+    run_daily(deps)
+    assert "source" not in read_json(deps.live_dir / "news_log.json")["2026-10-14"]

@@ -217,7 +217,7 @@ async function renderExplain() {
   const ex = state.latest?.explain;
   if (!ex) return;
   $("#sec-explain").hidden = false;
-  renderNews($("#live-news"), ex.headlines, ex.sentiment);
+  renderNews($("#live-news"), ex.headlines, ex.sentiment, { source: ex.news_source });
   renderContrib($("#live-contrib"), ex.contributions);
   renderNarrative($("#live-narrative"), ex.narrative);
   try {
