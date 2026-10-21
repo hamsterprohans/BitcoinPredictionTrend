@@ -1,0 +1,10 @@
+[Unit]
+Description=Pembaruan harian situs Bitcoin Trend (job model + publikasi gh-pages)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@WEBAPP@
+ExecStart="@WEBAPP@/.venv/bin/python" -m scripts.publish_site
+TimeoutStartSec=2700

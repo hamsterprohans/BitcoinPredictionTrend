@@ -1,0 +1,146 @@
+# Bitcoin Trend — website prediksi
+
+## Prasyarat
+Taruh artefak hasil ekspor dari notebook (10) di `ARTIFACTS_DIR` (default `../data/model_artifacts`):
+`scaler.pkl`, `models/model_F.keras`, `threshold_beku.json`, `preprocessed.pkl` (untuk tes paritas),
+dan untuk multi-horizon: `multihorizon/F_h{H}_s{seed}.keras` serta `multihorizon/C_h{H}_s{seed}.npz`
+(H = 3,5,7,15,20,25,30,35; seed = 47,123,2024). Lalu: `python -m scripts.compute_mh_thresholds`.
+Horizon tanpa berkasnya otomatis tidak ditampilkan.
+
+### Ekspor artefak dari notebook (10)
+Tambahkan sel ini di akhir notebook (10) di Colab, jalankan, lalu unduh folder `web_export` dari Drive ke `data/model_artifacts/`:
+```python
+import pickle, os, json, shutil
+OUT = f'{DRIVE_FOLDER}/web_export'; os.makedirs(f'{OUT}/models', exist_ok=True)
+results['F']['model_obj'].save(f'{OUT}/models/model_F.keras')
+pickle.dump(scaler, open(f'{OUT}/scaler.pkl', 'wb'))
+json.dump({'THRESHOLD_OPTIMAL': THRESHOLD_OPTIMAL}, open(f'{OUT}/threshold_beku.json', 'w'))
+shutil.copytree(f'{DRIVE_FOLDER}/multihorizon', f'{OUT}/multihorizon', dirs_exist_ok=True)
+print(list(scaler.feature_names_in_)[-1])   # harus: news_sentiment
+```
+
+## Menjalankan
+```bash
+uv venv --python 3.12 .venv && source .venv/bin/activate
+uv pip install -r requirements-dev.txt && python -m playwright install chromium
+echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env           # tidak ikut git
+python -m app.jobs --patient                           # job pertama: mengisi sentimen 22 hari; --patient menunggu bila GDELT memblokir (429)
+uvicorn app.main:app --port 8000                       # buka http://127.0.0.1:8000
+```
+Hanya ingin melihat harga dan grafik asli (tanpa model, tanpa API key): `python -m app.jobs --prices-only`.
+
+Penjadwalan: `RUN_SCHEDULER=1` menjalankan job tiap hari 00.30 UTC di dalam proses web; alternatifnya cron:
+`30 0 * * * cd /path/webapp && .venv/bin/python -m app.jobs`.
+
+## Dashboard retrospektif
+Setelah artefak notebook (10) terpasang di `data/model_artifacts/` (lihat "Ekspor artefak dari notebook (10)"):
+```bash
+python -m scripts.build_retro              # hitung ulang prediksi periode uji + cek paritas dengan tabel notebook
+python -m scripts.build_retro --narratives # narasi Claude Haiku per hari (butuh ANTHROPIC_API_KEY; dapat dilanjutkan)
+```
+Skrip berhenti dengan pesan bila akurasi/F1 hasil hitung ulang berbeda lebih dari 0,002 dari baris Model F di `content/ablation.json`
+(`--allow-mismatch` tetap menulis, tetapi halaman menandai paritas "belum terverifikasi"). Hasilnya di `content/retro/` dan tampil di `/retrospektif`.
+Job harian (`python -m app.jobs`) menyimpan blok `explain` (berita, kontribusi fitur, narasi) pada `latest.json` bila `content/retro/train_stats.json` ada.
+
+## Sumber berita live
+Korpus latih (2025–2026) berasal dari **CryptoCompare**, jadi job live memakainya bila ada API key gratis
+(buat di https://developers.coindesk.com, lalu tambahkan `COINDESK_API_KEY=...` di `scripts/.env`). Tanpa key, job memakai GDELT,
+yang sering membatasi laju (429/balasan kosong) dan dapat menahan job berjam-jam. Sumber tidak dicampur dalam satu jendela 22 hari:
+jika berpindah sumber, hapus `data/live/sentiment_log.csv` dan `data/live/news_log.json` lebih dulu.
+
+**Rantai sumber:** dengan API key, CryptoCompare (sumber korpus latih) lebih dulu; bila dibatasi atau kuota habis, otomatis beralih
+ke RSS beberapa outlet kripto (CoinDesk, Cointelegraph, Decrypt, Bitcoin Magazine, The Block, CryptoNews; gratis, tanpa kunci).
+Tanpa key: RSS, lalu GDELT. Asal berita tiap hari tercatat di `news_log.json` (`source`) dan halaman menampilkan catatan bila
+memakai cadangan. Catatan: feed RSS hanya memuat berita terbaru, jadi cocok untuk hari yang baru berakhir, bukan untuk mengisi hari lama.
+
+## Tampilan demo (data sintetis)
+`python -m scripts.demo` menjalankan server di http://127.0.0.1:8001 dengan data buatan yang diberi label DEMO.
+Jangan memakai `LIVE_DIR=...` manual untuk demo: itu yang membuat angka palsu terlihat seperti data asli.
+
+## Menyegarkan hasil riset
+`python -m scripts.export_research "<notebook>.ipynb"` (membaca output sel notebook; notebook tidak diubah).
+
+## Tes
+`pytest -m "not e2e"` (backend), `pytest -m e2e` (browser).
+
+## Harga live
+`/api/price/live` mengambil harga spot BTC/USD dari Coinbase (cache 20 detik) hanya untuk tampilan; harga ini BUKAN input model.
+Probabilitas prediksi tetap resmi harian (dari penutupan hari penuh), tidak diperbarui real-time.
+
+## Publikasi statis (GitHub Pages)
+
+GitHub Pages tidak menjalankan Python, jadi situs diekspor menjadi berkas statis:
+
+```bash
+python -m scripts.export_static --base /BitcoinPredictionTrend --out dist
+```
+
+Hasilnya (`dist/`) dipublikasikan pada branch `gh-pages`. Data API dibekukan saat ekspor, sehingga prediksi harian dan
+berita baru muncul setelah job harian dan ekspor dijalankan ulang. Harga live diambil browser langsung dari Coinbase.
+
+## Merangkum hasil kuesioner
+
+Ekspor CSV dari Supabase (Table Editor, `feedback_flat`, Export) lalu:
+
+```bash
+python -m scripts.summarize_feedback hasil.csv --out ringkasan.md
+```
+
+Keluarannya tabel Ya/Netral/Tidak per pertanyaan, perbandingan antar kelompok (pengalaman kripto dan pengenalan machine
+learning, kelompok kurang dari 5 orang diberi tanda "n kecil"), dan daftar jawaban teks. Tambahkan `--html laporan.html`
+untuk laporan bergrafik batang (satu berkas, bisa dibuka di browser). Nama dan email tidak ikut dimasukkan.
+
+## Pembaruan harian dari komputer sendiri
+
+Bila GitHub Actions tidak tersedia (mis. akun terkunci karena billing), jalankan pipeline yang sama dari komputer:
+
+```bash
+python -m scripts.publish_site            # job harian + ekspor + push gh-pages
+bash deploy/install-timer.sh              # jadwal harian 03:00 UTC (systemd, Persistent: menyusul bila komputer mati)
+systemctl --user disable --now btc-publish.timer   # melepas jadwal
+```
+
+Kunci API dibaca dari `scripts/.env`. Bila job atau ekspor gagal, situs yang tayang tidak diubah.
+
+## Menutup hari yang terlewat (backfill)
+
+Bila satu hari tidak terproses, hitung susulan dari data tersimpan (tanpa panggilan berita atau LLM baru):
+
+```bash
+python -m app.jobs --backfill 2026-10-15
+```
+
+Hanya data sampai hari itu yang dipakai, `latest.json` tidak berubah, prediksi asli tidak pernah ditimpa, dan barisnya diberi
+label "dihitung susulan" pada tabel riwayat. Bila harga atau sentimen hari itu tidak tersimpan, perintah berhenti.
+
+## Melengkapi tautan berita yang tersimpan tanpa URL
+
+```bash
+python -m app.jobs --fill-urls 2026-10-19
+```
+
+Satu panggilan ke sumber berita (kuota gratis hanya 100 per bulan). Hanya mengisi URL yang kosong, mencocokkan menurut judul, dan
+tidak mengubah judul atau skor yang sudah dinilai. Berita yang diambil mulai sekarang sudah menyimpan URL otomatis.
+
+## Keamanan
+
+- **Rantai pasok:** `requirements.lock` mengunci semua dependensi ke versi persis dengan hash SHA-256; workflow dan Docker memasangnya
+  dengan `--require-hashes`. Aksi GitHub dipin ke SHA commit, dan Dependabot memantau pembaruannya. Perbarui lock dengan
+  `uv pip compile requirements.txt --python-version 3.12 --generate-hashes --no-annotate -o requirements.lock`, lalu jalankan
+  `uvx pip-audit -r requirements.lock --no-deps --disable-pip`.
+- **Content-Security-Policy:** semua halaman memakai CSP ketat lewat tag meta (`script-src 'self'`, tanpa skrip inline). three.js diimpor
+  lewat path relatif, sehingga tidak ada import map inline. `connect-src` hanya ke situs sendiri, Coinbase, dan proyek Supabase.
+- **Supabase:** kunci publik hanya bisa INSERT. Database menolak kunci jawaban yang tak dikenal, nilai non-teks, jawaban lebih dari 2000
+  karakter, nama kosong, dan lebih dari 120 kiriman per 10 menit (jalankan ulang `supabase/schema.sql` setelah perubahan).
+- **Rahasia:** `scripts/.env` tidak pernah masuk git. Kunci API hanya hidup di GitHub Secrets dan `.env` lokal.
+
+## Backtesting: strategi model vs buy and hold
+
+```bash
+python -m scripts.build_backtest        # menulis content/backtest.json (tampil di halaman Riset)
+```
+
+Sesuai proposal (Bab 3.1.9): long-only (beli saat prediksi NAIK, tunai saat TURUN), modal awal $1.000, tanpa biaya transaksi dan slippage.
+Ambang trading dipilih dari grid 0,05 sampai 0,90 pada data **validasi**, lalu diterapkan ke data uji; pembanding buy and hold. Metrik: total
+return, win rate, rata-rata untung/rugi per transaksi, maximum drawdown, Sharpe (risk-free 0, dianualkan akar 365), dan tabel kepekaan ambang.
+Bila hasilnya berubah (model atau data baru), jalankan ulang perintah di atas lalu ekspor situs.

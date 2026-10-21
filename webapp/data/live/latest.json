@@ -1,0 +1,296 @@
+{
+ "as_of": "2026-10-20",
+ "generated_at": "2026-10-21T05:36:21+00:00",
+ "close": 82898.91,
+ "change_pct": 1.2,
+ "inputs": {
+  "news_sentiment": 6.333,
+  "news_sentiment_raw": 6.333,
+  "headline_count": 40,
+  "fear_greed_index": 55.0
+ },
+ "horizons": {
+  "1": {
+   "prob": 0.5476948618888855,
+   "threshold": 0.4768124222755432,
+   "direction": "NAIK",
+   "target_date": "2026-10-21"
+  },
+  "3": {
+   "prob": 0.48860668142636615,
+   "threshold": 0.5177493095397949,
+   "direction": "TURUN",
+   "target_date": "2026-10-23"
+  },
+  "5": {
+   "prob": 0.4566670060157776,
+   "threshold": 0.47828808426856995,
+   "direction": "TURUN",
+   "target_date": "2026-10-25"
+  },
+  "7": {
+   "prob": 0.46744848291079205,
+   "threshold": 0.47223278880119324,
+   "direction": "TURUN",
+   "target_date": "2026-10-27"
+  },
+  "15": {
+   "prob": 0.4320385257403056,
+   "threshold": 0.45957493782043457,
+   "direction": "TURUN",
+   "target_date": "2026-11-04"
+  },
+  "20": {
+   "prob": 0.4266132613023122,
+   "threshold": 0.4715519845485687,
+   "direction": "TURUN",
+   "target_date": "2026-11-09"
+  },
+  "25": {
+   "prob": 0.42681153615315753,
+   "threshold": 0.4579542577266693,
+   "direction": "TURUN",
+   "target_date": "2026-11-14"
+  },
+  "30": {
+   "prob": 0.4396369556585948,
+   "threshold": 0.4812179505825043,
+   "direction": "TURUN",
+   "target_date": "2026-11-19"
+  },
+  "35": {
+   "prob": 0.4202870925267537,
+   "threshold": 0.42857804894447327,
+   "direction": "TURUN",
+   "target_date": "2026-11-24"
+  }
+ },
+ "explain": {
+  "headlines": [
+   {
+    "title": "Irish law enforcement moves fifth 500 BTC batch from Clifton Collins wallets",
+    "url": "https://en.coin-turk.com/irish-law-enforcement-moves-fifth-500-btc-batch-from-clifton-collins-wallets/?utm_source=rss&utm_medium=rss&utm_campaign=irish-law-enforcement-moves-fifth-500-btc-batch-from-clifton-collins-wallets"
+   },
+   {
+    "title": "JPMorgan predicts Bitcoin to outperform stocks, MSTR eyes rebound",
+    "url": "https://en.coin-turk.com/jpmorgan-predicts-bitcoin-to-outperform-stocks-mstr-eyes-rebound/?utm_source=rss&utm_medium=rss&utm_campaign=jpmorgan-predicts-bitcoin-to-outperform-stocks-mstr-eyes-rebound"
+   },
+   {
+    "title": "Bitcoin climbs above $83k as risk sentiment improves, oil prices dip slightly",
+    "url": "https://www.investing.com/news/cryptocurrency-news/bitcoin-slips-below-82000-as-elevated-oil-prices-fed-outlook-weigh-4958968"
+   },
+   {
+    "title": "Fifth 500 BTC batch of 2026 leaves Clifton Collins-linked wallets for Coinbase",
+    "url": "https://www.cryptopolitan.com/clifton-collins-fifth-500-btc-batch/"
+   },
+   {
+    "title": "Saylor Says Bitcoin Bull Market Is Here, Banks Set to Unlock New Demand",
+    "url": "https://zycrypto.com/saylor-says-bitcoin-bull-market-is-here-banks-set-to-unlock-new-demand/"
+   }
+  ],
+  "sentiment": {
+   "has_news": true,
+   "scores": {
+    "pemahaman": 7,
+    "detail": 6,
+    "bullbear": 6,
+    "mean": 6.333333333333333
+   },
+   "used": 6.333333333333333
+  },
+  "contributions": [
+   {
+    "feature": "news_sentiment",
+    "label": "Sentimen berita",
+    "delta_pp": 6.341
+   },
+   {
+    "feature": "Vol_7",
+    "label": "Volatilitas 7 hari",
+    "delta_pp": 5.061
+   },
+   {
+    "feature": "MACD_Histogram",
+    "label": "Histogram MACD",
+    "delta_pp": 3.761
+   },
+   {
+    "feature": "Vol_30",
+    "label": "Volatilitas 30 hari",
+    "delta_pp": -3.651
+   },
+   {
+    "feature": "BB_width",
+    "label": "Lebar Bollinger",
+    "delta_pp": -2.877
+   },
+   {
+    "feature": "MACD_Signal",
+    "label": "Sinyal MACD",
+    "delta_pp": 1.902
+   },
+   {
+    "feature": "MACD",
+    "label": "MACD",
+    "delta_pp": -1.26
+   },
+   {
+    "feature": "MA90",
+    "label": "Rata-rata harga 90 hari",
+    "delta_pp": 1.016
+   },
+   {
+    "feature": "fear_greed_index_scaled",
+    "label": "Fear & Greed Index",
+    "delta_pp": 0.336
+   },
+   {
+    "feature": "RSI14",
+    "label": "RSI 14 hari",
+    "delta_pp": 0.149
+   },
+   {
+    "feature": "MA30",
+    "label": "Rata-rata harga 30 hari",
+    "delta_pp": 0.148
+   },
+   {
+    "feature": "MA7",
+    "label": "Rata-rata harga 7 hari",
+    "delta_pp": 0.065
+   },
+   {
+    "feature": "daily_return",
+    "label": "Return harian",
+    "delta_pp": 0.046
+   }
+  ],
+  "features": [
+   {
+    "feature": "daily_return",
+    "label": "Return harian",
+    "value": 0.011971841272060413,
+    "value_text": "+1,20%",
+    "percentile": 70,
+    "category": "tinggi",
+    "outside_train_range": false
+   },
+   {
+    "feature": "MA7",
+    "label": "Rata-rata harga 7 hari",
+    "value": 81882.03790772482,
+    "value_text": "US$81.882",
+    "percentile": 100,
+    "category": "tinggi",
+    "outside_train_range": true
+   },
+   {
+    "feature": "MA30",
+    "label": "Rata-rata harga 30 hari",
+    "value": 83644.92054514456,
+    "value_text": "US$83.645",
+    "percentile": 100,
+    "category": "tinggi",
+    "outside_train_range": true
+   },
+   {
+    "feature": "MA90",
+    "label": "Rata-rata harga 90 hari",
+    "value": 75666.091471702,
+    "value_text": "US$75.666",
+    "percentile": 100,
+    "category": "tinggi",
+    "outside_train_range": true
+   },
+   {
+    "feature": "Vol_7",
+    "label": "Volatilitas 7 hari",
+    "value": 0.010939252467181772,
+    "value_text": "1,09%",
+    "percentile": 8,
+    "category": "rendah",
+    "outside_train_range": false
+   },
+   {
+    "feature": "Vol_30",
+    "label": "Volatilitas 30 hari",
+    "value": 0.016876782481229414,
+    "value_text": "1,69%",
+    "percentile": 8,
+    "category": "rendah",
+    "outside_train_range": false
+   },
+   {
+    "feature": "RSI14",
+    "label": "RSI 14 hari",
+    "value": 52.52345789014555,
+    "value_text": "52,5",
+    "percentile": 56,
+    "category": "sedang",
+    "outside_train_range": false
+   },
+   {
+    "feature": "MACD",
+    "label": "MACD",
+    "value": 32.55202962673502,
+    "value_text": "US$+32,6",
+    "percentile": 54,
+    "category": "sedang",
+    "outside_train_range": false
+   },
+   {
+    "feature": "MACD_Signal",
+    "label": "Sinyal MACD",
+    "value": 318.66354399609503,
+    "value_text": "US$+318,7",
+    "percentile": 72,
+    "category": "tinggi",
+    "outside_train_range": false
+   },
+   {
+    "feature": "MACD_Histogram",
+    "label": "Histogram MACD",
+    "value": -286.11151436936,
+    "value_text": "US$-286,1",
+    "percentile": 10,
+    "category": "rendah",
+    "outside_train_range": false
+   },
+   {
+    "feature": "BB_width",
+    "label": "Lebar Bollinger",
+    "value": 0.07693900032794543,
+    "value_text": "7,7%",
+    "percentile": 8,
+    "category": "rendah",
+    "outside_train_range": false
+   },
+   {
+    "feature": "news_sentiment",
+    "label": "Sentimen berita",
+    "value": 6.333333333333333,
+    "value_text": "+6,33",
+    "percentile": 98,
+    "category": "tinggi",
+    "outside_train_range": false
+   },
+   {
+    "feature": "fear_greed_index_scaled",
+    "label": "Fear & Greed Index",
+    "value": 0.55,
+    "value_text": "55 dari 100",
+    "percentile": 72,
+    "category": "tinggi",
+    "outside_train_range": false
+   }
+  ],
+  "level": "tinggi",
+  "narrative": {
+   "text": "Model penelitian memprediksi Bitcoin akan bergerak NAIK pada 21 Oktober 2026, berdasarkan analisis tanggal 20 Oktober 2026 dengan probabilitas 0,5477 (di atas ambang 0,4768). Fitur teratas yang paling memengaruhi skor model adalah Sentimen berita dengan pengaruh +6,3 poin persentase, Volatilitas 7 hari dengan pengaruh +5,1 poin persentase, dan Histogram MACD dengan pengaruh +3,8 poin persentase. Hasil ini memiliki tingkat ketidakpastian tinggi. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+   "source": "llm",
+   "attempts": 3,
+   "temperature": null
+  },
+  "news_source": "cryptocompare"
+ }
+}

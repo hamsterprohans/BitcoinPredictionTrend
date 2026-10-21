@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "Geist";
+  src: url("/static/fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/static/fonts/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+:root {
+  --bg:#0d0c0a; --surface:#161410; --surface-2:#1e1b15; --line:#2b2720;
+  --text:#f4efe4; --text-2:#a39a88;
+  --gold:#e6c068; --gold-dim:#b8943f; --on-gold:#17130a;
+  --up:#35c08a; --down:#ef6a5e;
+  --font:"Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius:18px;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg:#faf7f0; --surface:#ffffff; --surface-2:#f2ede1; --line:#e3dccb;
+  --text:#1b1812; --text-2:#6b6354;
+  --gold:#a8791a; --gold-dim:#8a6213; --on-gold:#ffffff;
+  --up:#12805a; --down:#c2382d;
+  color-scheme: light;
+}
