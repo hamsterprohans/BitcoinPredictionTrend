@@ -410,5 +410,28 @@
    "https://www.investing.com/news/cryptocurrency-news/bitcoin-rises-to-near-83k-amid-some-relief-from-falling-oil-prices-4956420",
    "https://ambcrypto.com/altcoins-suffer-their-worst-weekend-since-april-is-bitcoin-taking-over/"
   ]
+ },
+ "2026-10-20": {
+  "titles": [
+   "Irish law enforcement moves fifth 500 BTC batch from Clifton Collins wallets",
+   "JPMorgan predicts Bitcoin to outperform stocks, MSTR eyes rebound",
+   "Bitcoin climbs above $83k as risk sentiment improves, oil prices dip slightly",
+   "Fifth 500 BTC batch of 2026 leaves Clifton Collins-linked wallets for Coinbase",
+   "Saylor Says Bitcoin Bull Market Is Here, Banks Set to Unlock New Demand"
+  ],
+  "scores": {
+   "pemahaman": 7,
+   "detail": 6,
+   "bullbear": 6,
+   "mean": 6.333333333333333
+  },
+  "urls": [
+   "https://en.coin-turk.com/irish-law-enforcement-moves-fifth-500-btc-batch-from-clifton-collins-wallets/?utm_source=rss&utm_medium=rss&utm_campaign=irish-law-enforcement-moves-fifth-500-btc-batch-from-clifton-collins-wallets",
+   "https://en.coin-turk.com/jpmorgan-predicts-bitcoin-to-outperform-stocks-mstr-eyes-rebound/?utm_source=rss&utm_medium=rss&utm_campaign=jpmorgan-predicts-bitcoin-to-outperform-stocks-mstr-eyes-rebound",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-slips-below-82000-as-elevated-oil-prices-fed-outlook-weigh-4958968",
+   "https://www.cryptopolitan.com/clifton-collins-fifth-500-btc-batch/",
+   "https://zycrypto.com/saylor-says-bitcoin-bull-market-is-here-banks-set-to-unlock-new-demand/"
+  ],
+  "source": "cryptocompare"
  }
 }
