@@ -68,3 +68,12 @@ def test_publish_runs_every_time_so_a_failed_earlier_publish_self_heals():
     steps = {s.get("name"): s for s in load_workflow()["jobs"]["update"]["steps"]}
     for name in ("Ekspor situs statis", "Publikasi ke gh-pages"):
         assert "if" not in steps[name], name        # tidak bergantung pada 'ada perubahan data': run berikutnya memulihkan publikasi yang gagal
+
+
+def test_schedule_is_dense_in_the_hours_right_after_the_utc_close():
+    on = load_workflow().get("on") or load_workflow()[True]
+    hours = sorted(int(c["cron"].split()[1]) for c in on["schedule"])
+    assert len(hours) >= 8                                                       # GitHub kerap melewatkan jadwal: banyak kesempatan per hari
+    assert sum(1 for h in hours if h < 7) >= 5                                   # padat sesaat setelah penutupan 00:00 UTC (data harian terbit cepat)
+    gaps = [b - a for a, b in zip(hours, hours[1:])]
+    assert max(gaps) <= 6                                                        # tak ada celah panjang sepanjang hari
