@@ -25,6 +25,10 @@ export function renderNews(root, headlines, sentiment, opts = {}) {
       ul.append(li);
     });
     root.append(ul);
+    if (opts.source && opts.source !== "cryptocompare") {      // jujur: sumber cadangan bisa sedikit berbeda dari data latih
+      const label = { rss: "RSS CoinDesk, Cointelegraph, Decrypt, dll.", gdelt: "GDELT" }[opts.source] || opts.source;
+      root.append(el("p", `Sumber berita cadangan (${label}): outlet sejenis dengan sumber utama, tetapi cakupannya bisa sedikit berbeda dari data latih.`, "muted small source-note"));
+    }
     if (opts.approx) {
       root.append(el("p", "Contoh judul berita hari itu: belum tentu sama dengan lima judul yang dinilai " +
         "(urutan data scrap tidak dapat direproduksi persis).", "muted small"));

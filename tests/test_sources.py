@@ -224,3 +224,98 @@ def test_judul_membawa_url_dan_tetap_sama_dengan_str():
     j = Judul("Bitcoin naik", "https://contoh.com/a")
     assert j == "Bitcoin naik" and j.url == "https://contoh.com/a"
     assert Judul("x", "javascript:alert(1)").url is None and Judul("x").url is None
+
+
+# ---- sumber cadangan: RSS outlet kripto (gratis, tanpa kunci) ----
+from app.sources import Judul, fetch_headlines_rss   # noqa: E402
+
+DAY = date(2026, 10, 20)
+
+
+def rss(*items):
+    body = "".join(f"<item><title>{t}</title><link>{l}</link><pubDate>{d}</pubDate></item>" for t, l, d in items)
+    return f'<?xml version="1.0"?><rss version="2.0"><channel><title>x</title>{body}</channel></rss>'.encode()
+
+
+def rss_client(by_host, status=None):
+    def handler(req):
+        if status and req.url.host in status:
+            return httpx.Response(status[req.url.host])
+        return httpx.Response(200, content=by_host.get(req.url.host, rss()))
+    return client(handler)
+
+
+def test_rss_returns_btc_headlines_of_the_utc_day_newest_first_with_urls():
+    feeds = {"a.example": "https://a.example/rss", "b.example": "https://b.example/rss"}
+    http = rss_client({
+        "a.example": rss(("Bitcoin falls", "https://a.example/1", "Tue, 20 Oct 2026 08:00:00 +0000"),
+                         ("Ethereum only", "https://a.example/2", "Tue, 20 Oct 2026 09:00:00 +0000")),
+        "b.example": rss(("BTC rallies", "https://b.example/1", "Tue, 20 Oct 2026 12:30:00 +0000"))})
+    out = fetch_headlines_rss(http, DAY, feeds=feeds)
+    assert [str(h) for h in out] == ["BTC rallies", "Bitcoin falls"]                   # terbaru dulu; non-BTC dibuang
+    assert [h.url for h in out] == ["https://b.example/1", "https://a.example/1"]
+    assert all(isinstance(h, Judul) and h.source == "rss" for h in out)
+
+
+def test_rss_day_boundaries_are_utc_regardless_of_feed_timezone():
+    feeds = {"a.example": "https://a.example/rss"}
+    http = rss_client({"a.example": rss(
+        ("Bitcoin late", "https://a.example/1", "Tue, 20 Oct 2026 23:59:59 +0000"),
+        ("Bitcoin next day", "https://a.example/2", "Wed, 21 Oct 2026 00:00:00 +0000"),
+        ("Bitcoin prev day", "https://a.example/3", "Mon, 19 Oct 2026 23:59:59 +0000"),
+        ("Bitcoin tz shifted", "https://a.example/4", "Wed, 21 Oct 2026 05:00:00 +0700"))})            # = 20 Okt 22:00 UTC
+    assert [str(h) for h in fetch_headlines_rss(http, DAY, feeds=feeds)] == ["Bitcoin late", "Bitcoin tz shifted"]
+
+
+def test_rss_dedupes_across_feeds_and_keeps_at_most_five():
+    feeds = {f"f{i}.example": f"https://f{i}.example/rss" for i in range(3)}
+    items = [(f"Bitcoin story {i}", f"https://x/{i}", f"Tue, 20 Oct 2026 {10 + i:02d}:00:00 +0000") for i in range(5)]
+    http = rss_client({"f0.example": rss(*items[:4]), "f1.example": rss(*items[2:]),
+                       "f2.example": rss(("BITCOIN STORY 0", "https://dup", "Tue, 20 Oct 2026 20:00:00 +0000"), items[0])})
+    out = fetch_headlines_rss(http, DAY, feeds=feeds)
+    titles = [str(h).lower() for h in out]
+    assert len(out) == 5 and len(set(titles)) == 5                                  # tanpa duplikat (huruf besar/kecil sama)
+
+
+def test_rss_filters_sponsored_and_drops_unsafe_links_but_keeps_the_headline():
+    feeds = {"a.example": "https://a.example/rss"}
+    http = rss_client({"a.example": rss(
+        ("Best crypto to buy now: Bitcoin presale", "https://a.example/ad", "Tue, 20 Oct 2026 08:00:00 +0000"),
+        ("Bitcoin news with bad link", "javascript:alert(1)", "Tue, 20 Oct 2026 09:00:00 +0000"))})
+    out = fetch_headlines_rss(http, DAY, feeds=feeds)
+    assert [str(h) for h in out] == ["Bitcoin news with bad link"] and out[0].url is None
+
+
+def test_rss_one_broken_feed_does_not_stop_the_others_and_all_broken_is_an_error():
+    feeds = {"ok.example": "https://ok.example/rss", "bad.example": "https://bad.example/rss", "xml.example": "https://xml.example/rss"}
+    good = rss(("Bitcoin ok", "https://ok.example/1", "Tue, 20 Oct 2026 08:00:00 +0000"))
+    def handler(req):
+        if req.url.host == "ok.example":
+            return httpx.Response(200, content=good)
+        if req.url.host == "bad.example":
+            return httpx.Response(503)
+        return httpx.Response(200, content=b"<rss><channel><item>rusak")
+    assert [str(h) for h in fetch_headlines_rss(client(handler), DAY, feeds=feeds)] == ["Bitcoin ok"]
+    all_bad = client(lambda req: httpx.Response(500))
+    with pytest.raises(SourceError, match="RSS"):
+        fetch_headlines_rss(all_bad, DAY, feeds=feeds)
+
+
+def test_rss_empty_day_is_an_error_not_no_news():
+    http = rss_client({"a.example": rss(("Bitcoin old", "https://a.example/1", "Sun, 18 Oct 2026 08:00:00 +0000"))})
+    with pytest.raises(SourceError, match="tidak ada berita"):
+        fetch_headlines_rss(http, DAY, feeds={"a.example": "https://a.example/rss"})
+
+
+def test_rss_oversized_response_is_ignored():
+    feeds = {"big.example": "https://big.example/rss", "ok.example": "https://ok.example/rss"}
+    huge = rss(("Bitcoin huge", "https://big.example/1", "Tue, 20 Oct 2026 08:00:00 +0000")) + b" " * 3_000_000
+    def handler(req):
+        if req.url.host == "big.example":
+            return httpx.Response(200, content=huge)
+        return httpx.Response(200, content=rss(("Bitcoin small", "https://ok.example/1", "Tue, 20 Oct 2026 09:00:00 +0000")))
+    assert [str(h) for h in fetch_headlines_rss(client(handler), DAY, feeds=feeds)] == ["Bitcoin small"]
+
+
+def test_judul_defaults_have_no_source_and_keep_it_when_given():
+    assert Judul("x").source is None and Judul("x", None, "rss").source == "rss"

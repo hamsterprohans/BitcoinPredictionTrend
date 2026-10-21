@@ -93,11 +93,13 @@ def _news_path(live_dir) -> Path:
     return Path(live_dir) / "news_log.json"
 
 
-def append_news(live_dir, day: date, titles: list, scores, urls=None) -> None:
+def append_news(live_dir, day: date, titles: list, scores, urls=None, source=None) -> None:
     log = read_json(_news_path(live_dir), {})
     log[day.isoformat()] = {"titles": [str(t) for t in titles], "scores": scores}
     if urls and any(urls):
         log[day.isoformat()]["urls"] = list(urls)          # sejajar dengan titles; None = tanpa tautan
+    if source:
+        log[day.isoformat()]["source"] = source            # asal sumber (cryptocompare / rss / gdelt); transparansi bila memakai cadangan
     atomic_write_json(_news_path(live_dir), log)
 
 

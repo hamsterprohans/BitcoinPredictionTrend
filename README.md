@@ -48,6 +48,11 @@ Korpus latih (2025–2026) berasal dari **CryptoCompare**, jadi job live memakai
 yang sering membatasi laju (429/balasan kosong) dan dapat menahan job berjam-jam. Sumber tidak dicampur dalam satu jendela 22 hari:
 jika berpindah sumber, hapus `data/live/sentiment_log.csv` dan `data/live/news_log.json` lebih dulu.
 
+**Rantai sumber:** dengan API key, CryptoCompare (sumber korpus latih) lebih dulu; bila dibatasi atau kuota habis, otomatis beralih
+ke RSS beberapa outlet kripto (CoinDesk, Cointelegraph, Decrypt, Bitcoin Magazine, The Block, CryptoNews; gratis, tanpa kunci).
+Tanpa key: RSS, lalu GDELT. Asal berita tiap hari tercatat di `news_log.json` (`source`) dan halaman menampilkan catatan bila
+memakai cadangan. Catatan: feed RSS hanya memuat berita terbaru, jadi cocok untuk hari yang baru berakhir, bukan untuk mengisi hari lama.
+
 ## Tampilan demo (data sintetis)
 `python -m scripts.demo` menjalankan server di http://127.0.0.1:8001 dengan data buatan yang diberi label DEMO.
 Jangan memakai `LIVE_DIR=...` manual untuk demo: itu yang membuat angka palsu terlihat seperti data asli.

@@ -58,3 +58,9 @@ def test_headlines_memuat_url_bila_ada():
     news = {**NEWS, "urls": ["https://contoh.com/a", None]}
     ex = build_live_explain(predictor=FakePredictor(), frame=_frame(), pred=PRED, news=news, as_of="2026-10-14", stats=_stats(), series=SERIES)
     assert ex["headlines"][0]["url"] == "https://contoh.com/a" and "url" not in ex["headlines"][1]
+
+
+def test_live_explain_passes_the_news_source_through_or_none():
+    kw = dict(predictor=FakePredictor(), frame=_frame(), pred=PRED, as_of="2026-10-14", stats=_stats(), series=SERIES)
+    assert build_live_explain(news={**NEWS, "source": "rss"}, **kw)["news_source"] == "rss"
+    assert build_live_explain(news=NEWS, **kw)["news_source"] is None

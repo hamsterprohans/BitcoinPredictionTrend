@@ -365,4 +365,5 @@ def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=Non
                           for i, t in enumerate(titles)],
             "sentiment": {"has_news": bool(titles), "scores": (news or {}).get("scores"),
                           "used": values["news_sentiment"]},
-            "contributions": contrib, "features": feats, "level": level, "narrative": narrative}
+            "contributions": contrib, "features": feats, "level": level, "narrative": narrative,
+            "news_source": (news or {}).get("source")}
