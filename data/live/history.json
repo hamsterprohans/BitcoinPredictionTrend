@@ -82,7 +82,10 @@
    "5": {
     "prob": 0.46668251355489093,
     "direction": "TURUN",
-    "threshold": 0.47828808426856995
+    "threshold": 0.47828808426856995,
+    "actual": "NAIK",
+    "correct": false,
+    "locked": true
    },
    "7": {
     "prob": 0.4785332183043162,
@@ -189,7 +192,10 @@
    "3": {
     "prob": 0.4842817783355713,
     "direction": "TURUN",
-    "threshold": 0.5177493095397949
+    "threshold": 0.5177493095397949,
+    "actual": "NAIK",
+    "correct": false,
+    "locked": true
    },
    "5": {
     "prob": 0.46231357256571454,
@@ -289,7 +295,10 @@
    "1": {
     "prob": 0.5323612093925476,
     "direction": "NAIK",
-    "threshold": 0.4768124222755432
+    "threshold": 0.4768124222755432,
+    "actual": "NAIK",
+    "correct": true,
+    "locked": true
    },
    "3": {
     "prob": 0.4878063102563222,
@@ -328,6 +337,57 @@
    },
    "35": {
     "prob": 0.421002725760142,
+    "direction": "TURUN",
+    "threshold": 0.42857804894447327
+   }
+  }
+ },
+ {
+  "date": "2026-10-20",
+  "close": 82898.91,
+  "horizons": {
+   "1": {
+    "prob": 0.5476948618888855,
+    "direction": "NAIK",
+    "threshold": 0.4768124222755432
+   },
+   "3": {
+    "prob": 0.48860668142636615,
+    "direction": "TURUN",
+    "threshold": 0.5177493095397949
+   },
+   "5": {
+    "prob": 0.4566670060157776,
+    "direction": "TURUN",
+    "threshold": 0.47828808426856995
+   },
+   "7": {
+    "prob": 0.46744848291079205,
+    "direction": "TURUN",
+    "threshold": 0.47223278880119324
+   },
+   "15": {
+    "prob": 0.4320385257403056,
+    "direction": "TURUN",
+    "threshold": 0.45957493782043457
+   },
+   "20": {
+    "prob": 0.4266132613023122,
+    "direction": "TURUN",
+    "threshold": 0.4715519845485687
+   },
+   "25": {
+    "prob": 0.42681153615315753,
+    "direction": "TURUN",
+    "threshold": 0.4579542577266693
+   },
+   "30": {
+    "prob": 0.4396369556585948,
+    "direction": "TURUN",
+    "threshold": 0.4812179505825043
+   },
+   "35": {
+    "prob": 0.4202870925267537,
     "direction": "TURUN",
     "threshold": 0.42857804894447327
    }
