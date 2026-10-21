@@ -62,9 +62,12 @@ def test_about_page_has_photo_summary_and_linkedin_link(page, server):
 def test_about_page_experience_certifications_and_skills_from_linkedin(page, server):
     page.goto(server + "/tentang")
     summary = page.inner_text("#about-summary")
-    for fact in ("Blockchain Developer", "Vallidge Consulting", "FlyRank AI", "Solidity", "LSTM"):
+    for fact in ("Web3 Developer Intern", "Vallidge Consulting", "FlyRank AI", "Solidity", "LSTM"):
         assert fact in summary, fact
     assert "berbohong" not in summary and "negatif" not in summary          # tanpa kalimat ambigu
+    page_text = page.inner_text("main")
+    assert "Blockchain Developer" not in page_text and "(magang)" not in page_text      # jabatan Vallidge: Web3 Developer Intern, di semua bagian
+    assert "Web3 Developer Intern" in page.inner_text("#about-experience")             # konsisten di daftar Pengalaman
     exp = page.inner_text("#about-experience")
     for fact in ("Asisten Dosen", "Backend AI Engineer", "FlyRank AI", "Vallidge Consulting", "BEP-20", "ERC-1155",
                  "Polygon", "Odoo", "PKMBK"):
