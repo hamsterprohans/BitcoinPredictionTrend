@@ -121,3 +121,15 @@ python -m app.jobs --fill-urls 2026-10-19
 
 Satu panggilan ke sumber berita (kuota gratis hanya 100 per bulan). Hanya mengisi URL yang kosong, mencocokkan menurut judul, dan
 tidak mengubah judul atau skor yang sudah dinilai. Berita yang diambil mulai sekarang sudah menyimpan URL otomatis.
+
+## Keamanan
+
+- **Rantai pasok:** `requirements.lock` mengunci semua dependensi ke versi persis dengan hash SHA-256; workflow dan Docker memasangnya
+  dengan `--require-hashes`. Aksi GitHub dipin ke SHA commit, dan Dependabot memantau pembaruannya. Perbarui lock dengan
+  `uv pip compile requirements.txt --python-version 3.12 --generate-hashes --no-annotate -o requirements.lock`, lalu jalankan
+  `uvx pip-audit -r requirements.lock --no-deps --disable-pip`.
+- **Content-Security-Policy:** semua halaman memakai CSP ketat lewat tag meta (`script-src 'self'`, tanpa skrip inline). three.js diimpor
+  lewat path relatif, sehingga tidak ada import map inline. `connect-src` hanya ke situs sendiri, Coinbase, dan proyek Supabase.
+- **Supabase:** kunci publik hanya bisa INSERT. Database menolak kunci jawaban yang tak dikenal, nilai non-teks, jawaban lebih dari 2000
+  karakter, nama kosong, dan lebih dari 120 kiriman per 10 menit (jalankan ulang `supabase/schema.sql` setelah perubahan).
+- **Rahasia:** `scripts/.env` tidak pernah masuk git. Kunci API hanya hidup di GitHub Secrets dan `.env` lokal.

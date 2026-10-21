@@ -28,7 +28,7 @@ OUTSIDE_CARD = """() => {
 
 
 def phone(browser, width, level=None):
-    ctx = browser.new_context(viewport={"width": width, "height": 800}, device_scale_factor=2, is_mobile=True, has_touch=True)
+    ctx = browser.new_context(bypass_csp=True, viewport={"width": width, "height": 800}, device_scale_factor=2, is_mobile=True, has_touch=True)
     ctx.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}"
                         + (f"localStorage.setItem('text-level', '{level}');" if level is not None else ""))
     return ctx, ctx.new_page()

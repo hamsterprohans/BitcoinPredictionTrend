@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "../vendor/three.module.min.js";
 import { cssVar } from "./common.js";
 
 function label(text, color) {

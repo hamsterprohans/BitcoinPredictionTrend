@@ -11,7 +11,7 @@ HTMLCanvasElement.prototype.getContext = function (t, ...a) { return /webgl/i.te
 
 
 def _fresh(browser, **kw):
-    ctx = browser.new_context(**kw)              # konteks baru: sessionStorage kosong, tanpa penanda "sudah dilihat"
+    ctx = browser.new_context(bypass_csp=True, **kw)              # konteks baru: sessionStorage kosong, tanpa penanda "sudah dilihat"
     return ctx, ctx.new_page()
 
 
