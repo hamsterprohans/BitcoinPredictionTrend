@@ -62,8 +62,46 @@ def test_desktop_keeps_inline_nav_without_hamburger(page, server, path):
     assert page.locator("#main-nav a:visible").all_inner_texts() == NAV
 
 
-def test_theme_toggle_remains_visible_on_mobile(browser, server):
+def test_tools_live_inside_the_menu_on_mobile_and_work_from_there(browser, server):
     ctx, page = mobile_page(browser)
     page.goto(server + "/")
-    assert page.locator("#theme-toggle").is_visible()
+    for sel in ("#theme-toggle", "#font-inc", "#font-dec"):
+        assert page.locator(sel).is_hidden(), sel                                  # tidak ada di header ponsel
+    visible_in_header = page.evaluate("[...document.querySelectorAll('.topbar > *')].filter(e => e.getBoundingClientRect().width > 0).map(e => e.id || e.className)")
+    assert set(visible_in_header) == {"nav-toggle"} | {v for v in visible_in_header if v == "brand"}   # hanya merek + hamburger
+    page.click("#nav-toggle")
+    for sel in ("#theme-toggle", "#font-inc", "#font-dec"):
+        assert page.locator(f"#main-nav {sel}").is_visible(), sel                  # muncul di dalam panel menu
+    labels = page.locator("#main-nav .tool-label").all_inner_texts()
+    assert labels == ["Ukuran teks", "Tema"]
+    before = page.evaluate("document.documentElement.dataset.theme")
+    page.click("#theme-toggle")
+    assert page.evaluate("document.documentElement.dataset.theme") != before       # tema berubah dari dalam menu
+    size = page.evaluate("parseFloat(getComputedStyle(document.documentElement).fontSize)")
+    page.click("#font-inc")
+    assert page.evaluate("parseFloat(getComputedStyle(document.documentElement).fontSize)") > size
+    assert page.locator("#nav-toggle").get_attribute("aria-expanded") == "true"    # menu tetap terbuka agar bisa menyetel beberapa kali
     ctx.close()
+
+
+def test_desktop_keeps_tools_inline_in_the_header_bar(page, server):
+    page.goto(server + "/")
+    assert page.locator("#nav-toggle").is_hidden()
+    for sel in ("#theme-toggle", "#font-inc", "#font-dec"):
+        assert page.locator(sel).is_visible(), sel
+    assert page.locator("#main-nav .tool-label").first.is_hidden()                 # label hanya di panel menu
+
+
+def test_hamburger_is_gold_and_follows_the_theme(page, context, server):
+    context.add_init_script("window.__x = 1;")
+    ctx = page.context
+    page.set_viewport_size({"width": 390, "height": 800})
+    page.goto(server + "/")
+    probe = """(token) => { const d = document.createElement('div'); d.style.background = `var(${token})`; document.body.append(d);
+      const c = getComputedStyle(d).backgroundColor; d.remove(); return c; }"""
+    dark_bg = page.evaluate("getComputedStyle(document.querySelector('#nav-toggle')).backgroundColor")
+    assert dark_bg == page.evaluate(probe, "--gold")                                # emas (token tema), bukan abu-abu
+    assert page.evaluate("getComputedStyle(document.querySelector('#nav-toggle')).color") == page.evaluate(probe, "--on-gold")
+    page.evaluate("document.documentElement.dataset.theme = 'light'")
+    light_bg = page.evaluate("getComputedStyle(document.querySelector('#nav-toggle')).backgroundColor")
+    assert light_bg == page.evaluate(probe, "--gold") and light_bg != dark_bg       # menyesuaikan tema terang

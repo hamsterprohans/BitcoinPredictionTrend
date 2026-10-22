@@ -6,6 +6,14 @@ PATHS = ["/", "/latar-belakang", "/retrospektif", "/riset", "/metodologi", "/kue
 ROOT_PX = "parseFloat(getComputedStyle(document.documentElement).fontSize)"
 
 
+def press(page, selector):
+    """Klik tombol ukuran teks; bila header sudah beralih ke hamburger, buka menu dulu (tombol berada di dalamnya)."""
+    if not page.locator(selector).is_visible() and page.locator("#nav-toggle").is_visible():
+        page.click("#nav-toggle")
+    page.click(selector)
+
+
+
 def mobile_page(browser, width=390):
     ctx = browser.new_context(bypass_csp=True, viewport={"width": width, "height": 844})
     ctx.add_init_script("try { sessionStorage.setItem('splash-seen', '1'); } catch (e) {}")
@@ -36,20 +44,20 @@ def test_increase_and_decrease_change_size_and_stop_at_limits(page, server):
     page.goto(server + "/tentang")
     sizes = [page.evaluate(ROOT_PX)]
     while not page.locator("#font-inc").is_disabled():
-        page.click("#font-inc")
+        press(page, "#font-inc")
         sizes.append(page.evaluate(ROOT_PX))
         assert len(sizes) < 10
     assert sizes == sorted(sizes) and len(set(sizes)) == len(sizes) and sizes[-1] >= 24      # sampai 150%
     body_px = page.evaluate("parseFloat(getComputedStyle(document.querySelector('.prose p')).fontSize)")
     assert body_px >= 20                                                                     # isi teks ikut membesar
     while not page.locator("#font-dec").is_disabled():
-        page.click("#font-dec")
+        press(page, "#font-dec")
     assert page.evaluate(ROOT_PX) == 16                                                      # terkecil = ukuran standar
 
 
 def test_text_size_choice_persists_across_pages_and_reloads(page, server):
     page.goto(server + "/tentang")
-    page.click("#font-inc")
+    press(page, "#font-inc")
     chosen = page.evaluate(ROOT_PX)
     page.goto(server + "/riset")
     assert page.evaluate(ROOT_PX) == chosen
@@ -62,7 +70,7 @@ def test_buttons_announce_state_to_assistive_tech(page, server):
     assert page.get_attribute("#font-inc", "aria-label") == "Perbesar teks"
     assert page.get_attribute("#font-dec", "aria-label") == "Perkecil teks"
     while not page.locator("#font-inc").is_disabled():
-        page.click("#font-inc")
+        press(page, "#font-inc")
     assert page.get_attribute("#font-inc", "disabled") is not None                           # batas atas: dinonaktifkan
 
 
@@ -70,12 +78,13 @@ def test_buttons_announce_state_to_assistive_tech(page, server):
 def test_largest_text_on_phone_has_no_horizontal_scroll_and_header_fits(browser, server, path):
     ctx, page = mobile_page(browser)
     page.goto(server + path)
+    page.click("#nav-toggle")                                                                  # kontrol ukuran teks ada di dalam menu
     while not page.locator("#font-inc").is_disabled():
         page.click("#font-inc")
     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), path
     for sel in ("#nav-toggle", "#font-inc", "#font-dec", "#theme-toggle"):
         box = page.locator(sel).bounding_box()
-        assert box and box["x"] >= 0 and box["x"] + box["width"] <= 390, sel                 # semua tombol header muat di layar
+        assert box and box["x"] >= 0 and box["x"] + box["width"] <= 390, sel                 # semua tombol muat di layar (menu terbuka)
     ctx.close()
 
 
@@ -114,6 +123,7 @@ def test_header_returns_to_inline_nav_when_text_is_made_smaller_again(page, serv
     page.goto(server + "/tentang")
     set_level(page, 3)
     assert page.locator("#nav-toggle").is_visible()
+    page.click("#nav-toggle")                                                                  # ukuran teks diubah dari dalam menu
     page.click("#font-dec")
     page.click("#font-dec")
     page.click("#font-dec")
