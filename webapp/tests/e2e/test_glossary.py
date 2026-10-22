@@ -95,3 +95,51 @@ def test_glossary_fits_a_small_phone_even_with_the_largest_text(browser, server)
     for t in page.locator("#sec-glossary dt").all()[:6]:
         assert t.bounding_box()["x"] + t.bounding_box()["width"] <= card["x"] + card["width"] + 1
     ctx.close()
+
+
+def norm(s):
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFD", s.lower()) if not unicodedata.combining(c))
+
+
+def test_glossary_is_one_alphabetical_list_with_a_heading_per_letter(page, server):
+    page.goto(server + "/")
+    groups = page.locator("#sec-glossary .gloss-group")
+    letters = [g.locator("h3").inner_text().strip() for g in groups.all()]
+    assert letters == sorted(letters) and all(len(l) == 1 and l.isalpha() for l in letters)      # A, D, F, ... berurutan
+    assert len(set(letters)) == len(letters)
+    flat = []
+    for g in groups.all():
+        letter = g.locator("h3").inner_text().strip()
+        names = g.locator("dt").all_inner_texts()
+        assert names, letter
+        assert all(norm(n)[0] == letter.lower() for n in names), (letter, names)                 # istilah ada di huruf awalnya
+        assert [norm(n) for n in names] == sorted(norm(n) for n in names), letter                # urut abjad di dalam huruf
+        flat += names
+    assert len(flat) == len(terms(page))                                                         # tak ada istilah yang hilang
+
+
+def test_each_term_takes_one_row_on_desktop_with_term_beside_definition(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#sec-glossary")
+    card = page.locator("#sec-glossary").bounding_box()
+    rows = page.locator("#sec-glossary .gl").all()
+    tops = [round(r.bounding_box()["y"]) for r in rows]
+    assert len(set(tops)) == len(tops)                                                           # tak ada dua istilah sebaris (bukan 3 kolom)
+    for r in rows[:8]:
+        b = r.bounding_box()
+        assert b["width"] >= (card["width"] - 40) * 0.95                                         # satu baris selebar kartu
+        dt, dd = r.locator("dt").bounding_box(), r.locator("dd").bounding_box()
+        assert dd["x"] > dt["x"] + dt["width"] - 1 and abs(dd["y"] - dt["y"]) < 16               # istilah di kiri, definisi di kanan
+
+
+def test_term_is_stacked_above_the_definition_on_phones(browser, server):
+    ctx = browser.new_context(bypass_csp=True, viewport={"width": 390, "height": 800}, is_mobile=True, has_touch=True, device_scale_factor=2)
+    ctx.add_init_script("try { sessionStorage.setItem('splash-seen','1'); } catch (e) {}")
+    page = ctx.new_page()
+    page.goto(server + "/")
+    page.wait_for_selector("#sec-glossary")
+    r = page.locator("#sec-glossary .gl").first
+    dt, dd = r.locator("dt").bounding_box(), r.locator("dd").bounding_box()
+    assert dd["y"] >= dt["y"] + dt["height"] - 1 and abs(dd["x"] - dt["x"]) < 4                  # susun ke bawah agar terbaca di layar sempit
+    ctx.close()
