@@ -1,6 +1,7 @@
 import { $, fmtDate, fmtDateShort, fmtNum, fmtPct, fmtUSD, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion } from "./common.js";
 import { createCharts } from "./chart.js";
 import { initSplash } from "./splash.js";
+import "./glossary.js";
 import { renderContrib, renderNarrative, renderNews, renderReliability } from "./panels.js";
 
 initTheme();

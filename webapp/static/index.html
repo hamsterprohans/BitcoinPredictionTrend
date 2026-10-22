@@ -69,6 +69,7 @@
         </div>
         <p class="meta mono" id="prediction-meta"></p>
         <p class="meta mono" id="prediction-live" hidden></p>
+        <p class="small muted gloss-hint"><a href="#sec-glossary">Ada istilah yang sulit dipahami? Lihat glosarium di bawah.</a></p>
       </div>
     </section>
 
@@ -112,6 +113,62 @@
           <thead><tr><th>Prediksi untuk</th><th>Prediksi</th><th class="num"><span class="th-full">Probabilitas</span><span class="th-short">Prob.</span></th><th>Kenyataan</th></tr></thead>
           <tbody id="history-body"></tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="card" id="sec-glossary" aria-labelledby="h-gloss">
+      <h2 id="h-gloss">Glosarium: istilah yang sering muncul</h2>
+      <p class="muted">Penjelasan singkat untuk istilah teknis di halaman ini. Ketik kata kunci untuk mencari.</p>
+      <div class="gloss-tools">
+        <input id="gloss-search" type="search" placeholder="Cari istilah, mis. RSI, AUC, ambang" aria-label="Cari istilah" autocomplete="off">
+        <p id="gloss-count" class="muted small" role="status" aria-live="polite">27 istilah</p>
+      </div>
+      <div class="gloss-group">
+        <h3 class="small muted">Membaca prediksi</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-prediksi" data-alias=""><dt>Prediksi arah harga</dt><dd>Perkiraan apakah harga penutupan pada hari target akan lebih tinggi (NAIK) atau lebih rendah (TURUN) dibanding harga penutupan hari data. Ini perkiraan arah, bukan perkiraan angka harga.</dd></div>
+          <div class="gl" id="g-probabilitas" data-alias="peluang kemungkinan persen"><dt>Probabilitas naik</dt><dd>Angka 0 sampai 100% dari model yang menunjukkan seberapa condong model ke arah NAIK. Nilai 50% berarti tidak condong ke mana pun. Ini bukan peluang pasti: pada pengujian model belum terbukti lebih baik dari tebakan acak, jadi jangan dibaca sebagai jaminan.</dd></div>
+          <div class="gl" id="g-ambang" data-alias="threshold batas"><dt>Ambang keputusan</dt><dd>Batas probabilitas yang memisahkan prediksi NAIK dari TURUN: probabilitas di atas ambang menghasilkan NAIK. Ambangnya tidak harus 50%. Nilainya dipilih dari data validasi (untuk prediksi 1 hari sekitar 0,48), sehingga bisa sedikit di bawah 50%.</dd></div>
+          <div class="gl" id="g-horizon" data-alias="jangka waktu hari"><dt>Horizon prediksi</dt><dd>Seberapa jauh ke depan prediksi dibuat: 1 hari, 3 hari, sampai 35 hari. Makin jauh horizonnya, makin sulit diperkirakan.</dd></div>
+          <div class="gl" id="g-keyakinan" data-alias="confidence"><dt>Tingkat keyakinan (rendah, sedang, tinggi)</dt><dd>Seberapa jauh probabilitas model dari ambang keputusan: makin jauh, makin yakin model. Pada data uji, tingkat keyakinan tinggi belum terbukti lebih akurat daripada yang rendah (lihat tabel keandalan historis).</dd></div>
+          <div class="gl" id="g-penutupan" data-alias="close tutup zona waktu"><dt>Harga penutupan (UTC)</dt><dd>Harga terakhir pada satu hari menurut zona waktu UTC; pergantian harinya jatuh pada pukul 07:00 WIB. Model memakai harga penutupan yang lengkap, sehingga prediksi baru terbit sekali sehari setelah hari itu ditutup.</dd></div>
+          <div class="gl" id="g-live" data-alias="real time terkini"><dt>Harga live</dt><dd>Harga Bitcoin saat ini dari Coinbase, diperbarui tiap 30 detik. Hanya untuk tampilan: tidak dipakai model dan tidak mengubah probabilitas.</dd></div>
+          <div class="gl" id="g-menunggu" data-alias="belum ada hasil"><dt>Menunggu</dt><dd>Status prediksi yang hari targetnya belum ditutup, sehingga belum bisa dibandingkan dengan kenyataan.</dd></div>
+          <div class="gl" id="g-susulan" data-alias="backfill terlewat"><dt>Dihitung susulan</dt><dd>Prediksi yang dihitung setelah harinya lewat, dari data yang sudah tersimpan, karena prediksi hari itu sempat terlewat. Hanya memakai data sampai hari itu, tetapi bukan prediksi yang terbit tepat waktu.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group">
+        <h3 class="small muted">Mengukur kualitas model</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-uji" data-alias="data latih validasi test"><dt>Periode uji</dt><dd>Rentang waktu yang tidak dipakai untuk melatih model, khusus untuk menguji apakah model bekerja pada data baru. Data dibagi menurut urutan waktu (terlama untuk latih, lalu validasi, lalu uji) agar model tidak mengintip masa depan.</dd></div>
+          <div class="gl" id="g-akurasi" data-alias="benar persentase"><dt>Akurasi</dt><dd>Persentase prediksi arah yang benar. Contoh: akurasi 50% berarti benar pada separuh dari seluruh prediksi.</dd></div>
+          <div class="gl" id="g-acak" data-alias="koin random"><dt>Tebakan acak</dt><dd>Pembanding paling sederhana: menebak naik atau turun seperti melempar koin, yang benar sekitar 50%. Sama dengan tebakan acak berarti model tidak lebih pandai daripada koin. Belum terbukti lebih baik dari tebakan acak berarti hasil model masih bisa saja kebetulan.</dd></div>
+          <div class="gl" id="g-auc" data-alias="area under curve"><dt>AUC</dt><dd>Ukuran kemampuan model membedakan hari naik dari hari turun. Nilai 0,5 sama dengan tebakan acak, 1 berarti sempurna, dan di bawah 0,5 berarti lebih buruk dari tebakan acak. Di penelitian ini nilainya mendekati 0,5 (lihat halaman Riset).</dd></div>
+          <div class="gl" id="g-ci" data-alias="CI rentang"><dt>Interval kepercayaan 95% (Wilson)</dt><dd>Rentang perkiraan akurasi yang sebenarnya, mengingat jumlah hari uji terbatas. Bila rentang itu memuat 50%, hasilnya belum bisa dibedakan dari tebakan acak.</dd></div>
+          <div class="gl" id="g-keandalan" data-alias="tabel"><dt>Keandalan historis</dt><dd>Tabel akurasi model pada hari-hari uji, dipisah menurut tingkat keyakinan, agar terlihat apakah keyakinan yang tinggi benar-benar lebih akurat.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group">
+        <h3 class="small muted">Cara model bekerja</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-lstm" data-alias="jaringan saraf neural network"><dt>LSTM</dt><dd>Jenis jaringan saraf tiruan untuk data berurutan. Model membaca data 20 hari terakhir sekaligus, lalu menghitung probabilitas naik untuk hari berikutnya.</dd></div>
+          <div class="gl" id="g-llm" data-alias="AI claude"><dt>LLM (model bahasa besar)</dt><dd>Program AI yang membaca dan menulis teks, seperti Claude. Di sini dipakai untuk menilai nada berita dan menulis narasi penjelas. LLM bisa keliru, sehingga narasi diperiksa otomatis dan tetap bukan jaminan.</dd></div>
+          <div class="gl" id="g-fitur" data-alias="input masukan"><dt>Fitur</dt><dd>Data masukan yang dibaca model setiap hari: 11 indikator harga, skor sentimen berita, dan Fear &amp; Greed Index (total 13 nilai).</dd></div>
+          <div class="gl" id="g-kontribusi" data-alias="pengaruh importance"><dt>Kontribusi fitur (poin persentase)</dt><dd>Perkiraan seberapa besar satu fitur menggeser probabilitas, dihitung dengan mengganti fitur itu dengan nilai tipikal data latih. Batang hijau menaikkan, merah menurunkan. Ini ukuran ketergantungan model, bukan hubungan sebab-akibat di pasar.</dd></div>
+          <div class="gl" id="g-sentimen" data-alias="berita nada"><dt>Sentimen berita</dt><dd>Skor -10 sampai +10 untuk nada lima judul berita Bitcoin pada hari itu (negatif berarti pesimis, positif berarti optimis), dinilai oleh AI. Model memakai rata-rata dari tiga cara penilaian.</dd></div>
+          <div class="gl" id="g-fng" data-alias="takut serakah"><dt>Fear &amp; Greed Index</dt><dd>Indeks 0 sampai 100 yang menggambarkan suasana pasar kripto: mendekati 0 berarti ketakutan ekstrem, mendekati 100 berarti keserakahan ekstrem. Sumbernya alternative.me.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group">
+        <h3 class="small muted">Indikator harga yang dibaca model</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-return" data-alias="perubahan harga"><dt>Return harian</dt><dd>Persentase perubahan harga penutupan dibanding hari sebelumnya.</dd></div>
+          <div class="gl" id="g-volatilitas" data-alias="gejolak naik turun"><dt>Volatilitas (7 dan 30 hari)</dt><dd>Seberapa besar harga naik-turun belakangan ini (simpangan baku return harian). Makin tinggi, makin bergejolak.</dd></div>
+          <div class="gl" id="g-ma" data-alias="moving average MA"><dt>Rata-rata harga 7, 30, dan 90 hari</dt><dd>Rata-rata harga penutupan selama sekian hari terakhir. Dipakai untuk melihat arah tren: harga di atas rata-ratanya sering dianggap tren naik.</dd></div>
+          <div class="gl" id="g-rsi" data-alias="relative strength index"><dt>RSI 14 hari</dt><dd>Indikator 0 sampai 100 yang membandingkan kekuatan kenaikan dan penurunan harga selama 14 hari. Di atas 70 sering disebut jenuh beli, di bawah 30 jenuh jual. Itu kebiasaan analis, bukan jaminan arah harga.</dd></div>
+          <div class="gl" id="g-macd" data-alias="momentum tren"><dt>MACD, Sinyal MACD, dan Histogram MACD</dt><dd>Indikator tren dari selisih rata-rata harga 12 dan 26 hari (MACD). Sinyal MACD adalah rata-rata 9 harinya, dan histogram adalah selisih keduanya: histogram positif berarti tren naik sedang menguat.</dd></div>
+          <div class="gl" id="g-bollinger" data-alias="bb band"><dt>Pita Bollinger (lebar Bollinger)</dt><dd>Dua pita di atas dan di bawah rata-rata harga 20 hari (berjarak 2 simpangan baku). Lebar pita menunjukkan volatilitas: melebar saat harga bergejolak, menyempit saat tenang.</dd></div>
+        </dl>
       </div>
     </section>
 
