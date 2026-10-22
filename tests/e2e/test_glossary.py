@@ -143,3 +143,67 @@ def test_term_is_stacked_above_the_definition_on_phones(browser, server):
     dt, dd = r.locator("dt").bounding_box(), r.locator("dd").bounding_box()
     assert dd["y"] >= dt["y"] + dt["height"] - 1 and abs(dd["x"] - dt["x"]) < 4                  # susun ke bawah agar terbaca di layar sempit
     ctx.close()
+
+
+# ---- singkatan: kepanjangan (Inggris bila singkatan Inggris) + arti Indonesia di sampingnya + kegunaan + alasan dipakai ----
+EXPANSIONS = {
+    "AI": "Artificial Intelligence", "AUC": "Area Under the ROC Curve", "BTC": "Bitcoin", "CI": "Confidence Interval",
+    "LLM": "Large Language Model", "LSTM": "Long Short-Term Memory", "MA": "Moving Average",
+    "MACD": "Moving Average Convergence Divergence", "ROC": "Receiver Operating Characteristic", "RSI": "Relative Strength Index",
+    "USD": "United States Dollar", "UTC": "Coordinated Universal Time", "WIB": "Waktu Indonesia Barat",
+}
+
+
+def entry_for(page, abbr):
+    """Entri singkatan: judul persis singkatan itu, atau (bila singkatan jadi bagian judul, mis. '(MA)') judul yang memuatnya."""
+    import re
+    dts = page.locator("#sec-glossary dt").all()
+    for dt in dts:
+        if dt.inner_text().strip() == abbr:
+            return dt.locator("xpath=..")
+    for dt in dts:
+        if re.search(rf"(^|[^A-Za-z]){abbr}([^A-Za-z]|$)", dt.inner_text()) and dt.locator("xpath=..").locator(".abbr").count():
+            return dt.locator("xpath=..")
+    return None
+
+
+@pytest.mark.parametrize("abbr", sorted(EXPANSIONS))
+def test_every_abbreviation_has_full_name_meaning_use_and_reason(page, server, abbr):
+    page.goto(server + "/")
+    entry = entry_for(page, abbr)
+    assert entry is not None, f"{abbr} tidak punya entri"
+    full = entry.locator(".abbr li", has_text="Kepanjangan:")
+    assert full.count() == 1
+    text = full.inner_text()
+    assert EXPANSIONS[abbr].lower() in text.lower(), text                          # kepanjangan benar
+    arti = full.locator(".arti")
+    assert arti.count() == 1 and len(arti.inner_text().strip()) >= 8               # arti Indonesia tepat di sampingnya
+    if abbr != "WIB":                                                              # singkatan Inggris: kepanjangan Inggris bertanda lang="en"
+        assert full.locator("[lang=en]").count() == 1
+    for label in ("Kegunaan:", "Mengapa dipakai:"):
+        li = entry.locator(".abbr li", has_text=label)
+        assert li.count() == 1 and len(li.inner_text().replace(label, "").strip()) >= 30, (abbr, label)
+
+
+def test_no_acronym_used_in_the_glossary_is_left_unexplained(page, server):
+    import re
+    page.goto(server + "/")
+    dts = " ".join(terms(page))
+    body = page.inner_text("#sec-glossary dl") if False else " ".join(page.locator("#sec-glossary dd").all_inner_texts())
+    tokens = set(re.findall(r"\b[A-Z]{2,6}\b", body)) - {"NAIK", "TURUN"}
+    missing = [t for t in sorted(tokens) if not re.search(rf"(^|[^A-Za-z]){t}([^A-Za-z]|$)", dts)]
+    assert missing == [], f"singkatan tanpa entri: {missing}"
+
+
+def test_abbreviation_rows_stay_readable_on_phones(browser, server):
+    ctx = browser.new_context(bypass_csp=True, viewport={"width": 360, "height": 800}, is_mobile=True, has_touch=True, device_scale_factor=2)
+    ctx.add_init_script("try { sessionStorage.setItem('splash-seen','1'); localStorage.setItem('text-level','3'); } catch (e) {}")
+    page = ctx.new_page()
+    page.goto(server + "/")
+    page.wait_for_selector("#sec-glossary")
+    assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
+    card = page.locator("#sec-glossary").bounding_box()
+    for li in page.locator("#sec-glossary .abbr li").all()[:10]:
+        b = li.bounding_box()
+        assert b["x"] + b["width"] <= card["x"] + card["width"] + 1
+    ctx.close()
