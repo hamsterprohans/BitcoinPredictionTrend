@@ -433,5 +433,28 @@
    "https://zycrypto.com/saylor-says-bitcoin-bull-market-is-here-banks-set-to-unlock-new-demand/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-10-21": {
+  "titles": [
+   "Strive and Strategy shares rally as bitcoin climbs to $84,807",
+   "Strive stock soars 335% as Bitcoin rebounds to $84,360 and ETF inflows surge",
+   "John Bollinger finds hidden Bitcoin game with Bollinger Bands on CoinMarketCap",
+   "Bitcoin gains more than 2% to $84.8k as risk sentiment prevails",
+   "Anson Funds Co-Founder Moez Kassam Has Put $1 Billion Into Bitcoin (BTC) Treasury Companies"
+  ],
+  "scores": {
+   "pemahaman": 8,
+   "detail": 8,
+   "bullbear": 8,
+   "mean": 8.0
+  },
+  "urls": [
+   "https://www.cryptopolitan.com/bitcoin-high-lifts-strive-13-strategy-7/",
+   "https://en.coin-turk.com/strive-stock-soars-335yuzde-as-bitcoin-rebounds-to-84360-and-etf-inflows-surge/?utm_source=rss&utm_medium=rss&utm_campaign=strive-stock-soars-335yuzde-as-bitcoin-rebounds-to-84360-and-etf-inflows-surge",
+   "https://en.coin-turk.com/john-bollinger-finds-hidden-bitcoin-game-with-bollinger-bands-on-coinmarketcap/?utm_source=rss&utm_medium=rss&utm_campaign=john-bollinger-finds-hidden-bitcoin-game-with-bollinger-bands-on-coinmarketcap",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-firms-to-82k-but-oil-ai-jitters-limit-upside-4961711",
+   "https://en.coinotag.com/anson-funds-kassam-1-billion-bitcoin-treasury-companies"
+  ],
+  "source": "cryptocompare"
  }
 }
