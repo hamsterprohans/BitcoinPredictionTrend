@@ -128,3 +128,18 @@ def test_header_returns_to_inline_nav_when_text_is_made_smaller_again(page, serv
     page.click("#font-dec")
     page.click("#font-dec")
     assert page.locator("#nav-toggle").is_hidden() and page.evaluate(SAME_ROW)               # kembali ke tampilan desktop biasa
+
+
+@pytest.mark.parametrize("width", [360, 390, 412])
+def test_disclaimer_banner_is_small_on_phones_but_keeps_the_full_text(browser, server, width):
+    ctx, page = mobile_page(browser, width)
+    page.goto(server + "/")
+    bar = page.locator(".notice-bar")
+    box = bar.bounding_box()
+    font_px = page.evaluate("parseFloat(getComputedStyle(document.querySelector('.notice-bar')).fontSize)")
+    assert box["height"] <= 66, box["height"]                                      # sebelumnya ~100px (4 baris)
+    assert font_px <= 14, font_px
+    text = bar.inner_text()
+    for part in ("hanyalah prediksi", "bukan saran investasi", "tidak bertanggung jawab", "investasi yang dilakukan"):
+        assert part in text                                                         # teks hukum tetap utuh, hanya dikecilkan
+    ctx.close()

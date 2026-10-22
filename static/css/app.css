@@ -285,12 +285,16 @@ body.no-webgl #splash-canvas{display:none}
 .gloss-tools{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:8px 0 14px}
 .gloss-tools input{flex:1 1 220px;min-width:0;width:100%;box-sizing:border-box;max-width:420px;font:inherit;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--text)}
 .gloss-tools p{margin:0}
-.gloss-group{margin:6px 0 14px}
-.gloss-group h3{margin:0 0 8px;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase}
-.glossary{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:12px 22px;margin:0}
-.gl{min-width:0;padding:2px 0}
+.gloss-group{margin:4px 0 10px}
+.gloss-group h3{margin:14px 0 2px;padding-bottom:4px;font-size:1.05rem;color:var(--gold);border-bottom:1px solid color-mix(in srgb,var(--gold) 40%,var(--line))}
+.glossary{display:block;margin:0}
+.gl{display:grid;grid-template-columns:minmax(150px,26%) 1fr;gap:2px 20px;align-items:baseline;min-width:0;padding:9px 0;border-bottom:1px solid var(--line)}
 .gl[hidden],.gloss-group[hidden]{display:none}
-.gl dt{font-weight:600;color:var(--gold);overflow-wrap:anywhere}
-.gl dd{margin:2px 0 0;color:var(--text-2);overflow-wrap:anywhere}
+.gl dt{font-weight:600;color:var(--text);overflow-wrap:anywhere}
+.gl dd{margin:0;color:var(--text-2);overflow-wrap:anywhere}
+@media (max-width:640px){.gl{grid-template-columns:1fr;padding:8px 0}}
 .gloss-hint{margin:10px 0 0}
 #sec-glossary{scroll-margin-top:12px}
+
+/* Banner himbauan: lebih kecil di ponsel agar tidak mengganggu (teks tetap utuh) */
+@media (max-width:560px){.notice-bar{font-size:.7rem;line-height:1.3;padding:4px 12px}}
