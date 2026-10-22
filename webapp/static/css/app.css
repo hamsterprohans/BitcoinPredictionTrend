@@ -298,3 +298,11 @@ body.no-webgl #splash-canvas{display:none}
 
 /* Banner himbauan: lebih kecil di ponsel agar tidak mengganggu (teks tetap utuh) */
 @media (max-width:560px){.notice-bar{font-size:.7rem;line-height:1.3;padding:4px 12px}}
+
+/* ---- Glosarium: blok kepanjangan singkatan ---- */
+.abbr{list-style:none;margin:6px 0 0;padding:0}
+.abbr li{margin:5px 0;overflow-wrap:anywhere}
+.abbr b{color:var(--text);font-weight:600}
+.abbr i[lang=en]{font-style:italic;color:var(--text)}
+.abbr .arti{color:var(--text-2)}
+.gl dd>p{margin:0}

@@ -126,9 +126,16 @@
       <div class="gloss-group" id="gl-A">
         <h3>A</h3>
         <dl class="glossary">
+          <div class="gl" id="g-ai" data-alias="kecerdasan buatan"><dt>AI</dt><dd><p>Program komputer yang meniru sebagian kemampuan berpikir manusia, misalnya memahami teks.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Artificial Intelligence</i> <span class="arti">= kecerdasan buatan</span></li><li><b>Kegunaan:</b> Di situs ini AI (lewat LLM) dipakai untuk menilai nada berita dan menulis narasi penjelas.</li><li><b>Mengapa dipakai:</b> Membaca banyak judul berita secara konsisten jauh lebih cepat daripada manusia. Hasilnya tetap bisa keliru, sehingga diperiksa otomatis dan diberi catatan.</li></ul></dd></div>
           <div class="gl" id="g-akurasi" data-alias="benar persentase"><dt>Akurasi</dt><dd>Persentase prediksi arah yang benar. Contoh: akurasi 50% berarti benar pada separuh dari seluruh prediksi.</dd></div>
           <div class="gl" id="g-ambang" data-alias="threshold batas"><dt>Ambang keputusan</dt><dd>Batas probabilitas yang memisahkan prediksi NAIK dari TURUN: probabilitas di atas ambang menghasilkan NAIK. Ambangnya tidak harus 50%. Nilainya dipilih dari data validasi (untuk prediksi 1 hari sekitar 0,48), sehingga bisa sedikit di bawah 50%.</dd></div>
-          <div class="gl" id="g-auc" data-alias="area under curve"><dt>AUC</dt><dd>Ukuran kemampuan model membedakan hari naik dari hari turun. Nilai 0,5 sama dengan tebakan acak, 1 berarti sempurna, dan di bawah 0,5 berarti lebih buruk dari tebakan acak. Di penelitian ini nilainya mendekati 0,5 (lihat halaman Riset).</dd></div>
+          <div class="gl" id="g-auc" data-alias="area under curve"><dt>AUC</dt><dd><p>Ukuran kemampuan model membedakan hari naik dari hari turun. Nilai 0,5 sama dengan tebakan acak, 1 berarti sempurna, dan di bawah 0,5 berarti lebih buruk dari tebakan acak. Di penelitian ini nilainya mendekati 0,5 (lihat halaman Riset).</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Area Under the ROC Curve</i> <span class="arti">= luas di bawah kurva ROC (lihat ROC)</span></li><li><b>Kegunaan:</b> Mengukur kemampuan model membedakan hari naik dari hari turun pada semua kemungkinan ambang keputusan.</li><li><b>Mengapa dipakai:</b> Lebih adil daripada akurasi ketika ambang diubah atau jumlah hari naik dan turun tidak seimbang. Di penelitian ini nilainya mendekati 0,5, artinya belum lebih baik dari tebakan acak.</li></ul></dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-B">
+        <h3>B</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-btc" data-alias="bitcoin ticker kode"><dt>BTC</dt><dd><p>Kode singkat (ticker) Bitcoin di bursa dan situs harga. Tulisan BTC / USD berarti harga satu Bitcoin dalam dolar Amerika Serikat.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Bitcoin (kode ticker BTC)</i> <span class="arti">= kode singkat yang dipakai bursa dan situs harga untuk Bitcoin</span></li><li><b>Kegunaan:</b> Menandai aset yang dibahas dan pasangan harganya, misalnya BTC / USD di bagian atas halaman.</li><li><b>Mengapa dipakai:</b> Kode yang sama dipakai di seluruh bursa, sehingga tidak membingungkan dan mudah dicocokkan dengan sumber data harga.</li></ul></dd></div>
         </dl>
       </div>
       <div class="gloss-group" id="gl-D">
@@ -155,7 +162,7 @@
       <div class="gloss-group" id="gl-I">
         <h3>I</h3>
         <dl class="glossary">
-          <div class="gl" id="g-ci" data-alias="CI rentang"><dt>Interval kepercayaan 95% (Wilson)</dt><dd>Rentang perkiraan akurasi yang sebenarnya, mengingat jumlah hari uji terbatas. Bila rentang itu memuat 50%, hasilnya belum bisa dibedakan dari tebakan acak.</dd></div>
+          <div class="gl" id="g-ci" data-alias="rentang"><dt>Interval kepercayaan 95% (CI, Wilson)</dt><dd><p>Rentang perkiraan akurasi yang sebenarnya, mengingat jumlah hari uji terbatas. Bila rentang itu memuat 50%, hasilnya belum bisa dibedakan dari tebakan acak.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Confidence Interval</i> <span class="arti">= interval kepercayaan, yaitu rentang nilai yang masuk akal untuk angka yang sebenarnya</span></li><li><b>Kegunaan:</b> Menunjukkan rentang perkiraan akurasi yang sebenarnya, bukan satu angka tunggal. Wilson adalah nama metode hitungnya.</li><li><b>Mengapa dipakai:</b> Jumlah hari uji terbatas, sehingga satu angka akurasi bisa menipu. Rentang memperlihatkan ketidakpastian itu, dan metode Wilson andal untuk proporsi seperti akurasi.</li></ul></dd></div>
         </dl>
       </div>
       <div class="gloss-group" id="gl-K">
@@ -168,14 +175,14 @@
       <div class="gloss-group" id="gl-L">
         <h3>L</h3>
         <dl class="glossary">
-          <div class="gl" id="g-llm" data-alias="AI claude"><dt>LLM (model bahasa besar)</dt><dd>Program AI yang membaca dan menulis teks, seperti Claude. Di sini dipakai untuk menilai nada berita dan menulis narasi penjelas. LLM bisa keliru, sehingga narasi diperiksa otomatis dan tetap bukan jaminan.</dd></div>
-          <div class="gl" id="g-lstm" data-alias="jaringan saraf neural network"><dt>LSTM</dt><dd>Jenis jaringan saraf tiruan untuk data berurutan. Model membaca data 20 hari terakhir sekaligus, lalu menghitung probabilitas naik untuk hari berikutnya.</dd></div>
+          <div class="gl" id="g-llm" data-alias="model bahasa besar claude ai"><dt>LLM</dt><dd><p>Program AI yang membaca dan menulis teks, seperti Claude.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Large Language Model</i> <span class="arti">= model bahasa besar, program AI yang dilatih dari teks dalam jumlah sangat besar</span></li><li><b>Kegunaan:</b> Di situs ini dipakai untuk menilai nada judul berita (skor sentimen) dan menulis narasi penjelas.</li><li><b>Mengapa dipakai:</b> Bisa memahami bahasa sehari-hari tanpa dilatih khusus untuk tugas ini. Karena bisa keliru, keluarannya diperiksa otomatis dan tetap bukan jaminan.</li></ul></dd></div>
+          <div class="gl" id="g-lstm" data-alias="jaringan saraf neural network"><dt>LSTM</dt><dd><p>Jenis jaringan saraf tiruan yang dirancang untuk data berurutan, seperti harga dari hari ke hari.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Long Short-Term Memory</i> <span class="arti">= memori jangka pendek yang panjang, jaringan saraf yang bisa mengingat informasi penting dari urutan data</span></li><li><b>Kegunaan:</b> Membaca data 20 hari terakhir sekaligus lalu menghitung probabilitas naik untuk hari berikutnya.</li><li><b>Mengapa dipakai:</b> Data harga berurutan, dan kejadian beberapa hari lalu bisa memengaruhi hari ini. LSTM dirancang mengingat pola urutan dan mengurangi masalah lupa pada jaringan saraf biasa.</li></ul></dd></div>
         </dl>
       </div>
       <div class="gloss-group" id="gl-M">
         <h3>M</h3>
         <dl class="glossary">
-          <div class="gl" id="g-macd" data-alias="momentum tren"><dt>MACD, Sinyal MACD, dan Histogram MACD</dt><dd>Indikator tren dari selisih rata-rata harga 12 dan 26 hari (MACD). Sinyal MACD adalah rata-rata 9 harinya, dan histogram adalah selisih keduanya: histogram positif berarti tren naik sedang menguat.</dd></div>
+          <div class="gl" id="g-macd" data-alias="momentum tren"><dt>MACD, Sinyal MACD, dan Histogram MACD</dt><dd><p>Indikator tren dari selisih rata-rata harga 12 dan 26 hari (MACD). Sinyal MACD adalah rata-rata 9 harinya, dan histogram adalah selisih keduanya: histogram positif berarti tren naik sedang menguat.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Moving Average Convergence Divergence</i> <span class="arti">= konvergensi dan divergensi rata-rata bergerak, yaitu mengukur kapan dua rata-rata saling mendekat atau menjauh</span></li><li><b>Kegunaan:</b> Menilai arah dan kekuatan momentum tren dari selisih rata-rata harga 12 dan 26 hari.</li><li><b>Mengapa dipakai:</b> Indikator populer yang menangkap perubahan tren lebih cepat daripada satu rata-rata saja. Model memakainya sebagai tiga fitur: MACD, sinyalnya, dan histogramnya.</li></ul></dd></div>
           <div class="gl" id="g-menunggu" data-alias="belum ada hasil"><dt>Menunggu</dt><dd>Status prediksi yang hari targetnya belum ditutup, sehingga belum bisa dibandingkan dengan kenyataan.</dd></div>
         </dl>
       </div>
@@ -191,9 +198,10 @@
       <div class="gloss-group" id="gl-R">
         <h3>R</h3>
         <dl class="glossary">
-          <div class="gl" id="g-ma" data-alias="moving average MA"><dt>Rata-rata harga 7, 30, dan 90 hari</dt><dd>Rata-rata harga penutupan selama sekian hari terakhir. Dipakai untuk melihat arah tren: harga di atas rata-ratanya sering dianggap tren naik.</dd></div>
+          <div class="gl" id="g-ma" data-alias="moving average"><dt>Rata-rata harga 7, 30, dan 90 hari (MA)</dt><dd><p>Rata-rata harga penutupan selama sekian hari terakhir. Dipakai untuk melihat arah tren: harga di atas rata-ratanya sering dianggap tren naik.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Moving Average</i> <span class="arti">= rata-rata bergerak, rata-rata yang digeser setiap hari mengikuti data terbaru</span></li><li><b>Kegunaan:</b> Meratakan gejolak harian agar arah tren lebih mudah dilihat.</li><li><b>Mengapa dipakai:</b> Harga harian sangat bergejolak. Rata-rata 7, 30, dan 90 hari memberi gambaran tren jangka pendek, menengah, dan panjang yang dibaca model.</li></ul></dd></div>
           <div class="gl" id="g-return" data-alias="perubahan harga"><dt>Return harian</dt><dd>Persentase perubahan harga penutupan dibanding hari sebelumnya.</dd></div>
-          <div class="gl" id="g-rsi" data-alias="relative strength index"><dt>RSI 14 hari</dt><dd>Indikator 0 sampai 100 yang membandingkan kekuatan kenaikan dan penurunan harga selama 14 hari. Di atas 70 sering disebut jenuh beli, di bawah 30 jenuh jual. Itu kebiasaan analis, bukan jaminan arah harga.</dd></div>
+          <div class="gl" id="g-roc" data-alias="kurva receiver operating"><dt>ROC</dt><dd><p>Grafik yang menunjukkan seberapa baik model memisahkan hari naik dari hari turun pada setiap kemungkinan ambang keputusan. Luas di bawah kurvanya adalah AUC.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Receiver Operating Characteristic</i> <span class="arti">= karakteristik operasi penerima, istilah dari teknik radar tentang menangkap sinyal benar tanpa banyak alarm palsu</span></li><li><b>Kegunaan:</b> Menggambarkan kinerja model untuk semua ambang sekaligus, dengan luas di bawah kurvanya menjadi AUC.</li><li><b>Mengapa dipakai:</b> Satu ambang saja tidak cukup menggambarkan kualitas model. Kurva ROC memperlihatkan keseluruhan pertukaran antara tebakan naik yang benar dan tebakan naik yang keliru.</li></ul></dd></div>
+          <div class="gl" id="g-rsi" data-alias="relative strength index"><dt>RSI 14 hari</dt><dd><p>Indikator 0 sampai 100 yang membandingkan kekuatan kenaikan dan penurunan harga selama 14 hari. Di atas 70 sering disebut jenuh beli, di bawah 30 jenuh jual. Itu kebiasaan analis, bukan jaminan arah harga.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Relative Strength Index</i> <span class="arti">= indeks kekuatan relatif</span></li><li><b>Kegunaan:</b> Mengukur apakah kenaikan atau penurunan harga belakangan terlalu cepat, dalam skala 0 sampai 100.</li><li><b>Mengapa dipakai:</b> Membantu mengenali kondisi jenuh beli atau jenuh jual. Hanya satu petunjuk di antara banyak fitur, bukan jaminan arah harga.</li></ul></dd></div>
         </dl>
       </div>
       <div class="gloss-group" id="gl-S">
@@ -209,10 +217,23 @@
           <div class="gl" id="g-keyakinan" data-alias="confidence"><dt>Tingkat keyakinan (rendah, sedang, tinggi)</dt><dd>Seberapa jauh probabilitas model dari ambang keputusan: makin jauh, makin yakin model. Pada data uji, tingkat keyakinan tinggi belum terbukti lebih akurat daripada yang rendah (lihat tabel keandalan historis).</dd></div>
         </dl>
       </div>
+      <div class="gloss-group" id="gl-U">
+        <h3>U</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-usd" data-alias="dolar amerika"><dt>USD</dt><dd><p>Mata uang dolar Amerika Serikat, satuan harga Bitcoin yang tampil di situs ini.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">United States Dollar</i> <span class="arti">= dolar Amerika Serikat</span></li><li><b>Kegunaan:</b> Menjadi satuan semua harga di situs ini, misalnya harga live dan harga penutupan.</li><li><b>Mengapa dipakai:</b> Harga Bitcoin dunia umumnya dikutip dalam dolar, dan data penelitian memakai dolar. Nilai dalam rupiah bergantung pada kurs yang berubah setiap saat.</li></ul></dd></div>
+          <div class="gl" id="g-utc" data-alias="waktu universal"><dt>UTC</dt><dd><p>Standar waktu dunia yang tidak mengenal jam musim panas. Indonesia bagian barat (WIB) selalu 7 jam lebih cepat.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Coordinated Universal Time</i> <span class="arti">= waktu universal terkoordinasi, standar jam acuan seluruh dunia</span></li><li><b>Kegunaan:</b> Menjadi acuan batas hari pada data harga: satu hari berakhir pukul 00:00 UTC, yaitu 07:00 WIB.</li><li><b>Mengapa dipakai:</b> Pasar kripto buka 24 jam, jadi perlu satu batas hari yang sama bagi semua orang. UTC dipakai oleh sumber data, sehingga tanggal di situs ini selaras dengan datanya.</li></ul></dd></div>
+        </dl>
+      </div>
       <div class="gloss-group" id="gl-V">
         <h3>V</h3>
         <dl class="glossary">
           <div class="gl" id="g-volatilitas" data-alias="gejolak naik turun"><dt>Volatilitas (7 dan 30 hari)</dt><dd>Seberapa besar harga naik-turun belakangan ini (simpangan baku return harian). Makin tinggi, makin bergejolak.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-W">
+        <h3>W</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-wib" data-alias="waktu indonesia barat zona"><dt>WIB</dt><dd><p>Zona waktu Sumatra, Jawa, serta Kalimantan Barat dan Tengah; selalu 7 jam lebih cepat dari UTC.</p><ul class="abbr"><li><b>Kepanjangan:</b> Waktu Indonesia Barat <span class="arti">= zona waktu UTC+7 yang berlaku di Indonesia bagian barat</span></li><li><b>Kegunaan:</b> Membantu pembaca Indonesia mengubah jam UTC menjadi waktu setempat.</li><li><b>Mengapa dipakai:</b> Penutupan harian jatuh pukul 07:00 WIB, sehingga prediksi baru untuk hari berikutnya muncul pada pagi hari.</li></ul></dd></div>
         </dl>
       </div>
     </section>
