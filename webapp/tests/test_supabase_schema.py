@@ -1,3 +1,5 @@
+import re
+
 from app import config
 from scripts.summarize_feedback import ANSWER_KEY, load_questions
 
@@ -19,8 +21,11 @@ def test_flat_view_has_one_column_per_question_plus_scores_and_stays_private():
     low = " ".join(SQL.lower().split())
     assert "drop view if exists public.feedback_flat" in low                      # kolom lama dibuang: create or replace saja tidak cukup
     view = low[low.index("create view public.feedback_flat"):low.index("revoke all on public.feedback_flat")]
-    for q in load_questions():
-        assert f"a->>'{q['id']}' as {q['id']}" in view, q["id"]                   # satu kolom per soal, bisa dibaca satu per satu
+    cols = dict(re.findall(r"a->>'(\w+)' as (\w+)", view))                        # ID soal -> nama kolom
+    assert set(cols) == {q["id"] for q in load_questions()}                       # satu kolom per soal, bisa dibaca satu per satu
+    assert len(set(cols.values())) == len(cols)                                   # nama kolom unik
+    assert not any(re.fullmatch(r"[a-f]\d+", n) for n in cols.values())           # ringkasan pertanyaan, bukan kode a1, b2, ...
+    assert all(len(n) <= 40 and re.fullmatch(r"[a-z][a-z0-9_]*", n) for n in cols.values())
     assert "as skor_sus" in view and "as skor_pemahaman" in view
     assert "survey_version = 2" in view                                           # jawaban versi 1 punya arti kolom berbeda: tidak dicampur
     assert "~ '^[1-5]$'" in view                                                  # nilai bukan angka dari kunci publik tidak boleh merusak view
