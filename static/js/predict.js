@@ -48,6 +48,30 @@ function currentVisual() {
   return { prob: v.prob, threshold: v.threshold, direction: v.direction, sentiment: state.latest.inputs.news_sentiment };
 }
 
+// Penunjuk jarak ke ambang keputusan: seberapa tipis margin prediksi (probabilitas vs ambang) untuk horizon terpilih.
+const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
+function renderGauge(v) {
+  const pp = (v.prob - v.threshold) * 100, gap = Math.abs(pp);
+  const probTxt = `${fmtNum(v.prob * 100, 1)}%`, thrTxt = `${fmtNum(v.threshold * 100, 1)}%`;
+  const other = v.direction === "NAIK" ? "TURUN" : "NAIK";
+  $("#margin-text").textContent = pp === 0
+    ? `Probabilitas tepat di ambang keputusan (${thrTxt}): selisih sekecil apa pun bisa membalik arah.`
+    : `Jarak ke ambang ${other}: ${fmtNum(gap, 1)} poin persentase (probabilitas ${probTxt} vs ambang ${thrTxt}). ` +
+      `Makin kecil jaraknya, makin tipis margin ${v.direction} ini.`;
+  const lo = Math.max(0, v.threshold - 0.25), hi = Math.min(1, v.threshold + 0.25);
+  const pos = (x) => ((x - lo) / (hi - lo)) * 100;
+  const g = $("#gauge");
+  g.style.setProperty("--p", pos(v.threshold) + "%");
+  $("#gauge-tick").style.left = pos(v.threshold) + "%";
+  $("#gauge-dot").style.left = clamp(pos(v.prob), 3, 97) + "%";          // dijepit agar penanda tetap di dalam batang
+  $("#gauge-min").textContent = `${fmtNum(lo * 100, 0)}%`;
+  $("#gauge-max").textContent = `${fmtNum(hi * 100, 0)}%`;
+  const thr = $("#gauge-thr");
+  thr.textContent = `ambang ${thrTxt}`;
+  thr.style.left = clamp(pos(v.threshold), 20, 80) + "%";
+  g.setAttribute("aria-label", `Probabilitas ${probTxt} berada ${fmtNum(gap, 1)} poin persentase ${pp > 0 ? "di atas" : "di bawah"} ambang keputusan ${thrTxt}; arah ${v.direction}.`);
+}
+
 function renderPanel() {
   const v = state.latest.horizons[state.selected];
   const dirEl = $("#prediction-direction");
@@ -59,6 +83,7 @@ function renderPanel() {
   $("#prediction-prob").textContent = `probabilitas naik ${fmtNum(v.prob * 100, 1)}%`;
   $("#prediction-meta").textContent = `ambang keputusan ${fmtNum(v.threshold, 4)} · target ${fmtDate(v.target_date)}`;
 
+  renderGauge(v);
   state.hero?.setState(currentVisual());
   renderHistory();
 }
