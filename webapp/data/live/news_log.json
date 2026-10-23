@@ -456,5 +456,28 @@
    "https://en.coinotag.com/anson-funds-kassam-1-billion-bitcoin-treasury-companies"
   ],
   "source": "cryptocompare"
+ },
+ "2026-10-22": {
+  "titles": [
+   "Meta-Led Tech Selloff Drags Bitcoin (BTC) Below $82,000",
+   "Wintermute moves $93 million in BTC as analyst eyes $90,000 target",
+   "Leonidas Presses OpenSea for Native Bitcoin (BTC) Ordinals and Runes Trading",
+   "Claude AI Rebuilds Satoshi's 2009 Bitcoin (BTC) Executable Byte for Byte",
+   "Tezos, Algorand, QRL are quantum ready, but where does Bitcoin stand with BIP-360?"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": -1,
+   "bullbear": -2,
+   "mean": -2.0
+  },
+  "urls": [
+   "https://en.coinotag.com/bitcoin-btc-below-82000-meta-tech-selloff",
+   "https://en.coin-turk.com/wintermute-moves-93-million-in-btc-as-analyst-eyes-90000-target/?utm_source=rss&utm_medium=rss&utm_campaign=wintermute-moves-93-million-in-btc-as-analyst-eyes-90000-target",
+   "https://en.coinotag.com/leonidas-opensea-bitcoin-btc-ordinals-runes-trading-support",
+   "https://en.coinotag.com/claude-ai-rebuilds-satoshi-2009-bitcoin-btc-executable-hash-match",
+   "https://ambcrypto.com/tezos-algorand-qrl-are-quantum-ready-but-where-does-bitcoin-stand-with-bip-360/"
+  ],
+  "source": "cryptocompare"
  }
 }
