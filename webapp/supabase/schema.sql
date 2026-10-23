@@ -56,10 +56,56 @@ grant insert on public.feedback_responses to anon;
 drop policy if exists "anon boleh mengirim" on public.feedback_responses;
 create policy "anon boleh mengirim" on public.feedback_responses for insert to anon with check (true);
 
--- Tampilan datar untuk analisis (hanya terbaca dari dasbor Supabase / service role). Dibuat ulang karena kolom versi 1 sudah tidak berlaku.
--- Penilaian (skor SUS, skor pemahaman) dilakukan oleh scripts/summarize_feedback.py dari kolom answers.
+-- Tampilan datar untuk dibaca per soal (Table Editor > feedback_flat): satu kolom per pertanyaan, kolom = ID soal pada dokumen
+-- (a0..a4, b1..b6, c1..c10 = SUS, d0..d8, e1..e4, f1..f4) ditambah skor_sus (0-100) dan skor_pemahaman (benar dari 6).
+-- Hanya jawaban versi 2: jawaban versi 1 punya soal berbeda dan tetap ada di tabel feedback_responses. Hanya terbaca dari dasbor / service role.
+-- Nilai di luar 1-5 (kunci publik bisa mengirim teks apa pun) diabaikan oleh rumus agar view tidak error.
 drop view if exists public.feedback_flat;
 create view public.feedback_flat as
-select id, created_at, survey_version, answers->>'nama' as nama, answers
-from public.feedback_responses;
+with r as (select id, created_at, survey_version, answers as a from public.feedback_responses where survey_version = 2)
+select id, created_at, survey_version,
+       a->>'a0' as a0,
+       a->>'nama' as nama,
+       a->>'a1' as a1,
+       a->>'a2' as a2,
+       a->>'a3' as a3,
+       a->>'a4' as a4,
+       a->>'b1' as b1,
+       a->>'b2' as b2,
+       a->>'b3' as b3,
+       a->>'b4' as b4,
+       a->>'b5' as b5,
+       a->>'b6' as b6,
+       a->>'c1' as c1,
+       a->>'c2' as c2,
+       a->>'c3' as c3,
+       a->>'c4' as c4,
+       a->>'c5' as c5,
+       a->>'c6' as c6,
+       a->>'c7' as c7,
+       a->>'c8' as c8,
+       a->>'c9' as c9,
+       a->>'c10' as c10,
+       a->>'d0' as d0,
+       a->>'d1' as d1,
+       a->>'d2' as d2,
+       a->>'d3' as d3,
+       a->>'d4' as d4,
+       a->>'d5' as d5,
+       a->>'d6' as d6,
+       a->>'d7' as d7,
+       a->>'d8' as d8,
+       a->>'e1' as e1,
+       a->>'e2' as e2,
+       a->>'e3' as e3,
+       a->>'e4' as e4,
+       a->>'f1' as f1,
+       a->>'f2' as f2,
+       a->>'f3' as f3,
+       a->>'f4' as f4,
+       case when a->>'c1' ~ '^[1-5]$' and a->>'c2' ~ '^[1-5]$' and a->>'c3' ~ '^[1-5]$' and a->>'c4' ~ '^[1-5]$' and a->>'c5' ~ '^[1-5]$' and a->>'c6' ~ '^[1-5]$' and a->>'c7' ~ '^[1-5]$' and a->>'c8' ~ '^[1-5]$' and a->>'c9' ~ '^[1-5]$' and a->>'c10' ~ '^[1-5]$'
+            then (((a->>'c1')::int - 1)+(5 - (a->>'c2')::int)+((a->>'c3')::int - 1)+(5 - (a->>'c4')::int)+((a->>'c5')::int - 1)+(5 - (a->>'c6')::int)+((a->>'c7')::int - 1)+(5 - (a->>'c8')::int)+((a->>'c9')::int - 1)+(5 - (a->>'c10')::int)) * 2.5 end as skor_sus,
+       case when a->>'b1' in ('benar', 'salah', 'tidak_tahu') and a->>'b2' in ('benar', 'salah', 'tidak_tahu') and a->>'b3' in ('benar', 'salah', 'tidak_tahu') and a->>'b4' in ('benar', 'salah', 'tidak_tahu') and a->>'b5' in ('benar', 'salah', 'tidak_tahu') and a->>'b6' in ('benar', 'salah', 'tidak_tahu')
+            then (a->>'b1' = 'salah')::int + (a->>'b2' = 'salah')::int + (a->>'b3' = 'salah')::int + (a->>'b4' = 'benar')::int + (a->>'b5' = 'salah')::int + (a->>'b6' = 'salah')::int end as skor_pemahaman
+from r;
 revoke all on public.feedback_flat from anon, authenticated;
