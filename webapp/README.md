@@ -86,9 +86,10 @@ Ekspor CSV dari Supabase (Table Editor, `feedback_flat`, Export) lalu:
 python -m scripts.summarize_feedback hasil.csv --out ringkasan.md
 ```
 
-Keluarannya tabel Ya/Netral/Tidak per pertanyaan, perbandingan antar kelompok (pengalaman kripto dan pengenalan machine
-learning, kelompok kurang dari 5 orang diberi tanda "n kecil"), dan daftar jawaban teks. Tambahkan `--html laporan.html`
-untuk laporan bergrafik batang (satu berkas, bisa dibuka di browser). Nama dan email tidak ikut dimasukkan.
+Keluarannya: skor SUS (rumus Brooke), skor pemahaman objektif bagian B (kunci jawaban ada di skrip, bukan di situs), rata-rata
+kepuasan penjelasan (D) dan kepercayaan (E), sebaran tiap soal, perbandingan antara yang pernah dan belum pernah trading
+(kelompok kurang dari 5 orang diberi tanda "n kecil"), serta jawaban terbuka. Hanya jawaban versi survei yang berlaku yang
+dihitung. Tambahkan `--html laporan.html` untuk laporan bergrafik batang (satu berkas). Nama tidak ikut dimasukkan.
 
 ## Pembaruan harian dari komputer sendiri
 

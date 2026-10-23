@@ -221,7 +221,7 @@ def test_survey_promo_section_with_button_leads_to_questionnaire(page, server):
     page.goto(server + "/")
     promo = page.locator("#sec-survey")
     assert promo.count() == 1
-    assert "kuesioner" in promo.inner_text().lower() and "5 menit" in promo.inner_text()
+    assert "kuesioner" in promo.inner_text().lower() and "8 menit" in promo.inner_text()
     assert "opsional" not in promo.inner_text().lower() and "dikosongkan" not in promo.inner_text()   # semua soal wajib
     assert page.locator("#sec-hist").evaluate("(h, s) => h.compareDocumentPosition(s) & Node.DOCUMENT_POSITION_FOLLOWING",
                                               promo.element_handle())                      # di bawah riwayat, di atas footer

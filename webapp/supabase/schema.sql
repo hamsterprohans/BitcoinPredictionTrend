@@ -8,11 +8,14 @@ create table if not exists public.feedback_responses (
                  check (jsonb_typeof(answers) = 'object' and pg_column_size(answers) < 30000)
 );
 
--- Nama wajib diisi: baris BARU tanpa nama ditolak di database (pemeriksaan di browser saja bisa dilewati).
--- NOT VALID: hanya berlaku untuk baris baru, jadi jawaban lama (dikirim sebelum nama wajib) tidak ikut diperiksa ulang.
+-- Persetujuan (a0 = 'ya') dan nama wajib: baris BARU tanpa keduanya ditolak di database (pemeriksaan di browser saja bisa dilewati).
+-- NOT VALID: hanya berlaku untuk baris baru, jadi jawaban versi 1 (soal dan kunci berbeda) tidak ikut diperiksa ulang.
 alter table public.feedback_responses drop constraint if exists feedback_name_required;
 alter table public.feedback_responses add constraint feedback_name_required
-  check (length(btrim(coalesce(answers->>'a0', ''))) > 0) not valid;
+  check (length(btrim(coalesce(answers->>'nama', ''))) > 0) not valid;
+alter table public.feedback_responses drop constraint if exists feedback_consent_required;
+alter table public.feedback_responses add constraint feedback_consent_required
+  check (answers->>'a0' = 'ya') not valid;
 
 -- Bentuk data dibatasi: hanya ID soal yang dikenal, semua nilai berupa teks, maksimal 2000 karakter per jawaban.
 -- Mencegah penyalahgunaan kunci publik untuk menyimpan data sembarang. Daftar ID harus sama dengan static/js/kuesioner-schema.js (dijaga tes).
@@ -21,7 +24,7 @@ language sql immutable as $$
   select jsonb_typeof(a) = 'object'
      and not exists (
        select 1 from jsonb_each(a) e
-       where e.key <> all (array['a0', 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'd1', 'd2', 'd3', 'd4', 'd5', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'g1', 'g2', 'g3'])
+       where e.key <> all (array['a0', 'nama', 'a1', 'a2', 'a3', 'a4', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'd0', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'e1', 'e2', 'e3', 'e4', 'f1', 'f2', 'f3', 'f4'])
           or jsonb_typeof(e.value) <> 'string'
           or length(e.value #>> '{}') > 2000)
 $$;
@@ -53,15 +56,10 @@ grant insert on public.feedback_responses to anon;
 drop policy if exists "anon boleh mengirim" on public.feedback_responses;
 create policy "anon boleh mengirim" on public.feedback_responses for insert to anon with check (true);
 
--- Tampilan datar untuk analisis (hanya terbaca dari dasbor Supabase / service role).
-create or replace view public.feedback_flat as
-select id, created_at, survey_version, answers->>'a1' as latar_belakang, answers->>'a2' as pernah_kripto, answers->>'a3' as kenal_ml,
-       answers->>'b1' as paham_halaman_utama, answers->>'b2' as prediksi_jelas, answers->>'b4' as paham_bukan_acak,
-       answers->>'c1' as prediksi_membantu, answers->>'c2' as berita_membantu, answers->>'c3' as fitur_membantu,
-       answers->>'c4' as narasi_membantu, answers->>'c5' as retro_membantu, answers->>'d1' as percaya, answers->>'d4' as andalkan_jual_beli,
-       answers->>'e1' as tampilan_menarik, answers->>'e2' as navigasi_mudah, answers->>'e6' as ada_kendala,
-       answers->>'g1' as membantu_keseluruhan, answers->>'g2' as rekomendasikan, answers->>'f6' as fitur_diminta,
-       answers->>'f7' as perlu_ditingkatkan, answers->>'g3' as komentar, answers,
-       answers->>'a0' as nama
+-- Tampilan datar untuk analisis (hanya terbaca dari dasbor Supabase / service role). Dibuat ulang karena kolom versi 1 sudah tidak berlaku.
+-- Penilaian (skor SUS, skor pemahaman) dilakukan oleh scripts/summarize_feedback.py dari kolom answers.
+drop view if exists public.feedback_flat;
+create view public.feedback_flat as
+select id, created_at, survey_version, answers->>'nama' as nama, answers
 from public.feedback_responses;
 revoke all on public.feedback_flat from anon, authenticated;
