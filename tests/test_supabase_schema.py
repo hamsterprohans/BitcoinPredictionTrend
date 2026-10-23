@@ -1,4 +1,5 @@
 from app import config
+from scripts.summarize_feedback import ANSWER_KEY, load_questions
 
 SQL = (config.WEBAPP / "supabase" / "schema.sql").read_text()
 
@@ -14,11 +15,22 @@ def test_database_requires_consent_and_name_for_new_rows_but_keeps_old_rows():
     assert low.count("not valid") >= 3                                            # hanya baris baru; baris versi 1 tidak diperiksa ulang
 
 
-def test_flat_view_is_rebuilt_for_the_new_questions_and_stays_private():
+def test_flat_view_has_one_column_per_question_plus_scores_and_stays_private():
     low = " ".join(SQL.lower().split())
     assert "drop view if exists public.feedback_flat" in low                      # kolom lama dibuang: create or replace saja tidak cukup
-    assert "survey_version" in low and "answers->>'nama' as nama" in low
+    view = low[low.index("create view public.feedback_flat"):low.index("revoke all on public.feedback_flat")]
+    for q in load_questions():
+        assert f"a->>'{q['id']}' as {q['id']}" in view, q["id"]                   # satu kolom per soal, bisa dibaca satu per satu
+    assert "as skor_sus" in view and "as skor_pemahaman" in view
+    assert "survey_version = 2" in view                                           # jawaban versi 1 punya arti kolom berbeda: tidak dicampur
+    assert "~ '^[1-5]$'" in view                                                  # nilai bukan angka dari kunci publik tidak boleh merusak view
     assert "revoke all on public.feedback_flat from anon, authenticated" in low
+
+
+def test_view_understanding_score_uses_the_same_answer_key_as_the_summary_script():
+    low = " ".join(SQL.lower().split())
+    for qid, ans in ANSWER_KEY.items():
+        assert f"(a->>'{qid}' = '{ans}')::int" in low, qid
 
 
 def test_anon_still_only_inserts():
@@ -30,7 +42,6 @@ def test_anon_still_only_inserts():
 # ---- penguatan terhadap penyalahgunaan kunci publik: bentuk data dibatasi dan laju kiriman dibatasi ----
 import re   # noqa: E402
 
-from scripts.summarize_feedback import load_questions   # noqa: E402
 
 
 def test_answers_may_only_contain_known_question_ids_with_short_string_values():

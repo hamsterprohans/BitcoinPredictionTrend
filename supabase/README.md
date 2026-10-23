@@ -6,7 +6,7 @@
    (`supabaseUrl`, `supabaseAnonKey`). Anon key memang publik; JANGAN pernah memasukkan `service_role` key.
 4. Ekspor ulang situs (`python -m scripts.export_static ...`) atau tunggu pembaruan harian.
 
-Membaca hasil: Table Editor atau view `feedback_flat` (hanya pemilik proyek). Unduh CSV dari tombol Export, lalu rangkum dengan
+Membaca hasil per soal: Table Editor > `feedback_flat` (satu kolom per pertanyaan, plus `skor_sus` dan `skor_pemahaman`; hanya jawaban versi 2). Tabel `feedback_responses` menyimpan JSON mentah. Unduh CSV dari tombol Export, lalu rangkum dengan
 `python -m scripts.summarize_feedback hasil.csv` (skor SUS dan pemahaman dihitung di sana, dari kolom `answers`).
 
 Catatan: setiap kali soal berubah, jalankan ulang `schema.sql` (aman diulang). Versi 2 (kuesioner sesuai dokumen referensi) mengganti
