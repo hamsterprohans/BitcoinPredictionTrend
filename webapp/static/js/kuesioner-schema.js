@@ -45,7 +45,7 @@ export const SURVEY = {
       intro: "Seberapa setuju Anda dengan pernyataan berikut? (1 = sangat tidak setuju, 5 = sangat setuju)",
       questions: [
         { id: "c1", type: "scale", labels: AGREE, text: "Saya pikir saya akan sering menggunakan situs ini." },
-        { id: "c2", type: "scale", labels: AGREE, text: "Saya merasa situs ini terlalu rumit tanpa perlu." },
+        { id: "c2", type: "scale", labels: AGREE, text: "Saya merasa situs ini terlalu rumit untuk keperluan yang sederhana." },
         { id: "c3", type: "scale", labels: AGREE, text: "Saya pikir situs ini mudah digunakan." },
         { id: "c4", type: "scale", labels: AGREE, text: "Saya pikir saya membutuhkan bantuan orang teknis untuk dapat menggunakan situs ini." },
         { id: "c5", type: "scale", labels: AGREE, text: "Saya merasa fungsi-fungsi dalam situs ini terintegrasi dengan baik." },

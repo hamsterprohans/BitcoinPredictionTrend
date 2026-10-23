@@ -86,6 +86,7 @@ def test_question_wording_follows_the_reference_document(page, server):
     assert [o["label"] for o in qm["a4"]["options"]] == ["Ponsel", "Laptop atau komputer", "Tablet"]
     assert qm["b4"]["text"] == "Prediksi NAIK bisa muncul walaupun probabilitasnya di bawah 50%."
     assert qm["c1"]["text"] == "Saya pikir saya akan sering menggunakan situs ini."
+    assert qm["c2"]["text"] == "Saya merasa situs ini terlalu rumit untuk keperluan yang sederhana."
     assert qm["c10"]["text"] == "Saya perlu mempelajari banyak hal sebelum dapat menggunakan situs ini."
     assert qm["d8"]["text"].startswith("Penjelasan ini memungkinkan saya menilai kapan saya sebaiknya percaya dan tidak percaya")
     assert qm["e1"]["text"] == "Saya percaya pada probabilitas naik dan turun yang ditampilkan situs ini."
