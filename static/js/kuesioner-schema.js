@@ -71,7 +71,7 @@ export const SURVEY = {
     { id: "e", title: "E. Kepercayaan dan niat bergantung",
       intro: "1 = sangat tidak setuju, 5 = sangat setuju.",
       questions: [
-        { id: "e1", type: "scale", labels: AGREE, text: "Saya percaya pada probabilitas naik yang ditampilkan situs ini." },
+        { id: "e1", type: "scale", labels: AGREE, text: "Saya percaya pada probabilitas naik dan turun yang ditampilkan situs ini." },
         { id: "e2", type: "scale", labels: AGREE, text: "Saya akan mengikuti prediksi situs ini saat mengambil keputusan jual atau beli." },
         { id: "e3", type: "scale", labels: AGREE, text: "Situs ini membuat saya tahu batas keandalan prediksinya." },
         { id: "e4", type: "scale", labels: AGREE, text: "Setelah menjelajahi situs ini, saya lebih berhati-hati dalam memakai prediksi tersebut." },

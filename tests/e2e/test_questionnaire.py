@@ -88,6 +88,7 @@ def test_question_wording_follows_the_reference_document(page, server):
     assert qm["c1"]["text"] == "Saya pikir saya akan sering menggunakan situs ini."
     assert qm["c10"]["text"] == "Saya perlu mempelajari banyak hal sebelum dapat menggunakan situs ini."
     assert qm["d8"]["text"].startswith("Penjelasan ini memungkinkan saya menilai kapan saya sebaiknya percaya dan tidak percaya")
+    assert qm["e1"]["text"] == "Saya percaya pada probabilitas naik dan turun yang ditampilkan situs ini."
     assert qm["e3"]["text"] == "Situs ini membuat saya tahu batas keandalan prediksinya."
     assert qm["f4"]["text"] == "Dengan kata-kata Anda sendiri, seberapa layak prediksi situs ini dijadikan dasar keputusan?"
 
