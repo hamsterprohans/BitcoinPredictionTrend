@@ -3,13 +3,22 @@ from app import config
 SQL = (config.WEBAPP / "supabase" / "schema.sql").read_text()
 
 
-def test_database_rejects_rows_without_a_name_but_keeps_old_rows():
+def test_database_requires_consent_and_name_for_new_rows_but_keeps_old_rows():
     low = " ".join(SQL.lower().split())
-    assert "drop constraint if exists feedback_name_required" in low                # aman dijalankan berulang
-    assert "add constraint feedback_name_required" in low
-    assert "length(btrim(coalesce(answers->>'a0', ''))) > 0" in low                 # nama tidak boleh kosong/spasi saja
-    assert low.index("add constraint feedback_name_required") < low.index("not valid", low.index("add constraint feedback_name_required"))
-    assert "not valid" in low                                                       # hanya baris baru; baris lama (tanpa nama) tidak diperiksa ulang
+    for name in ("feedback_name_required", "feedback_consent_required"):
+        assert f"drop constraint if exists {name}" in low                          # aman dijalankan berulang
+        assert f"add constraint {name}" in low
+    assert "length(btrim(coalesce(answers->>'nama', ''))) > 0" in low             # nama tidak boleh kosong/spasi saja
+    assert "answers->>'a0' = 'ya'" in low                                         # tanpa persetujuan, baris ditolak
+    assert "length(btrim(coalesce(answers->>'a0', ''))) > 0" not in low           # syarat nama versi lama (a0 = nama) sudah diganti
+    assert low.count("not valid") >= 3                                            # hanya baris baru; baris versi 1 tidak diperiksa ulang
+
+
+def test_flat_view_is_rebuilt_for_the_new_questions_and_stays_private():
+    low = " ".join(SQL.lower().split())
+    assert "drop view if exists public.feedback_flat" in low                      # kolom lama dibuang: create or replace saja tidak cukup
+    assert "survey_version" in low and "answers->>'nama' as nama" in low
+    assert "revoke all on public.feedback_flat from anon, authenticated" in low
 
 
 def test_anon_still_only_inserts():
@@ -29,7 +38,7 @@ def test_answers_may_only_contain_known_question_ids_with_short_string_values():
     assert "create or replace function public.feedback_answers_ok(a jsonb)" in low
     assert "jsonb_typeof(e.value) <> 'string'" in low and "length(e.value #>> '{}') > 2000" in low
     assert re.search(r"add constraint feedback_answers_shape check \(public\.feedback_answers_ok\(answers\)\) not valid", low)
-    listed = set(re.findall(r"'([a-g]\d)'", SQL[SQL.lower().index("array["):SQL.index("]", SQL.lower().index("array["))]))
+    listed = set(re.findall(r"'(\w+)'", SQL[SQL.lower().index("array["):SQL.index("]", SQL.lower().index("array["))]))
     assert listed == {q["id"] for q in load_questions()}                      # daftar kunci SQL = soal di frontend (tak boleh melenceng)
 
 
