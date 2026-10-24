@@ -22,7 +22,7 @@ RADIOS = {"yn": 2, "choice": None, "scale": 5, "tf": 3, "short": 1, "long": 1}
 
 
 def configured(context):
-    context.add_init_script(f"window.__APP_CONFIG__ = {json.dumps(CONFIG)};")
+    context.add_init_script(f"window.__APP_CONFIG__ = {json.dumps(CONFIG)}; localStorage.setItem('owner-visit', '1');")   # penghitung kunjungan diam
 
 
 def load_schema(page, server):
@@ -64,7 +64,7 @@ def capture(page, bodies, status=201):
 
 def watch_supabase(page):
     sent = []
-    page.on("request", lambda r: sent.append(r.url) if "supabase" in r.url else None)
+    page.on("request", lambda r: sent.append(r.url) if "feedback_responses" in r.url else None)
     return sent
 
 

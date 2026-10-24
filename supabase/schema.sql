@@ -109,3 +109,63 @@ select id, created_at, survey_version,
             then (a->>'b1' = 'salah')::int + (a->>'b2' = 'salah')::int + (a->>'b3' = 'salah')::int + (a->>'b4' = 'benar')::int + (a->>'b5' = 'salah')::int + (a->>'b6' = 'salah')::int end as skor_pemahaman
 from r;
 revoke all on public.feedback_flat from anon, authenticated;
+
+-- ---- Penghitung kunjungan ----
+-- Satu baris per kunjungan (satu per sesi peramban): hanya waktu dan jalur halaman, tanpa IP atau identitas.
+create table if not exists public.site_visits (
+  id         bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  path       text not null default '/' check (path ~ '^[a-z0-9/_-]{0,60}$')
+);
+create index if not exists site_visits_created_at on public.site_visits (created_at);
+
+create or replace function public.site_visits_rate_limit() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if (select count(*) from public.site_visits where created_at > now() - interval '10 minutes') > 600 then
+    raise exception 'terlalu banyak kunjungan tercatat' using errcode = 'P0001';
+  end if;
+  return new;
+end $$;
+revoke all on function public.site_visits_rate_limit() from public;
+drop trigger if exists site_visits_rate_limit on public.site_visits;
+create trigger site_visits_rate_limit before insert on public.site_visits
+  for each row execute function public.site_visits_rate_limit();
+
+alter table public.site_visits enable row level security;
+revoke all on public.site_visits from anon, authenticated;
+grant insert on public.site_visits to anon;
+drop policy if exists "anon boleh mencatat kunjungan" on public.site_visits;
+create policy "anon boleh mencatat kunjungan" on public.site_visits for insert to anon with check (true);
+
+-- Kunci pemilik: hanya hash SHA-256 yang disimpan, di tabel yang tidak bisa dibaca anon. Isi kuncinya sendiri (lihat supabase/README.md);
+-- kunci TIDAK ditulis di berkas ini.
+create table if not exists public.site_secret (
+  id       int primary key check (id = 1),
+  key_hash text not null
+);
+alter table public.site_secret enable row level security;
+revoke all on public.site_secret from anon, authenticated;
+
+-- Ringkasan kunjungan: hanya terbaca bila kunci pemilik benar. Salah kunci -> galat setelah jeda 1 detik (menyulitkan tebak-tebakan).
+create or replace function public.visit_stats(p_key text) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare ok boolean;
+begin
+  select encode(sha256(convert_to(coalesce(p_key, ''), 'utf8')), 'hex') = key_hash into ok from public.site_secret where id = 1;
+  if not coalesce(ok, false) then
+    perform pg_sleep(1);
+    raise exception 'ditolak' using errcode = '28000';
+  end if;
+  return jsonb_build_object(
+    'total', (select count(*) from public.site_visits),
+    'today', (select count(*) from public.site_visits where (created_at at time zone 'Asia/Jakarta')::date = (now() at time zone 'Asia/Jakarta')::date),
+    'week',  (select count(*) from public.site_visits where created_at > now() - interval '7 days'),
+    'pages', (select coalesce(jsonb_agg(jsonb_build_object('path', path, 'n', n) order by n desc), '[]'::jsonb)
+              from (select path, count(*) n from public.site_visits group by path order by count(*) desc limit 8) p),
+    'days',  (select coalesce(jsonb_agg(jsonb_build_object('d', d, 'n', n) order by d), '[]'::jsonb)
+              from (select (created_at at time zone 'Asia/Jakarta')::date d, count(*) n from public.site_visits
+                    where created_at > now() - interval '30 days' group by 1) t));
+end $$;
+revoke all on function public.visit_stats(text) from public;
+grant execute on function public.visit_stats(text) to anon;
