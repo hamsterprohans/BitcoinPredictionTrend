@@ -7,7 +7,7 @@ Tugas akhir S-1 Sistem Informasi, Institut Teknologi Sepuluh Nopember (ITS), ole
 **Situs:** https://hamsterprohans.github.io/BitcoinPredictionTrend/
 
 > **Bukan saran investasi.** Situs ini adalah hasil penelitian. Pada pengujian, model **belum terbukti lebih akurat daripada tebakan acak**
-> (akurasi 50,1% dan AUC 0,487 pada periode uji 433 hari). Situs sengaja menampilkan hal ini apa adanya. Jangan memakainya sebagai dasar keputusan jual atau beli.
+> (model 1 hari, Model F: akurasi 50,1% dan AUC 0,487 pada 433 hari periode uji). Situs sengaja menampilkan hal ini apa adanya. Jangan memakainya sebagai dasar keputusan jual atau beli.
 
 ## Apa yang dilakukan situs ini
 
