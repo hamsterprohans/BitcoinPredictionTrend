@@ -77,6 +77,23 @@ def browser_type_launch_args(browser_type_launch_args):
     return {**browser_type_launch_args, "args": ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"]}
 
 
+NO_BACKEND = "window.__APP_CONFIG__ = { supabaseUrl: '', supabaseAnonKey: '' };"
+
+
+@pytest.fixture(scope="session")
+def browser(browser):
+    """Tes tidak boleh menyentuh Supabase sungguhan (kuesioner dan penghitung kunjungan): semua konteks dimulai tanpa konfigurasi backend.
+    Tes yang butuh backend menimpanya dengan init script sendiri (dijalankan belakangan) dan merutekan permintaannya."""
+    orig = browser.new_context
+
+    def new_context(*args, **kwargs):
+        ctx = orig(*args, **kwargs)
+        ctx.add_init_script(NO_BACKEND)
+        return ctx
+    browser.new_context = new_context
+    return browser
+
+
 def collect_errors(page):
     errs = []
     # 503 dari /api/price/live adalah simulasi gangguan yang disengaja pada server e2e (tes tidak boleh menyentuh jaringan)

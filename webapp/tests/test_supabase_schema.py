@@ -65,3 +65,28 @@ def test_insert_rate_is_capped_by_a_trigger_that_does_not_need_read_access_for_a
     assert "interval '10 minutes'" in low and "> 120" in low
     assert "before insert on public.feedback_responses" in low
     assert "revoke all on function public.feedback_rate_limit() from public" in low   # fungsi tidak dapat dipanggil langsung oleh siapa pun
+
+
+# ---- penghitung kunjungan: anon hanya boleh menambah; hanya pemilik berkunci yang bisa membaca ringkasannya ----
+def test_site_visits_is_insert_only_for_anon_with_shape_and_rate_limits():
+    low = " ".join(SQL.lower().split())
+    assert "create table if not exists public.site_visits" in low
+    assert "check (path ~ '^[a-z0-9/_-]{0,60}$')" in low                              # hanya jalur halaman, bukan data bebas
+    assert "grant insert on public.site_visits to anon" in low
+    assert "alter table public.site_visits enable row level security" in low
+    assert re.search(r'create policy "anon boleh mencatat kunjungan" on public\.site_visits for insert to anon with check \(true\)', low)
+    assert "before insert on public.site_visits" in low and "> 600" in low           # banjir kunjungan palsu ditahan
+
+
+def test_visit_stats_requires_the_owner_key_and_nobody_can_read_the_secret_table():
+    low = " ".join(SQL.lower().split())
+    assert "create or replace function public.visit_stats(p_key text)" in low
+    body = low[low.index("create or replace function public.visit_stats"):]
+    assert "security definer" in body and "set search_path = public" in body
+    assert "sha256(convert_to(coalesce(p_key, ''), 'utf8'))" in body and "from public.site_secret" in body
+    assert "pg_sleep" in body                                                           # menyulitkan tebak-tebakan kunci
+    assert "revoke all on function public.visit_stats(text) from public" in low
+    assert "grant execute on function public.visit_stats(text) to anon" in low
+    assert "revoke all on public.site_secret from anon, authenticated" in low
+    assert "create policy" not in low[low.index("create table if not exists public.site_secret"):low.index("create or replace function public.visit_stats")]
+    assert "'qwerty'" not in low and "values (1," not in low                           # kunci pemilik tidak pernah ditulis di berkas
