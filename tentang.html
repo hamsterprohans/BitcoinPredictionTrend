@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="id" data-theme="dark">
+<head>
+  <script src="/BitcoinPredictionTrend/static/js/base.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.coinbase.com https://pzpldabfnatehnsjqxqw.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tentang — Bitcoin Trend</title>
+  <meta name="description" content="Tentang penulis dan konteks tugas akhir sistem prediksi tren harga Bitcoin.">
+  <link rel="preload" href="/BitcoinPredictionTrend/static/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/BitcoinPredictionTrend/static/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/BitcoinPredictionTrend/static/css/tokens.css">
+  <link rel="stylesheet" href="/BitcoinPredictionTrend/static/css/app.css">
+  <script src="/BitcoinPredictionTrend/static/js/app-config.js"></script>
+</head>
+<body class="page-about no-webgl">
+  <div class="notice-bar" role="note">Angka ini hanyalah prediksi, bukan saran investasi. Kami tidak bertanggung jawab apabila terjadi kerugian atas investasi yang dilakukan.</div>
+  <header class="topbar">
+    <a class="brand" href="/BitcoinPredictionTrend/">Bitcoin&nbsp;Trend</a>
+    <nav id="main-nav" aria-label="Utama"><a href="/BitcoinPredictionTrend/">Prediksi</a><a href="/BitcoinPredictionTrend/latar-belakang">Latar Belakang</a><a href="/BitcoinPredictionTrend/retrospektif">Retrospektif</a><a href="/BitcoinPredictionTrend/riset">Riset</a><a href="/BitcoinPredictionTrend/metodologi">Metodologi</a><a href="/BitcoinPredictionTrend/kuesioner">Kuesioner</a><a href="/BitcoinPredictionTrend/tentang" aria-current="page">Tentang</a><div class="nav-tools"><div class="tool"><span class="tool-label">Ukuran teks</span><div class="text-size" role="group" aria-label="Ukuran teks"><button id="font-dec" class="icon-btn" type="button" aria-label="Perkecil teks">A<small>−</small></button><button id="font-inc" class="icon-btn" type="button" aria-label="Perbesar teks">A<small>+</small></button></div></div><div class="tool"><span class="tool-label">Tema</span><button id="theme-toggle" class="icon-btn" type="button" aria-label="Ganti tema terang/gelap">◐</button></div></div></nav>
+    <button id="nav-toggle" class="icon-btn nav-toggle" type="button" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="main-nav"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </header>
+  <main>
+    <article class="prose">
+      <h1 style="font-size:clamp(1.8rem,6vw,2.6rem)">Tentang</h1>
+      <section class="card about-hero" aria-labelledby="h-ringkas">
+        <img class="about-photo" src="/BitcoinPredictionTrend/static/img/foto-hans.png" width="354" height="472"
+             alt="Foto Hans Christian Cakrawangsa" loading="lazy">
+        <div id="about-summary">
+          <h2 id="h-ringkas" style="margin-top:0">Ringkasan</h2>
+          <p>Saya Hans Christian Cakrawangsa, mahasiswa S-1 Sistem Informasi di Institut Teknologi Sepuluh Nopember (ITS) Surabaya,
+          dengan fokus pada AI dan blockchain. Tugas akhir saya memodelkan arah harga Bitcoin dengan LSTM.</p>
+          <p>Saya Web3 Developer Intern di Vallidge Consulting: merancang platform peluncuran token BEP-20 dan sistem
+          pembayaran langganan berbasis kripto dengan smart contract Solidity yang di-deploy di Ethereum dan BNB Chain. Di perusahaan
+          yang sama, saya bekerja sebagai AI Engineer, dan juga sebagai Backend AI Engineer di FlyRank AI.</p>
+          <p><a class="btn-link" href="https://www.linkedin.com/in/hanscakrawangsa/" rel="noopener">Lihat profil lengkap saya di LinkedIn</a></p>
+        </div>
+      </section>
+      <h2>Penulis</h2>
+      <div class="card">
+        <dl class="facts">
+          <dt>Nama</dt><dd>Hans Christian Cakrawangsa</dd>
+          <dt>NRP</dt><dd class="mono">5026231130</dd>
+          <dt>Program studi</dt><dd>Sistem Informasi (S-1)</dd>
+          <dt>Departemen / fakultas</dt><dd>Departemen Sistem Informasi, Fakultas Teknologi Elektro dan Informatika Cerdas</dd>
+          <dt>Kampus</dt><dd>Institut Teknologi Sepuluh Nopember, Surabaya</dd>
+          <dt>Dosen pembimbing</dt><dd>Renny Pradina Kusumawardani, S.T., M.T.</dd>
+          <dt>Bidang</dt><dd>Predictive Analytics, Laboratorium Rekayasa Data dan Intelegensi Bisnis (RDIB)</dd>
+        </dl>
+      </div>
+      <section class="card" id="about-experience" aria-labelledby="h-exp">
+        <h2 id="h-exp" style="margin-top:0">Pengalaman</h2>
+        <ul class="timeline">
+          <li><strong>Asisten Dosen Pengembangan Sistem Operasi</strong> · ITS (kontrak) <span class="muted">· Sep 2026 – sekarang · Surabaya</span></li>
+          <li><strong>Backend AI Engineer</strong> · FlyRank AI <span class="muted">· Jul 2026 – sekarang</span></li>
+          <li><strong>Web3 Developer Intern</strong> · Vallidge Consulting <span class="muted">· Mei 2026 – sekarang</span>
+            <ul>
+              <li>Merancang dan membangun infrastruktur full-stack (frontend dan backend) platform peluncuran token BEP-20 di BNB Smart Chain; dua token mencapai peluncuran publik.</li>
+              <li>Menangani transaksi on-chain BEP-20 dengan sinkronisasi database off-chain untuk catatan transaksi, dengan volume transaksi platform di atas US$11.000.</li>
+              <li>Merancang dan men-deploy sistem pembayaran langganan berbasis kripto pertama di Vallidge: smart contract Solidity pull-payment (OpenZeppelin, kompatibel EVM di Ethereum dan BNB Chain) dengan penagihan berulang bulanan atau tahunan; 33+ pengguna dan transaksi langganan di atas US$310.</li>
+            </ul>
+            <span class="muted">Di perusahaan yang sama: AI Engineer (Feb 2026 – sekarang, jarak jauh).</span></li>
+          <li><strong>Blockchain Engineer, Jejak Pangan Blockchain</strong> · CSID-PP ITS (kontrak) <span class="muted">· Des 2025 – sekarang · Surabaya</span>
+            <ul>
+              <li>Merancang dan mengimplementasikan lapisan blockchain JejakPangan, platform ketertelusuran rantai pasok beras untuk petani, penggilingan, dan distributor di Jawa Timur.</li>
+              <li>Men-deploy smart contract Solidity di Polygon PoS; setiap batch produk dicetak sebagai NFT ERC-1155 unik sebagai catatan kustodian yang tahan manipulasi. Fungsi inti: recordBatch, verifyBatch, addHandoff.</li>
+              <li>Keputusan arsitektur: versioning kontrak yang eksplisit (bukan proxy upgradeable) demi auditabilitas, serta hashing SHA-256 dan IPFS untuk integritas data off-chain.</li>
+              <li>Berkoordinasi dengan pipeline sensor IoT dan integrasi ERP (Odoo) dalam tim lintas fungsi beranggotakan 7 orang; proyek didukung hibah ABMAS ITS dan menargetkan publikasi di jurnal terindeks SINTA.</li>
+            </ul></li>
+          <li><strong>Kepala PKMBK PMK ITS 2025</strong> <span class="muted">· Feb 2025 – Feb 2026</span>: memimpin 77 staf yang menjalankan program pelayanan mahasiswa untuk 650+ anggota, mengawasi 4 acara/program sepanjang tahun.</li>
+          <li><strong>Staf Pembinaan PKMBK</strong> <span class="muted">· Mar 2024 – Feb 2025</span>: mendampingi dan mengorientasi 525 mahasiswa baru melalui tahun pertama mereka di ITS.</li>
+          <li><strong>Liaison Officer KKR MABA 2024</strong> <span class="muted">· Apr – Agu 2024</span>: menerima 508 mahasiswa baru, mengatur tempat duduk, registrasi, dan pembagian kelompok.</li>
+        </ul>
+      </section>
+      <section class="card" id="about-certs" aria-labelledby="h-cert">
+        <h2 id="h-cert" style="margin-top:0">Sertifikasi dan pencapaian</h2>
+        <ul>
+          <li>AWS Academy Graduate: Cloud Foundations (Amazon Web Services)</li>
+          <li>Google Cloud: Skill Badge Prompt Design in Vertex AI; 41 badge di profil Google Cloud Skills Boost (program #JUARAGCP); Google Cloud Innovators (Web3: pelacakan arus masuk/keluar bursa dan smart contract ERC-20 Solidity di Polygon)</li>
+          <li>Cisco DevNet Associate</li>
+          <li>Anthropic Academy (melalui magang FlyRank AI): Introduction to Model Context Protocol, AI Fluency (Framework &amp; Foundations, untuk pelajar, nirlaba, dan pendidik), Claude 101, serta AI Capabilities and Limitations</li>
+        </ul>
+      </section>
+      <section class="card" id="about-skills" aria-labelledby="h-skill">
+        <h2 id="h-skill" style="margin-top:0">Keahlian</h2>
+        <p><strong>Keahlian utama (LinkedIn):</strong> Kepemimpinan Organisasi, Pengembangan Organisasi, Keterampilan Organisasi, Manajemen Acara, Perencanaan Acara.</p>
+        <p><strong>Layanan:</strong> Manajemen Informasi, Pengembangan Basis Data, Pengembangan Aplikasi Cloud, Keterampilan Riset, Konsultasi Manajemen, Manajemen Cloud, Dukungan Teknis, Analitik Bisnis, Riset Online, Hubungan Masyarakat.</p>
+        <p class="muted small" id="about-source">Sumber: profil LinkedIn saya (peran, periode, dan angka seperti tertulis di sana).</p>
+      </section>
+      <h2>Tugas akhir</h2>
+      <p><strong>Sistem Prediksi Tren Harga Bitcoin Berbasis LSTM dengan Integrasi Sentimen Berita Berbasis LLM dan Fear and Greed Index</strong> (2026). Penelitian ini menguji apakah penambahan sentimen berita dan Fear and Greed Index meningkatkan prediksi arah harga Bitcoin dibanding indikator teknikal saja. Latar belakang dan jawabannya ada di halaman <a href="/BitcoinPredictionTrend/latar-belakang">Latar Belakang</a>.</p>
+      <h2>Tentang situs ini</h2>
+      <p>Situs ini menampilkan prediksi harian dari model tugas akhir beserta hasil risetnya, termasuk hasil yang negatif. Ini bukan produk investasi dan bukan saran investasi.</p>
+      <p>Kode proyek: <a href="https://github.com/hamsterprohans/BitcoinPredictionTrend" rel="noopener">github.com/hamsterprohans/BitcoinPredictionTrend</a>.</p>
+    </article>
+  </main>
+  <footer class="footer"><p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir.</p></footer>
+  <script type="module" src="/BitcoinPredictionTrend/static/js/theme-only.js"></script>
+  <script type="module" src="/BitcoinPredictionTrend/static/js/visits.js"></script>
+</body>
+</html>

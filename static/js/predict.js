@@ -1,0 +1,374 @@
+import { $, fmtDate, fmtDateShort, fmtNum, fmtPct, fmtUSD, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion, wilson } from "./common.js";
+import { createCharts } from "./chart.js";
+import { initSplash } from "./splash.js";
+import "./glossary.js";
+import { renderContrib, renderNarrative, renderNews, renderReliability } from "./panels.js";
+
+initTheme();
+markCapabilities();
+initSplash();
+
+const state = { demo: false, change: null, close: null, closeDate: null, closeText: "", latest: null, history: [], selected: "1", hero: null, horizon: null, charts: null, interval: "D", range: "1Y" };
+const INTERVALS = { D: "Harian (D)", W: "Mingguan (W)", M: "Bulanan (M)" };
+const RANGES = ["1M", "3M", "6M", "YTD", "1Y", "5Y", "MAX"];
+const arrow = (dir) => (dir === "NAIK" ? "▲" : "▼");
+const cls = (dir) => (dir === "NAIK" ? "up" : "down");
+
+function showBanner(text, kind = "error") {
+  const b = $("#banner");
+  b.textContent = text;
+  b.className = "banner" + (kind === "demo" ? " demo" : "");
+  b.hidden = false;
+}
+
+// Catatan kecil di bagian riwayat: fitur di luar rentang data latih membuat probabilitas hari ini belum teruji.
+function renderRangeNote(features) {
+  const box = $("#range-note");
+  const out = (features || []).filter((f) => f.outside_train_range).map((f) => f.label);
+  box.hidden = out.length === 0;
+  box.textContent = out.length
+    ? `Catatan: hari ini ${out.join(", ")} berada di luar rentang data latih (harga lebih tinggi daripada data yang dipakai melatih model), ` +
+      "jadi probabilitas dan tingkat keyakinan hari ini belum teruji."
+    : "";
+}
+
+function renderHeader(d) {
+  state.demo = !!d.demo;
+  if (state.demo) {
+    showBanner("DATA DEMO SINTETIS: angka di halaman ini bukan harga atau prediksi asli. Jalankan server tanpa LIVE_DIR demo untuk melihat data asli.", "demo");
+  }
+  state.close = d.close; state.closeDate = d.as_of;
+  $("#price").textContent = fmtUSD(d.close);
+  state.closeText = $("#price").textContent;
+  const ch = $("#change");
+  ch.textContent = `${d.change_pct >= 0 ? "▲" : "▼"} ${fmtPct(d.change_pct)}`;
+  ch.className = "chg mono " + (d.change_pct >= 0 ? "up" : "down");
+  state.change = { text: ch.textContent, cls: ch.className };
+  $("#asof").textContent = `Penutupan ${fmtDate(d.as_of)} (UTC)`;
+  $("#stat-sent").textContent = fmtNum(d.inputs.news_sentiment, 2);
+  $("#stat-fg").textContent = `${fmtNum(d.inputs.fear_greed_index, 0)}/100`;
+  $("#stat-news").textContent = String(d.inputs.headline_count);
+  $("#stat-gen").textContent = d.generated_at.replace("T", " ").replace(/\+00:00$/, "");
+  if (d.age_days > 2) {
+    showBanner(`Data terakhir per ${fmtDate(d.as_of)}, lebih dari 2 hari lalu: pembaruan harian mungkin tertunda.`);
+  }
+}
+
+function currentVisual() {
+  const v = state.latest.horizons[state.selected];
+  return { prob: v.prob, threshold: v.threshold, direction: v.direction, sentiment: state.latest.inputs.news_sentiment };
+}
+
+// Penunjuk jarak ke ambang keputusan: seberapa tipis margin prediksi (probabilitas vs ambang) untuk horizon terpilih.
+const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
+function renderGauge(v) {
+  const pp = (v.prob - v.threshold) * 100, gap = Math.abs(pp);
+  const probTxt = `${fmtNum(v.prob * 100, 1)}%`, thrTxt = `${fmtNum(v.threshold * 100, 1)}%`;
+  const other = v.direction === "NAIK" ? "TURUN" : "NAIK";
+  $("#margin-text").textContent = pp === 0
+    ? `Probabilitas tepat di ambang keputusan (${thrTxt}): selisih sekecil apa pun bisa membalik arah.`
+    : `Jarak ke ambang ${other}: ${fmtNum(gap, 1)} poin persentase (probabilitas ${probTxt} vs ambang ${thrTxt}). ` +
+      `Makin kecil jaraknya, makin tipis margin ${v.direction} ini.`;
+  const lo = Math.max(0, v.threshold - 0.25), hi = Math.min(1, v.threshold + 0.25);
+  const pos = (x) => ((x - lo) / (hi - lo)) * 100;
+  const g = $("#gauge");
+  g.style.setProperty("--p", pos(v.threshold) + "%");
+  $("#gauge-tick").style.left = pos(v.threshold) + "%";
+  $("#gauge-dot").style.left = clamp(pos(v.prob), 3, 97) + "%";          // dijepit agar penanda tetap di dalam batang
+  $("#gauge-min").textContent = `${fmtNum(lo * 100, 0)}%`;
+  $("#gauge-max").textContent = `${fmtNum(hi * 100, 0)}%`;
+  const thr = $("#gauge-thr");
+  thr.textContent = `ambang ${thrTxt}`;
+  thr.style.left = clamp(pos(v.threshold), 20, 80) + "%";
+  g.setAttribute("aria-label", `Probabilitas ${probTxt} berada ${fmtNum(gap, 1)} poin persentase ${pp > 0 ? "di atas" : "di bawah"} ambang keputusan ${thrTxt}; arah ${v.direction}.`);
+}
+
+function renderPanel() {
+  const v = state.latest.horizons[state.selected];
+  const dirEl = $("#prediction-direction");
+  dirEl.textContent = v.direction;
+  dirEl.className = "dir mono " + cls(v.direction);
+  const a = $("#prediction-arrow");
+  a.textContent = arrow(v.direction);
+  a.className = "arrow " + cls(v.direction);
+  $("#prediction-prob").textContent = `probabilitas naik ${fmtNum(v.prob * 100, 1)}%`;
+  $("#prediction-meta").textContent = `ambang keputusan ${fmtNum(v.threshold, 4)} · target ${fmtDate(v.target_date)}`;
+
+  renderGauge(v);
+  state.hero?.setState(currentVisual());
+  renderHistory();
+}
+
+function renderHistory() {
+  const rows = state.history.filter((e) => e.horizons[state.selected]).slice(-30).reverse();
+  const body = $("#history-body");
+  body.replaceChildren();
+  const tally = { pro: [0, 0], bf: [0, 0] };               // [benar, selesai]: prospektif (terbit pada harinya) vs dihitung susulan
+  for (const e of rows) {
+    const h = e.horizons[state.selected];
+    const tr = document.createElement("tr");
+    const target = new Date(Date.parse(e.date + "T00:00:00Z") + Number(state.selected) * 86400000).toISOString().slice(0, 10);
+    const cells = [null, `${arrow(h.direction)} ${h.direction}`, `${fmtNum(h.prob * 100, 1)}%`,
+      h.actual ? `${arrow(h.actual)} ${h.actual} ${h.correct ? "✓" : "✗"}` : "menunggu"];
+    cells.forEach((t, i) => {
+      const td = document.createElement("td");
+      if (i === 0) {                                             // yang diprediksi (target) + asal data penutupan di baris kecil
+        td.textContent = fmtDateShort(target);
+        const sub = document.createElement("small");
+        sub.className = "muted hist-src";
+        sub.textContent = `dari penutupan ${fmtDateShort(e.date)}${e.backfilled ? " · dihitung susulan" : ""}`;
+        td.append(document.createElement("br"), sub);
+        if (e.backfilled) td.title = "Dihitung setelah harinya lewat dari data tersimpan; bukan prediksi yang terbit pada hari itu";
+      } else {
+        td.textContent = t;
+      }
+      if (i === 2) td.className = "num mono";
+      if (i === 1) td.className = cls(h.direction);
+      if (i === 3 && h.actual) td.className = h.correct ? "up" : "down";
+      tr.append(td);
+    });
+    if (h.actual) { const t = tally[e.backfilled ? "bf" : "pro"]; t[1]++; if (h.correct) t[0]++; }
+    body.append(tr);
+  }
+  const [ok, done] = tally.pro, [bok, bdone] = tally.bf;
+  const summary = [];
+  if (done) {
+    const [lo, hi] = wilson(ok, done);
+    summary.push(`prospektif ${ok}/${done} benar (${fmtNum((ok / done) * 100, 0)}%, n=${done}, CI 95% Wilson ${fmtNum(lo, 0)}–${fmtNum(hi, 0)}%)`);
+  }
+  if (bdone) summary.push(`dihitung susulan ${bok}/${bdone}`);
+  $("#hist-h").textContent = `${state.selected} hari · ` + (summary.length ? summary.join(" · ") : "belum ada hasil yang jatuh tempo");
+  const note = $("#hist-note");
+  const versions = [...new Set(rows.map((e) => e.model_version).filter(Boolean))];
+  note.hidden = !(done || bdone);
+  note.textContent = (done || bdone)
+    ? `Sampel kecil (n=${done}): rentang kepercayaan masih lebar dan belum menunjukkan hasil yang berbeda dari tebakan acak (50%). ` +
+      "Prospektif = prediksi yang terbit pada harinya; susulan dihitung belakangan dari data tersimpan dan tidak dihitung sebagai bukti. " +
+      (versions.length ? `Versi model: ${versions.join(", ")}.` : "")
+    : "";
+}
+
+function select(h) {
+  state.selected = String(h);
+  document.querySelectorAll("#horizon-tabs [role=tab]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.h === state.selected)));
+  state.horizon?.select(state.selected);
+  renderPanel();
+}
+
+function buildTabs() {
+  const hs = Object.keys(state.latest.horizons).sort((a, b) => a - b);
+  if (!hs.includes(state.selected)) state.selected = hs[0];
+  const wrap = $("#horizon-tabs");
+  wrap.replaceChildren();
+  hs.forEach((h) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.h = h;
+    b.textContent = `${h} hari`;
+    b.addEventListener("click", () => select(h));
+    b.addEventListener("keydown", (e) => {
+      const i = hs.indexOf(h), n = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1 : null;
+      if (n !== null && hs[n]) { select(hs[n]); wrap.querySelector(`[data-h="${hs[n]}"]`).focus(); }
+    });
+    wrap.append(b);
+  });
+}
+
+function buildRanges() {
+  const wrap = $("#ranges");
+  RANGES.forEach((r) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "range"; b.textContent = r;
+    b.setAttribute("aria-pressed", String(r === state.range));
+    b.addEventListener("click", () => {
+      state.range = r;
+      wrap.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      state.charts.setRange(r);
+    });
+    wrap.append(b);
+  });
+}
+
+// Titik live di grafik harian (seperti TradingView): hanya interval D; W/M memakai bar berbeda satuan.
+function applyLiveToChart() {
+  const ok = state.interval === "D" && state.livePrice != null &&
+    state.charts?.setLive(state.livePrice, new Date().toISOString().slice(0, 10));
+  if (ok) document.body.dataset.chartLive = `${new Date().toISOString().slice(0, 10)}:${state.livePrice}`;
+  else delete document.body.dataset.chartLive;
+}
+
+async function loadPrices(interval) {
+  const cols = await getJSON(`/api/prices?interval=${interval}`);
+  state.charts.setData(cols);
+  state.interval = interval;                                          // dibutuhkan applyLiveToChart sebelum tombol diperbarui
+  applyLiveToChart();
+  state.charts.setRange(state.range);
+  state.charts.setMarkers(interval === "D" ? state.history : []);   // penanda prediksi harian hanya pada interval D
+  return cols;
+}
+
+function buildIntervals() {
+  const wrap = $("#intervals");
+  Object.keys(INTERVALS).forEach((k) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "range"; b.textContent = k;
+    b.setAttribute("aria-pressed", String(k === state.interval));
+    b.addEventListener("click", async () => {
+      if (k === state.interval) return;
+      try {
+        await loadPrices(k);
+        state.interval = k;
+        wrap.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+        $("#tf-label").textContent = `Timeframe: ${INTERVALS[k]}`;
+      } catch (e) { console.warn("Gagal memuat interval", k, e); }
+    });
+    wrap.append(b);
+  });
+}
+
+async function setupCharts() {
+  state.charts = createCharts({ priceEl: $("#chart-price"), rsiEl: $("#chart-rsi"), macdEl: $("#chart-macd") });
+  buildIntervals();
+  buildRanges();
+  const cols = await loadPrices("D");
+  document.addEventListener("themechange", () => { state.charts.restyle(); if (state.latest) state.hero?.setState(currentVisual()); });
+  return cols;
+}
+
+function headerFromPrices(cols) {
+  const n = cols.close.length, last = cols.close[n - 1], prev = cols.close[n - 2];
+  state.close = last; state.closeDate = cols.date[n - 1];
+  $("#price").textContent = fmtUSD(last);
+  state.closeText = $("#price").textContent;
+  const pct = (last / prev - 1) * 100, ch = $("#change");
+  ch.textContent = `${pct >= 0 ? "▲" : "▼"} ${fmtPct(pct)}`;
+  ch.className = "chg mono " + (pct >= 0 ? "up" : "down");
+  state.change = { text: ch.textContent, cls: ch.className };
+  $("#asof").textContent = `Penutupan ${fmtDate(cols.date[n - 1])} (UTC) · harga terakhir, belum ada prediksi`;
+}
+
+async function start3D() {
+  if (!hasWebGL()) return;
+  try {
+    const { createHero } = await import("./scene.js");
+    const { createHorizonScene } = await import("./horizon3d.js");
+    const mobile = window.matchMedia("(max-width: 700px)").matches;
+    state.hero = createHero($("#hero-canvas"), { reduced: reducedMotion, mobile, onSlow: () => document.body.classList.add("no-webgl") });
+    state.horizon = createHorizonScene($("#horizon-canvas"), { reduced: reducedMotion, onSelect: select });
+    const hs = Object.entries(state.latest.horizons).sort((a, b) => a[0] - b[0]).map(([h, v]) => ({ h, direction: v.direction }));
+    state.horizon.setHorizons(hs);
+    state.horizon.select(state.selected);
+    renderPanel();
+  } catch (e) {
+    console.warn("Visual 3D dinonaktifkan:", e);
+    document.body.classList.add("no-webgl");
+  }
+}
+
+async function renderExplain() {
+  const ex = state.latest?.explain;
+  if (!ex) return;
+  $("#sec-explain").hidden = false;
+  renderNews($("#live-news"), ex.headlines, ex.sentiment, { source: ex.news_source });
+  renderContrib($("#live-contrib"), ex.contributions);
+  renderNarrative($("#live-narrative"), ex.narrative);
+  try {
+    if (!(await getJSON("/api/retro/status")).built) throw new Error("belum dibangun");
+    const series = await getJSON("/api/retro/series");
+    renderReliability($("#live-reliability"), series.reliability, series);
+  } catch {
+    const p = document.createElement("p");
+    p.className = "muted";
+    p.textContent = "Keandalan historis belum tersedia: jalankan python -m scripts.build_retro.";
+    $("#live-reliability").replaceChildren(p);
+  }
+}
+
+async function main() {
+  try {
+    state.latest = await getJSON("/api/prediction/latest");
+  } catch (e) {
+    // Tanpa prediksi: tetap tampilkan harga dan grafik asli bila ada, tanpa kartu prediksi/riwayat yang kosong.
+    $("#asof").textContent = "";
+    showBanner(e.status === 404
+      ? "Prediksi belum tersedia: job harian belum pernah berhasil dijalankan. Yang tampil hanya harga asli dan grafiknya."
+      : "Gagal memuat prediksi. Coba muat ulang halaman.");
+    $("#sec-pred").hidden = true;
+    $("#sec-hist").hidden = true;
+    try { headerFromPrices(await setupCharts()); } catch (err) { console.warn("Grafik harga tidak tersedia:", err); }
+    return;
+  }
+  renderHeader(state.latest);
+  renderRangeNote(state.latest.explain?.features);
+  buildTabs();
+  select(state.selected);
+  renderExplain();
+
+  try {
+    state.history = await getJSON("/api/prediction/history");
+    renderHistory();
+  } catch { /* riwayat opsional */ }
+
+  try {
+    await setupCharts();
+  } catch (e) {
+    console.warn("Grafik harga tidak tersedia:", e);
+  }
+  start3D();
+}
+
+// ---- Harga live (hanya tampilan; probabilitas tetap resmi harian dari penutupan lengkap) ----
+async function refreshLive() {
+  if (document.hidden || state.close == null || state.demo) return;   // demo: jangan campur harga live asli dengan patokan palsu
+  const badge = $("#live-badge");
+  try {
+    const { price } = await getJSON("/api/price/live");
+    state.livePrice = price;
+    applyLiveToChart();
+    const pct = (price / state.close - 1) * 100;
+    $("#price").textContent = fmtUSD(price);
+    const ch = $("#change");
+    ch.textContent = `${pct >= 0 ? "▲" : "▼"} ${fmtPct(pct)}`;     // perubahan terhadap penutupan terakhir
+    ch.className = "chg mono " + (pct >= 0 ? "up" : "down");
+    $("#asof").hidden = true;                                       // baris penutupan ada di #since-close
+    badge.hidden = false;
+    const since = $("#since-close");
+    since.hidden = false;
+    since.textContent = `Penutupan ${fmtDate(state.closeDate)}: ${fmtUSD(state.close)} · sejak penutupan ${fmtPct(pct)}`;
+    const live = $("#prediction-live");
+    if (state.latest) {
+      live.hidden = false;
+      live.textContent = `patokan penutupan ${fmtUSD(state.close)} · harga live ${fmtUSD(price)} (${fmtPct(pct)}); arah prediksi dinilai dari penutupan hari target`;
+    }
+  } catch {
+    state.livePrice = null;
+    state.charts?.clearLive();
+    applyLiveToChart();
+    badge.hidden = true;
+    $("#since-close").hidden = true;
+    $("#prediction-live").hidden = true;
+    if (state.closeText) $("#price").textContent = state.closeText;     // kembali ke harga penutupan
+    if (state.change) { const ch = $("#change"); ch.textContent = state.change.text; ch.className = state.change.cls; }
+    $("#asof").hidden = false;
+  }
+}
+
+// ---- Snapshot harian baru: tab yang dibiarkan terbuka memuat ulang sendiri saat data terbaru terbit ----
+function watchSnapshot() {
+  const every = window.__SNAPSHOT_POLL_MS__ ?? 600000;               // 10 menit; data harian hanya berubah sekali sehari
+  setInterval(async () => {
+    if (document.hidden || !state.latest) return;
+    try {
+      const d = await getJSON("/api/prediction/latest");
+      if (d.as_of !== state.latest.as_of) location.reload();
+    } catch { /* gangguan jaringan sesaat: coba lagi pada putaran berikutnya */ }
+  }, every);
+}
+
+function startLive() {
+  watchSnapshot();
+  refreshLive();
+  setInterval(refreshLive, 30000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshLive(); });
+}
+
+main().then(startLive);
