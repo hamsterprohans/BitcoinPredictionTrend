@@ -21,14 +21,15 @@ function showBanner(text, kind = "error") {
   b.hidden = false;
 }
 
-// Fitur yang nilainya di luar rentang data latih: model belum pernah melihat nilai seperti itu, jadi probabilitasnya tidak teruji.
-function renderRangeWarning(features) {
-  const box = $("#range-warning");
+// Catatan kecil di bagian riwayat: fitur di luar rentang data latih membuat probabilitas hari ini belum teruji.
+function renderRangeNote(features) {
+  const box = $("#range-note");
   const out = (features || []).filter((f) => f.outside_train_range).map((f) => f.label);
   box.hidden = out.length === 0;
-  if (!out.length) { box.textContent = ""; return; }
-  box.textContent = `Peringatan: input di luar rentang data latih (${out.join(", ")}). Nilainya belum pernah dilihat model ` +
-    "saat dilatih, sehingga probabilitas dan tingkat keyakinan hari ini belum teruji dan sebaiknya tidak dibaca sebagai tegas.";
+  box.textContent = out.length
+    ? `Catatan: hari ini ${out.join(", ")} berada di luar rentang data latih (harga lebih tinggi daripada data yang dipakai melatih model), ` +
+      "jadi probabilitas dan tingkat keyakinan hari ini belum teruji."
+    : "";
 }
 
 function renderHeader(d) {
@@ -297,7 +298,7 @@ async function main() {
     return;
   }
   renderHeader(state.latest);
-  renderRangeWarning(state.latest.explain?.features);
+  renderRangeNote(state.latest.explain?.features);
   buildTabs();
   select(state.selected);
   renderExplain();
