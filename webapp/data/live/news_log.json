@@ -479,5 +479,28 @@
    "https://ambcrypto.com/tezos-algorand-qrl-are-quantum-ready-but-where-does-bitcoin-stand-with-bip-360/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-10-23": {
+  "titles": [
+   "Bitcoin (BTC) Hashrate Recovers 11.7% From August Low Despite Miner AI Pivot",
+   "Bitcoin Investors Look To Mid-Term And Fed Meeting Results Amid Range-Bound Trading",
+   "Swiss Regulator Approves First Domestic Spot Bitcoin ETF Under Fund Law",
+   "Franklin Templeton executive says Bitcoin no longer dominates, highlights XRP growth",
+   "Expert Says XRP Will Jump Bitcoin. Here’s why"
+  ],
+  "scores": {
+   "pemahaman": 5,
+   "detail": 4,
+   "bullbear": 5,
+   "mean": 4.666666666666667
+  },
+  "urls": [
+   "https://en.coinotag.com/bitcoin-btc-hashrate-recovers-11-7-from-august-low-despite-miner-ai-pivot",
+   "https://www.forbes.com/sites/digital-assets/2026/10/23/bitcoin-investors-look-to-mid-term-and-fed-meeting-results-amid-range-bound-trading/",
+   "https://www.newsbtc.com/bitcoin-news/swiss-finma-first-domestic-spot-bitcoin-etf-approval/",
+   "https://en.coin-turk.com/franklin-templeton-executive-says-bitcoin-no-longer-dominates-highlights-xrp-growth/?utm_source=rss&utm_medium=rss&utm_campaign=franklin-templeton-executive-says-bitcoin-no-longer-dominates-highlights-xrp-growth",
+   "https://timestabloid.com/expert-says-xrp-will-jump-bitcoin-heres-why/"
+  ],
+  "source": "cryptocompare"
  }
 }
