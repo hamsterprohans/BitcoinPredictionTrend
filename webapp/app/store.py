@@ -61,6 +61,13 @@ def upsert_history(history: list, entry: dict) -> list:
     return sorted(out, key=lambda e: e["date"])
 
 
+def tag_model_version(history: list, version: str) -> list:
+    """Beri penanda versi model pada entri yang belum punya (entri lama dibuat oleh model yang sama); versi yang sudah ada dipertahankan."""
+    for e in history:
+        e.setdefault("model_version", version)
+    return history
+
+
 def evaluate_history(history: list, prices: pd.DataFrame) -> list:
     close = prices.assign(date=pd.to_datetime(prices["date"])).set_index("date")["close"]
     for e in history:

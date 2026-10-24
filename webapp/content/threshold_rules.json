@@ -1,0 +1,200 @@
+[
+ {
+  "H": 1,
+  "pct_naik_nyata": 49.423,
+  "auc_f": 0.473,
+  "rules": {
+   "c_youden": {
+    "thr": 0.496,
+    "pct_naik_pred": 7.39,
+    "akurasi": 51.039
+   },
+   "f_youden": {
+    "thr": 0.477,
+    "pct_naik_pred": 37.875,
+    "akurasi": 48.268
+   },
+   "median_f": {
+    "thr": 0.485,
+    "pct_naik_pred": 21.709,
+    "akurasi": 49.654
+   }
+  }
+ },
+ {
+  "H": 3,
+  "pct_naik_nyata": 52.791,
+  "auc_f": 0.5,
+  "rules": {
+   "c_youden": {
+    "thr": 0.518,
+    "pct_naik_pred": 6.744,
+    "akurasi": 48.372
+   },
+   "f_youden": {
+    "thr": 0.5,
+    "pct_naik_pred": 44.186,
+    "akurasi": 51.395
+   },
+   "median_f": {
+    "thr": 0.493,
+    "pct_naik_pred": 64.186,
+    "akurasi": 50.0
+   }
+  }
+ },
+ {
+  "H": 5,
+  "pct_naik_nyata": 52.57,
+  "auc_f": 0.497,
+  "rules": {
+   "c_youden": {
+    "thr": 0.478,
+    "pct_naik_pred": 35.047,
+    "akurasi": 47.43
+   },
+   "f_youden": {
+    "thr": 0.474,
+    "pct_naik_pred": 51.402,
+    "akurasi": 45.093
+   },
+   "median_f": {
+    "thr": 0.475,
+    "pct_naik_pred": 48.598,
+    "akurasi": 45.561
+   }
+  }
+ },
+ {
+  "H": 7,
+  "pct_naik_nyata": 51.643,
+  "auc_f": 0.515,
+  "rules": {
+   "c_youden": {
+    "thr": 0.472,
+    "pct_naik_pred": 31.221,
+    "akurasi": 50.0
+   },
+   "f_youden": {
+    "thr": 0.468,
+    "pct_naik_pred": 39.906,
+    "akurasi": 50.704
+   },
+   "median_f": {
+    "thr": 0.47,
+    "pct_naik_pred": 36.854,
+    "akurasi": 51.878
+   }
+  }
+ },
+ {
+  "H": 15,
+  "pct_naik_nyata": 50.478,
+  "auc_f": 0.578,
+  "rules": {
+   "c_youden": {
+    "thr": 0.46,
+    "pct_naik_pred": 19.617,
+    "akurasi": 50.957
+   },
+   "f_youden": {
+    "thr": 0.45,
+    "pct_naik_pred": 36.364,
+    "akurasi": 55.263
+   },
+   "median_f": {
+    "thr": 0.456,
+    "pct_naik_pred": 27.99,
+    "akurasi": 52.153
+   }
+  }
+ },
+ {
+  "H": 20,
+  "pct_naik_nyata": 48.426,
+  "auc_f": 0.608,
+  "rules": {
+   "c_youden": {
+    "thr": 0.472,
+    "pct_naik_pred": 21.792,
+    "akurasi": 57.869
+   },
+   "f_youden": {
+    "thr": 0.447,
+    "pct_naik_pred": 70.218,
+    "akurasi": 53.511
+   },
+   "median_f": {
+    "thr": 0.464,
+    "pct_naik_pred": 33.172,
+    "akurasi": 63.438
+   }
+  }
+ },
+ {
+  "H": 25,
+  "pct_naik_nyata": 47.794,
+  "auc_f": 0.552,
+  "rules": {
+   "c_youden": {
+    "thr": 0.458,
+    "pct_naik_pred": 46.569,
+    "akurasi": 55.147
+   },
+   "f_youden": {
+    "thr": 0.46,
+    "pct_naik_pred": 45.588,
+    "akurasi": 55.147
+   },
+   "median_f": {
+    "thr": 0.461,
+    "pct_naik_pred": 44.608,
+    "akurasi": 55.637
+   }
+  }
+ },
+ {
+  "H": 30,
+  "pct_naik_nyata": 50.124,
+  "auc_f": 0.622,
+  "rules": {
+   "c_youden": {
+    "thr": 0.481,
+    "pct_naik_pred": 20.099,
+    "akurasi": 64.02
+   },
+   "f_youden": {
+    "thr": 0.446,
+    "pct_naik_pred": 86.104,
+    "akurasi": 45.658
+   },
+   "median_f": {
+    "thr": 0.471,
+    "pct_naik_pred": 32.754,
+    "akurasi": 65.261
+   }
+  }
+ },
+ {
+  "H": 35,
+  "pct_naik_nyata": 50.0,
+  "auc_f": 0.637,
+  "rules": {
+   "c_youden": {
+    "thr": 0.429,
+    "pct_naik_pred": 76.884,
+    "akurasi": 52.513
+   },
+   "f_youden": {
+    "thr": 0.426,
+    "pct_naik_pred": 80.653,
+    "akurasi": 52.261
+   },
+   "median_f": {
+    "thr": 0.456,
+    "pct_naik_pred": 38.693,
+    "akurasi": 65.075
+   }
+  }
+ }
+]

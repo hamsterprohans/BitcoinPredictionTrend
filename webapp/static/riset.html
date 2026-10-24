@@ -28,14 +28,17 @@
       <canvas id="bars3d-canvas" aria-hidden="true"></canvas>
       <p class="muted">Grafik batang 3D menunjukkan F1-weighted per model dengan skala dari nol; angka lengkap ada pada tabel.</p>
     </section>
-    <section class="card" id="sec-multiseed" aria-labelledby="h-ms"><h2 id="h-ms">Validasi multi-seed</h2></section>
+    <section class="card" id="sec-multiseed" aria-labelledby="h-ms"><h2 id="h-ms">Validasi multi-seed (10 seed)</h2></section>
     <section class="card" id="sec-multihorizon" aria-labelledby="h-mh">
       <h2 id="h-mh">Analisis multi-horizon</h2>
       <p class="muted">AUC Model F pada label arah kumulatif H hari. Interval kepercayaan memakai block-bootstrap; koreksi Holm memperhitungkan 8 horizon yang diuji sekaligus.</p>
     </section>
+    <section class="card" id="sec-thresholds" aria-labelledby="h-th">
+      <h2 id="h-th">Akurasi per horizon bergantung ambang</h2>
+    </section>
     <section class="card" id="sec-signif" aria-labelledby="h-sg">
       <h2 id="h-sg">Uji signifikansi antar model</h2>
-      <p class="muted">McNemar pada prediksi data uji dan Wilcoxon berpasangan antar seed. Tidak ada beda antar model yang signifikan; dengan 5 seed, daya uji Wilcoxon rendah.</p>
+      <p class="muted">McNemar pada prediksi data uji dan Wilcoxon berpasangan antar seed (10 seed, 15 pasangan, koreksi Holm). Tidak ada beda antar model yang signifikan setelah koreksi.</p>
     </section>
     <section class="card" id="sec-holding" aria-labelledby="h-hp">
       <h2 id="h-hp">Pembanding keuangan: distribusi return masa pegang</h2>
