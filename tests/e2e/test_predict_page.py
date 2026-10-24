@@ -354,3 +354,71 @@ def test_primary_news_source_shows_no_fallback_note(page, server, source):
     page.goto(server + "/")
     page.wait_for_selector("#live-news li")
     assert page.locator("#live-news .source-note").count() == 0
+
+
+def _with_outside(page, labels):
+    """Sisipkan flag outside_train_range pada fitur tertentu di respons prediksi (data uji tidak memuatnya)."""
+    def handle(route):
+        data = route.fetch().json()
+        for f in data["explain"]["features"]:
+            f["outside_train_range"] = f["label"] in labels
+        route.fulfill(json=data)
+    page.route("**/api/prediction/latest", handle)
+
+
+def test_warning_lists_features_outside_the_training_range(page, server):
+    _with_outside(page, {"Rata-rata harga 7 hari", "Rata-rata harga 90 hari"})
+    page.goto(server + "/")
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")
+    box = page.locator("#range-warning")
+    assert box.is_visible() and box.get_attribute("role") == "note"
+    text = " ".join(box.inner_text().split())
+    assert "di luar rentang data latih" in text
+    assert "Rata-rata harga 7 hari" in text and "Rata-rata harga 90 hari" in text and "Rata-rata harga 30 hari" not in text
+    assert "tidak teruji" in text or "belum teruji" in text                                   # mengapa ini penting
+    assert page.locator("#sec-pred").locator("#range-warning").count() == 1                 # di dalam kartu prediksi
+
+
+def test_no_range_warning_when_all_features_are_inside_the_training_range(page, server):
+    _with_outside(page, set())
+    page.goto(server + "/")
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")
+    assert page.is_hidden("#range-warning")
+
+
+def test_no_range_warning_and_no_crash_without_explanation_block(page, server):
+    errs = collect_errors(page)
+    def handle(route):
+        data = route.fetch().json()
+        data.pop("explain", None)
+        route.fulfill(json=data)
+    page.route("**/api/prediction/latest", handle)
+    page.goto(server + "/")
+    page.wait_for_selector("#prediction-direction:not(:text('—'))")
+    assert page.is_hidden("#range-warning") and errs == []
+
+
+def test_history_summary_has_wilson_interval_and_separates_backfilled_rows(page, server):
+    from app.explain import wilson
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    lo, hi = wilson(4, 9)                                                        # 9 prediksi prospektif, 4 benar; 1 susulan (benar) dipisah
+    text = " ".join(page.inner_text("#hist-h").split())
+    assert f"prospektif 4/9 benar (44%, n=9, CI 95% Wilson {round(lo * 100)}–{round(hi * 100)}%)" in text
+    assert "dihitung susulan 1/1" in text
+    note = " ".join(page.inner_text("#hist-note").split())
+    assert "sampel kecil" in note.lower() and "tebakan acak" in note
+    assert "versi model" in note.lower() and "v3_align" in note                  # penanda model_version pada entri riwayat
+
+
+def test_history_note_is_hidden_when_nothing_has_resolved_yet(page, server):
+    def handle(route):
+        data = route.fetch().json()
+        for e in data:
+            for v in e["horizons"].values():
+                v.pop("actual", None); v.pop("correct", None)
+        route.fulfill(json=data)
+    page.route("**/api/prediction/history", handle)
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    assert "belum ada hasil yang jatuh tempo" in page.inner_text("#hist-h")

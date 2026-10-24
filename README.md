@@ -135,13 +135,23 @@ tidak mengubah judul atau skor yang sudah dinilai. Berita yang diambil mulai sek
   karakter, nama kosong, dan lebih dari 120 kiriman per 10 menit (jalankan ulang `supabase/schema.sql` setelah perubahan).
 - **Rahasia:** `scripts/.env` tidak pernah masuk git. Kunci API hanya hidup di GitHub Secrets dan `.env` lokal.
 
+## Menyegarkan hasil riset dari notebook final
+
+```bash
+python -m scripts.export_research "<notebook final>.ipynb"
+```
+
+Membaca output notebook (tidak mengubahnya) menjadi `content/*.json` dan gambar `static/research/*.png`: ablation, multi-seed 10 seed
+dan Wilcoxon 15 pasangan dengan koreksi Holm (Bagian 9g), multi-horizon, diagnostik ambang per horizon (sel M5-2), permutation importance,
+dan gambar. Yang tidak ditemukan dilaporkan, bukan diisi tebakan. Backtest dibangun terpisah dengan `python -m scripts.build_backtest`.
+
 ## Backtesting: strategi model vs buy and hold
 
 ```bash
 python -m scripts.build_backtest        # menulis content/backtest.json (tampil di halaman Riset)
 ```
 
-Sesuai proposal (Bab 3.1.9): long-only (beli saat prediksi NAIK, tunai saat TURUN), modal awal $1.000, tanpa biaya transaksi dan slippage.
+Sesuai proposal (Bab 3.1.9): long-only (beli saat prediksi NAIK, tunai saat TURUN), modal awal $1.000. Versi 2: biaya transaksi 0,10% dan slippage 0,05% per sisi (asumsi, total 0,15%) dibebankan saat masuk dan keluar posisi; hasilnya sama dengan sel "Backtest v2" di notebook (mis. buy and hold −20,68%, Model F pada ambang klasifikasi −4,65%).
 Ambang trading dipilih dari grid 0,05 sampai 0,90 pada data **validasi**, lalu diterapkan ke data uji; pembanding buy and hold. Metrik: total
-return, win rate, rata-rata untung/rugi per transaksi, maximum drawdown, Sharpe (risk-free 0, dianualkan akar 365), dan tabel kepekaan ambang.
+return, win rate, rata-rata untung/rugi per transaksi, maximum drawdown, Sharpe (risk-free 0, dianualkan akar 365), tabel kepekaan ambang, pembanding sinyal digeser sirkular (p-value), dan CI 95% selisih Sharpe terhadap buy and hold (bootstrap blok). Strategi yang berada di pasar hampir setiap hari ditandai identik dengan buy and hold.
 Bila hasilnya berubah (model atau data baru), jalankan ulang perintah di atas lalu ekspor situs.

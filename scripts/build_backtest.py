@@ -10,19 +10,23 @@ import numpy as np
 import pandas as pd
 
 from app import config
-from app.backtest import (CAPITAL, buy_and_hold, check_not_collapsed, equity_curve, select_threshold, sensitivity, simulate)
+from app.backtest import (CAPITAL, FEE, buy_and_hold, check_not_collapsed, daily_returns, equity_curve, select_threshold, sensitivity,
+                          sharpe_diff_ci, shift_test, simulate)
 from app.store import atomic_write_json, read_json
 from scripts.build_retro import NB_END, NB_START, assemble_table, predict_split, split_table
 
-COSTS = "tanpa biaya transaksi dan slippage"
+COSTS = ("biaya transaksi 0,10% ditambah slippage 0,05% (total 0,15%) per sisi, dibebankan saat masuk dan keluar posisi; "
+         "angka ini asumsi, bukan data bursa")
 
 
 def _caveats(n: int) -> list:
     return [
         f"Simulasi pada data historis periode uji ({n} hari); bukan bukti kinerja di pasar nyata. Pembuktian memerlukan forward testing.",
-        "Tanpa biaya transaksi dan slippage: dengan biaya nyata, hasil strategi yang sering berganti posisi akan lebih rendah.",
-        "Ambang trading dipilih dari data validasi (grid 0,05 sampai 0,90), bukan dari data uji. Tabel kepekaan menunjukkan perubahan hasil menurut ambang.",
-        "Satu jalur sejarah dan satu periode: lebih baik atau lebih buruknya hasil dibanding buy and hold bisa terjadi karena kebetulan.",
+        "Biaya transaksi dan slippage (0,15% per sisi) adalah asumsi, bukan data bursa; biaya nyata bisa lebih tinggi atau lebih rendah.",
+        "Ambang trading dipilih dari data validasi (grid 0,05 sampai 0,90), bukan dari data uji, dan tanpa biaya. Tabel kepekaan menunjukkan perubahan hasil menurut ambang.",
+        "Ambang trading yang dipilih di validasi membuat model berada di pasar hampir setiap hari, sehingga hasilnya sama dengan buy and hold dan tidak informatif.",
+        "Satu jalur sejarah dan satu periode: lebih baik atau lebih buruknya hasil dibanding buy and hold bisa terjadi karena kebetulan. "
+        "Pembandingnya sinyal yang digeser sirkular (jumlah transaksi dan eksposur sama); p-value besar berarti model tidak dapat dibedakan dari sinyal acak.",
         "Buy and hold = beli di awal periode uji dan ditahan sampai akhir. Sharpe ratio dianualkan dengan akar 365 (risk-free 0).",
     ]
 
@@ -40,7 +44,7 @@ def _parity(retro_series, test_prob) -> dict:
 
 
 def build_backtest_outputs(prices, sent3, news, fg, scaler, model, threshold, *, start=NB_START, end=NB_END,
-                           retro_series=None, capital: float = CAPITAL) -> dict:
+                           retro_series=None, capital: float = CAPITAL, fee: float = FEE) -> dict:
     news = news.assign(date=pd.to_datetime(news["date"]).dt.normalize())
     table = assemble_table(prices, sent3, set(news["date"]), fg)
     _train, val, test = split_table(table, start, end)
@@ -52,19 +56,28 @@ def build_backtest_outputs(prices, sent3, news, fg, scaler, model, threshold, *,
     trade_thr = best["threshold"]
     dates = [d.date().isoformat() for d in test_rows["date"]]
     pred_cls = (test_prob > threshold).astype(int)
-    curve = equity_curve(dates, test_prob, test_ret, trade_thr, capital)
-    curve["model_classification"] = equity_curve(dates, test_prob, test_ret, threshold, capital)["model"]   # varian pembanding
+    curve = equity_curve(dates, test_prob, test_ret, trade_thr, capital, fee)
+    curve["model_classification"] = equity_curve(dates, test_prob, test_ret, threshold, capital, fee)["model"]   # varian pembanding
+
+    def flagged(r):                                  # berada di pasar hampir setiap hari = identik buy and hold, tidak informatif
+        return {**r, "identical_to_buy_and_hold": r["days_in_market_pct"] > 99.0}
+    r_model = daily_returns(test_prob > threshold, test_ret, fee)
+    r_hold = daily_returns(np.ones(len(test_ret)), test_ret, fee)
     return {
+        "version": 2, "fee_per_side": fee,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "strategy": "long-only", "capital": capital, "costs": COSTS,
         "period": {"start": dates[0], "end": dates[-1], "n_days": len(dates)},
         "classification_threshold": threshold,
         "trading_threshold": {"value": trade_thr, "selected_on": "validasi", "val_final_equity": best["final_equity"],
                               "val_n_days": len(val_prob)},
-        "model": simulate(test_prob, test_ret, trade_thr, capital),
-        "model_at_classification_threshold": simulate(test_prob, test_ret, threshold, capital),
-        "buy_and_hold": buy_and_hold(test_ret, capital),
-        "sensitivity": sensitivity(test_prob, test_ret, capital=capital),
+        "model": flagged(simulate(test_prob, test_ret, trade_thr, capital, fee)),
+        "model_at_classification_threshold": flagged(simulate(test_prob, test_ret, threshold, capital, fee)),
+        "model_at_half": flagged(simulate(test_prob, test_ret, 0.5, capital, fee)),
+        "buy_and_hold": buy_and_hold(test_ret, capital, fee),
+        "permutation": {**shift_test(test_prob, test_ret, threshold, fee), "basis": "ambang klasifikasi"},
+        "sharpe_diff_ci": sharpe_diff_ci(r_model, r_hold),
+        "sensitivity": sensitivity(test_prob, test_ret, capital=capital, fee=fee),
         "curve": curve,
         "checks": check_not_collapsed(test_rows["label"].to_numpy(), pred_cls),
         "parity_with_retro": _parity(retro_series, test_prob),
@@ -94,6 +107,7 @@ def main(argv=None):
     m, b = out["model"], out["buy_and_hold"]
     print(f"ditulis: content/backtest.json | {out['period']['start']}..{out['period']['end']} ({out['period']['n_days']} hari) | "
           f"ambang trading {out['trading_threshold']['value']:.2f} (dipilih di validasi)\n"
+          f"biaya {out['fee_per_side'] * 100:.2f}% per sisi | permutasi p(total)={out['permutation']['total']['p']:.3f} | CI95 selisih Sharpe {out['sharpe_diff_ci']}\n"
           f"model: ${m['final_equity']:.2f} ({m['total_return_pct']:+.1f}%), Sharpe {m['sharpe']}, MDD {m['max_drawdown_pct']:.1f}% | "
           f"buy and hold: ${b['final_equity']:.2f} ({b['total_return_pct']:+.1f}%), Sharpe {b['sharpe']}, MDD {b['max_drawdown_pct']:.1f}%\n"
           f"paritas dengan retrospektif: {out['parity_with_retro']}")

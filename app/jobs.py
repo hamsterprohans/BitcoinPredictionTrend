@@ -17,7 +17,7 @@ import pandas as pd
 from . import config
 from .sources import SourceError
 from .features import TECH_FEATURES, assemble_frame, chart_frame, compute_features
-from .store import (append_news, append_sentiment, atomic_write_json, evaluate_history, frame_to_columns,
+from .store import (append_news, append_sentiment, atomic_write_json, evaluate_history, frame_to_columns, tag_model_version,
                     load_sentiment_log, read_json, read_news_entry, upsert_history)
 
 
@@ -128,6 +128,17 @@ def run_prices_only(deps: Deps):
     return prices["date"].max().date()
 
 
+def check_fear_greed_fresh(fg: pd.DataFrame, as_of: date, max_lag_days: int = 1) -> None:
+    """Hentikan job bila data Fear & Greed tertinggal: assemble_frame akan mengisinya dengan 50, dan prediksi yang salah itu
+    terkunci permanen di history.json. Gagal sehari lebih aman (job dijadwalkan ulang beberapa kali per hari)."""
+    if fg is None or len(fg) == 0:
+        raise RuntimeError("Data Fear & Greed kosong: job dihentikan agar prediksi tidak dihitung dengan nilai bawaan 50")
+    last = pd.to_datetime(fg["date"]).max().date()
+    if (as_of - last).days > max_lag_days:
+        raise RuntimeError(f"Fear & Greed terakhir {last}, tertinggal untuk {as_of}: job dihentikan agar nilai bawaan 50 "
+                           "tidak terkunci pada prediksi")
+
+
 def _compute(deps: Deps, live, prices, as_of):
     """Inti prediksi untuk satu tanggal: fitur, sentimen, Fear & Greed, model. Mengembalikan (feats, frame, preds, latest, entry)."""
     feats = compute_features(prices)
@@ -139,6 +150,7 @@ def _compute(deps: Deps, live, prices, as_of):
 
     sent = ensure_sentiment(live, days, deps.fetch_headlines, deps.score, deps.score_detail)
     fg = deps.fetch_fear_greed()
+    check_fear_greed_fresh(fg, as_of)
     frame = assemble_frame(feats, sent["raw"], fg)
     frame = frame[frame["date"] <= pd.Timestamp(as_of)]
 
@@ -161,7 +173,7 @@ def _compute(deps: Deps, live, prices, as_of):
         "horizons": {str(h): {**v, "target_date": (as_of + timedelta(days=h)).isoformat()}
                      for h, v in preds.items()},
     }
-    entry = {"date": as_of.isoformat(), "close": round(close, 2),
+    entry = {"date": as_of.isoformat(), "close": round(close, 2), "model_version": config.MODEL_VERSION,
              "horizons": {str(h): {k: v[k] for k in ("prob", "direction", "threshold")}
                           for h, v in preds.items()}}
     return feats, frame, preds, latest, entry
@@ -223,7 +235,7 @@ def run_backfill(deps: Deps, as_of):
     offline = replace(deps, fetch_headlines=_no_fetch, score=None, score_detail=None, explainer=None)
     _, _, _, _, entry = _compute(offline, live, prices, as_of)
     entry["backfilled"] = True
-    history = evaluate_history(upsert_history(history, entry), all_prices)
+    history = tag_model_version(evaluate_history(upsert_history(history, entry), all_prices), config.MODEL_VERSION)
     atomic_write_json(live / "history.json", history)
     return entry
 
@@ -243,7 +255,7 @@ def run_daily(deps: Deps, force: bool = False):
 
     feats, frame, preds, latest, entry = _compute(deps, live, prices, as_of)
     history = upsert_history(read_json(live / "history.json", []), entry)
-    history = evaluate_history(history, prices)
+    history = tag_model_version(evaluate_history(history, prices), config.MODEL_VERSION)
     issued = next(e for e in history if e["date"] == entry["date"])          # prediksi pertama yang terbit berlaku (terkunci)
     for h, v in latest["horizons"].items():
         kept = issued["horizons"].get(h)

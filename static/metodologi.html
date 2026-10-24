@@ -34,19 +34,22 @@
       <p>11 indikator teknikal (return harian, MA7/30/90, volatilitas 7 dan 30 hari, RSI14, MACD, sinyal MACD, histogram MACD, lebar Bollinger) ditambah skor sentimen berita dan Fear &amp; Greed Index. Fitur teknikal dan sentimen dinormalisasi dengan RobustScaler yang hanya dilatih pada data latih, lalu dipotong pada ±5.</p>
       <h2>Model</h2>
       <p>LSTM dua lapis (64 unit, batch normalization, dropout 0,3, regularisasi L2 0,001) dengan jendela 20 hari, lapis Dense 32 unit, dan keluaran sigmoid. Pemisahan data kronologis 70/15/15. Keputusan naik/turun memakai ambang yang dipilih dari data validasi, bukan 0,5.</p>
+      <h2>Model dan ambang per horizon</h2>
+      <p>Horizon 1 hari memakai satu model dengan ambang beku 0,4768. Horizon 3 sampai 35 hari memakai rata-rata probabilitas tiga seed (47, 123, 2024) Model F. Setiap ambang dipilih dengan kriteria Youden pada probabilitas validasi Model C (model indikator teknikal saja, rata-rata tiga seed), lalu dibekukan dan dipakai pada Model F. Ini sama dengan protokol ablation: ambang berasal dari model dasar C, sehingga penambahan sentimen berita dan Fear &amp; Greed Index diuji dengan ambang yang sama dan tidak ikut menggeser ambangnya.</p>
+      <p>Ambang tidak diseragamkan pada satu angka untuk semua horizon karena proporsi hari naik pada data validasi berubah menurut horizon, dari sekitar 56% pada 3 hari hingga sekitar 67% pada 35 hari. Akibatnya, probabilitas yang sama dapat berarti NAIK pada satu horizon dan TURUN pada horizon lain; ini bukan ketidakkonsistenan model, melainkan ambang yang menyesuaikan proporsi kelas tiap horizon. Akurasi per horizon sangat bergantung pada aturan ambang yang dipilih (lihat halaman <a href="/riset">Riset</a>), sedangkan AUC tidak.</p>
       <h2>Evaluasi</h2>
-      <p>Ablation study model A–F, McNemar dan Wilcoxon, validasi multi-seed, analisis multi-horizon (AUC dengan block-bootstrap, uji permutasi geser-sirkular, koreksi Holm). Rincian ada pada halaman <a href="/riset">Riset</a>.</p>
+      <p>Ablation study model A–F, McNemar, validasi multi-seed (10 seed) dengan uji Wilcoxon berpasangan pada 15 pasangan dan koreksi Holm, analisis multi-horizon (AUC dengan block-bootstrap, uji permutasi geser-sirkular, koreksi Holm), dan backtesting dengan biaya transaksi 0,15% per sisi (asumsi) yang dibandingkan dengan sinyal acak yang digeser sirkular. Rincian ada pada halaman <a href="/riset">Riset</a>.</p>
       <h2>Prediksi harian</h2>
       <p>Setiap hari sekitar pukul 00.30 UTC, sistem mengambil data hari penuh terakhir, menghitung fitur, menilai sentimen berita, lalu menjalankan model. Hasilnya disimpan sebagai snapshot; halaman web hanya membaca snapshot, tidak menjalankan model pada setiap kunjungan.</p>
       <h2>Batasan yang perlu dipahami</h2>
       <ul>
         <li>Pada data uji, prediksi multi-horizon <strong>belum terbukti lebih baik dari tebakan acak</strong>. Probabilitas ditampilkan sebagai informasi, bukan sinyal beli atau jual.</li>
-        <li>Berita live diambil dari GDELT dan disaring dengan aturan sederhana (judul menyebut Bitcoin/BTC, bukan konten sponsor). Korpus latih dibersihkan lebih ketat, sehingga distribusi berita live dapat sedikit berbeda.</li>
+        <li>Berita live diambil dari CryptoCompare (sumber yang sama dengan korpus latih), dengan cadangan RSS beberapa outlet kripto dan GDELT bila sumber utama dibatasi. Berita disaring dengan aturan sederhana (judul menyebut Bitcoin/BTC, bukan konten sponsor); korpus latih dibersihkan lebih ketat, sehingga distribusi berita live dapat sedikit berbeda.</li>
         <li>Penilaian sentimen oleh LLM tidak sepenuhnya deterministik.</li>
         <li>Harga memakai referensi harian Coin Metrics (UTC), bukan harga bursa tertentu.</li>
       </ul>
       <h2>Atribusi</h2>
-      <p>Font Geist dan Geist Mono (Vercel, lisensi OFL). three.js (MIT). <a href="https://www.tradingview.com/" rel="noopener">TradingView Lightweight Charts™</a> (Apache-2.0). Data: Coin Metrics, alternative.me, GDELT.</p>
+      <p>Font Geist dan Geist Mono (Vercel, lisensi OFL). three.js (MIT). <a href="https://www.tradingview.com/" rel="noopener">TradingView Lightweight Charts™</a> (Apache-2.0). Data: Coin Metrics, alternative.me, CryptoCompare, GDELT.</p>
     </article>
   </main>
   <footer class="footer"><p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir.</p></footer>

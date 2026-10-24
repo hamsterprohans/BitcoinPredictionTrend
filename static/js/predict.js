@@ -1,4 +1,4 @@
-import { $, fmtDate, fmtDateShort, fmtNum, fmtPct, fmtUSD, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion } from "./common.js";
+import { $, fmtDate, fmtDateShort, fmtNum, fmtPct, fmtUSD, getJSON, hasWebGL, initTheme, markCapabilities, reducedMotion, wilson } from "./common.js";
 import { createCharts } from "./chart.js";
 import { initSplash } from "./splash.js";
 import "./glossary.js";
@@ -19,6 +19,16 @@ function showBanner(text, kind = "error") {
   b.textContent = text;
   b.className = "banner" + (kind === "demo" ? " demo" : "");
   b.hidden = false;
+}
+
+// Fitur yang nilainya di luar rentang data latih: model belum pernah melihat nilai seperti itu, jadi probabilitasnya tidak teruji.
+function renderRangeWarning(features) {
+  const box = $("#range-warning");
+  const out = (features || []).filter((f) => f.outside_train_range).map((f) => f.label);
+  box.hidden = out.length === 0;
+  if (!out.length) { box.textContent = ""; return; }
+  box.textContent = `Peringatan: input di luar rentang data latih (${out.join(", ")}). Nilainya belum pernah dilihat model ` +
+    "saat dilatih, sehingga probabilitas dan tingkat keyakinan hari ini belum teruji dan sebaiknya tidak dibaca sebagai tegas.";
 }
 
 function renderHeader(d) {
@@ -92,7 +102,7 @@ function renderHistory() {
   const rows = state.history.filter((e) => e.horizons[state.selected]).slice(-30).reverse();
   const body = $("#history-body");
   body.replaceChildren();
-  let done = 0, ok = 0;
+  const tally = { pro: [0, 0], bf: [0, 0] };               // [benar, selesai]: prospektif (terbit pada harinya) vs dihitung susulan
   for (const e of rows) {
     const h = e.horizons[state.selected];
     const tr = document.createElement("tr");
@@ -116,11 +126,25 @@ function renderHistory() {
       if (i === 3 && h.actual) td.className = h.correct ? "up" : "down";
       tr.append(td);
     });
-    if (h.actual) { done++; if (h.correct) ok++; }
+    if (h.actual) { const t = tally[e.backfilled ? "bf" : "pro"]; t[1]++; if (h.correct) t[0]++; }
     body.append(tr);
   }
-  $("#hist-h").textContent = `${state.selected} hari · ` +
-    (done ? `${ok}/${done} benar (${fmtNum((ok / done) * 100, 0)}%)` : "belum ada hasil yang jatuh tempo");
+  const [ok, done] = tally.pro, [bok, bdone] = tally.bf;
+  const summary = [];
+  if (done) {
+    const [lo, hi] = wilson(ok, done);
+    summary.push(`prospektif ${ok}/${done} benar (${fmtNum((ok / done) * 100, 0)}%, n=${done}, CI 95% Wilson ${fmtNum(lo, 0)}–${fmtNum(hi, 0)}%)`);
+  }
+  if (bdone) summary.push(`dihitung susulan ${bok}/${bdone}`);
+  $("#hist-h").textContent = `${state.selected} hari · ` + (summary.length ? summary.join(" · ") : "belum ada hasil yang jatuh tempo");
+  const note = $("#hist-note");
+  const versions = [...new Set(rows.map((e) => e.model_version).filter(Boolean))];
+  note.hidden = !(done || bdone);
+  note.textContent = (done || bdone)
+    ? `Sampel kecil (n=${done}): rentang kepercayaan masih lebar dan belum menunjukkan hasil yang berbeda dari tebakan acak (50%). ` +
+      "Prospektif = prediksi yang terbit pada harinya; susulan dihitung belakangan dari data tersimpan dan tidak dihitung sebagai bukti. " +
+      (versions.length ? `Versi model: ${versions.join(", ")}.` : "")
+    : "";
 }
 
 function select(h) {
@@ -273,6 +297,7 @@ async function main() {
     return;
   }
   renderHeader(state.latest);
+  renderRangeWarning(state.latest.explain?.features);
   buildTabs();
   select(state.selected);
   renderExplain();

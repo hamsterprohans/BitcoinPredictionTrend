@@ -61,7 +61,7 @@ def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14), demo=False, e
     hist = []
     for i in range(10, 0, -1):
         d = as_of - timedelta(days=i)
-        hist.append({"date": d.isoformat(), "close": 1.0, **({"backfilled": True} if i == 3 else {}), "horizons": {
+        hist.append({"date": d.isoformat(), "close": 1.0, "model_version": "v3_align", **({"backfilled": True} if i == 3 else {}), "horizons": {
             "1": {"prob": 0.5, "threshold": 0.4557, "direction": "NAIK",
                   "actual": "NAIK" if i % 2 else "TURUN", "correct": bool(i % 2), "locked": True},
             "7": {"prob": 0.4, "threshold": 0.5, "direction": "TURUN"}}})
@@ -75,7 +75,12 @@ def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14), demo=False, e
         {"Model": "F", "Deskripsi": "LSTM + Sentimen + F&G", "N Fitur": 13, "Accuracy": 0.51,
          "Precision": 0.5, "Recall": 0.5, "F1-Weighted": 0.5}])
     atomic_write_json(content_dir / "multiseed.json", [
-        {"Model": "B", "F1 Mean": 0.48732, "F1 Std": 0.051882}, {"Model": "F", "F1 Mean": 0.49, "F1 Std": 0.03}])
+        {"Model": "B", "Kelompok": "ablation", "Deskripsi": "LSTM + Daily Return", "N Seed": 10, "AUC Mean": 0.521, "AUC Std": 0.024,
+         "F1 Mean": 0.501, "F1 Std": 0.042, "F1 P2 Mean": 0.505, "F1 P2 Std": 0.021, "MCC P2 Mean": 0.023, "MCC P2 Std": 0.041},
+        {"Model": "F", "Kelompok": "ablation", "Deskripsi": "LSTM + Semua Fitur", "N Seed": 10, "AUC Mean": 0.495, "AUC Std": 0.021,
+         "F1 Mean": 0.437, "F1 Std": 0.051, "F1 P2 Mean": 0.465, "F1 P2 Std": 0.03, "MCC P2 Mean": 0.0, "MCC P2 Std": 0.03},
+        {"Model": "F2", "Kelompok": "tambahan", "Deskripsi": "LSTM + Semua Fitur (rasio)", "N Seed": 10, "AUC Mean": 0.506, "AUC Std": 0.021,
+         "F1 Mean": 0.465, "F1 Std": 0.052, "F1 P2 Mean": 0.483, "F1 P2 Std": 0.03, "MCC P2 Mean": 0.01, "MCC P2 Std": 0.03}])
     atomic_write_json(content_dir / "multihorizon.json", [
         {"H": 3, "n_efektif": 143.3, "AUC_F": 0.5, "CI_lo": 0.431, "CI_hi": 0.567, "p_geser": 0.5035,
          "p_Holm_m8": 1.0, "signifikan_Holm_m8": False},
@@ -87,10 +92,22 @@ def seed_live_dir(live_dir, content_dir, as_of=date(2026, 10, 14), demo=False, e
     atomic_write_json(content_dir / "permutation_importance.json", [
         {"Fitur": "Vol_30", "Baseline F1": 0.49, "Penurunan F1 (Importance)": 0.0287, "Std": 0.0088},
         {"Fitur": "MACD_Histogram", "Baseline F1": 0.49, "Penurunan F1 (Importance)": 0.0226, "Std": 0.0076}])
+    pair = lambda a_, b_, diff, lo, hi, p, ph: {"pair": f"{a_} vs {b_}", "a": a_, "b": b_, "n_seed": 10, "diff": diff, "ci_lo": lo,   # noqa: E731
+                                                  "ci_hi": hi, "p": p, "p_holm": ph, "significant": ph < 0.05}
     atomic_write_json(content_dir / "significance.json", {
         "mcnemar": [{"a": "A", "b": "C", "p": 0.6465, "verdict": "tidak signifikan", "only_a": 82, "only_b": 89}],
-        "wilcoxon": [{"a": "C", "b": "F", "statistic": 5.0, "p": 0.625, "verdict": "tidak signifikan",
-                      "mean_a": 0.4658, "mean_b": 0.4455}]})
+        "wilcoxon": {"n_seed": 10, "p_min": 0.002, "metrics": [
+            {"id": "AUC_test", "label": "AUC uji", "pairs": [pair("C", "F", 0.0067, -0.0102, 0.0241, 0.6953, 1.0),
+                                                              pair("B", "C", -0.0336, -0.0505, -0.0165, 0.0195, 0.2734)]},
+            {"id": "F1w_P2", "label": "F1-weighted (ambang seimbang P2)", "pairs": [pair("C", "F", -0.0082, -0.0392, 0.0194, 0.7695, 1.0),
+                                                                                    pair("B", "C", -0.0314, -0.0533, -0.0102, 0.0371, 0.5566)]}]}})
+    atomic_write_json(content_dir / "threshold_rules.json", [
+        {"H": 3, "pct_naik_nyata": 52.8, "auc_f": 0.5, "rules": {
+            "c_youden": {"thr": 0.518, "pct_naik_pred": 6.7, "akurasi": 48.4}, "f_youden": {"thr": 0.5, "pct_naik_pred": 44.2, "akurasi": 51.4},
+            "median_f": {"thr": 0.493, "pct_naik_pred": 64.2, "akurasi": 50.0}}},
+        {"H": 30, "pct_naik_nyata": 50.1, "auc_f": 0.622, "rules": {
+            "c_youden": {"thr": 0.481, "pct_naik_pred": 20.1, "akurasi": 64.02}, "f_youden": {"thr": 0.446, "pct_naik_pred": 86.1, "akurasi": 45.66},
+            "median_f": {"thr": 0.471, "pct_naik_pred": 32.8, "akurasi": 65.26}}}])
     return feats
 
 
@@ -151,28 +168,37 @@ def seed_retro(content_dir):
 
 
 def backtest_fixture(kind="always_long"):
-    """content/backtest.json tetap (skema nyata). always_long: ambang validasi membuat model = buy and hold, seperti hasil nyata."""
-    def m(final, ret, trades, win, aw, al, mdd, sharpe, inmkt):
-        return {"final_equity": final, "total_return_pct": ret, "n_trades": trades, "win_rate_pct": win, "avg_win_pct": aw,
-                "avg_loss_pct": al, "max_drawdown_pct": mdd, "sharpe": sharpe, "days_in_market_pct": inmkt}
-    bh = m(794.38, -20.562, 1, 0.0, None, -20.562, -49.1, -0.1984, 100.0)
-    cls = m(985.31, -1.469, 11, 36.36, 9.2, -6.1, -26.0, 0.12, 56.0)
+    """content/backtest.json tetap (skema v2, angka mengikuti hasil nyata dengan biaya 0,15% per sisi).
+    always_long: ambang validasi membuat model = buy and hold, seperti hasil nyata."""
+    def m(final, ret, trades, win, aw, al, mdd, sharpe, inmkt, tx=None):
+        return {"final_equity": final, "total_return_pct": ret, "n_trades": trades, "n_transactions": trades * 2 if tx is None else tx,
+                "win_rate_pct": win, "avg_win_pct": aw, "avg_loss_pct": al, "max_drawdown_pct": mdd, "sharpe": sharpe,
+                "days_in_market_pct": inmkt, "identical_to_buy_and_hold": inmkt > 99.0}
+    bh = m(793.2, -20.68, 1, 0.0, None, -20.68, -49.13, -0.2011, 100.0, tx=1)
+    cls = m(953.47, -4.653, 11, 36.36, 7.92, -4.81, -26.43, 0.0313, 55.89)
+    half = m(894.47, -10.553, 11, 45.45, 4.96, -5.63, -33.02, -0.1844, 45.27)
     model = bh if kind == "always_long" else m(1056.13, 5.613, 2, 100.0, 5.6, None, -5.7, 0.51, 20.0)
     thr = 0.35 if kind == "always_long" else 0.60
-    rets = [(0.05, -20.6, 1), (0.10, -20.6, 1), (0.15, -20.6, 1), (0.20, -20.6, 1), (0.25, -20.6, 1), (0.30, -20.6, 1), (0.35, -20.6, 1),
-            (0.40, -38.8, 4), (0.45, -31.2, 16), (0.50, -7.5, 11), (0.55, 0.2, 9), (0.60, 5.6, 2), (0.65, 0.0, 0), (0.70, 0.0, 0),
+    rets = [(0.05, -20.7, 1), (0.10, -20.7, 1), (0.15, -20.7, 1), (0.20, -20.7, 1), (0.25, -20.7, 1), (0.30, -20.7, 1), (0.35, -20.7, 1),
+            (0.40, -39.4, 4), (0.45, -34.3, 16), (0.50, -10.6, 11), (0.55, -2.4, 9), (0.60, 5.0, 2), (0.65, 0.0, 0), (0.70, 0.0, 0),
             (0.75, 0.0, 0), (0.80, 0.0, 0), (0.85, 0.0, 0), (0.90, 0.0, 0)]
     sens = [{"threshold": t, "final_equity": round(1000 * (1 + r / 100), 2), "total_return_pct": r, "sharpe": None if n == 0 else 0.1,
              "max_drawdown_pct": -10.0, "n_trades": n} for t, r, n in rets]
-    return {"generated_at": "2026-10-21T00:00:00+00:00", "strategy": "long-only", "capital": 1000.0,
-            "costs": "tanpa biaya transaksi dan slippage", "period": {"start": "2025-02-21", "end": "2026-04-29", "n_days": 433},
+    return {"version": 2, "fee_per_side": 0.0015, "generated_at": "2026-10-24T00:00:00+00:00", "strategy": "long-only", "capital": 1000.0,
+            "costs": "biaya transaksi 0,10% ditambah slippage 0,05% (total 0,15%) per sisi, dibebankan saat masuk dan keluar posisi; angka ini asumsi, bukan data bursa",
+            "period": {"start": "2025-02-21", "end": "2026-04-29", "n_days": 433},
             "classification_threshold": 0.4768, "trading_threshold": {"value": thr, "selected_on": "validasi",
                                                                       "val_final_equity": 2654.44, "val_n_days": 432},
-            "model": model, "model_at_classification_threshold": cls, "buy_and_hold": bh, "sensitivity": sens,
+            "model": model, "model_at_classification_threshold": cls, "model_at_half": half, "buy_and_hold": bh, "sensitivity": sens,
+            "permutation": {"n_shifts": 413, "basis": "ambang klasifikasi",
+                            "total": {"model": -0.0465, "median_random": -0.1546, "p": 0.358},
+                            "sharpe": {"model": 0.0313, "median_random": -0.2499, "p": 0.368}},
+            "sharpe_diff_ci": [-1.3176, 1.5436],
             "curve": {"date": ["2025-02-21", "2025-02-22", "2025-02-23", "2025-02-24"], "model": [1000, 1010, 990, 980],
                       "model_classification": [1000, 1000, 1000, 1005], "buy_hold": [1000, 1010, 990, 980]},
             "checks": {"recall": 0.56, "collapsed": False, "range": [0.15, 0.85]},
             "parity_with_retro": {"checked": True, "max_abs_prob_diff": 5e-07},
             "caveats": ["Simulasi pada data historis periode uji (433 hari); bukan bukti kinerja di pasar nyata. Pembuktian memerlukan forward testing.",
-                        "Tanpa biaya transaksi dan slippage.", "Ambang trading dipilih dari data validasi.",
-                        "Satu jalur sejarah dan satu periode.", "Buy and hold = beli di awal periode uji."]}
+                        "Biaya transaksi dan slippage (0,15% per sisi) adalah asumsi.", "Ambang trading dipilih dari data validasi.",
+                        "Ambang trading yang dipilih di validasi membuat model identik buy and hold.",
+                        "Satu jalur sejarah dan satu periode; pembandingnya sinyal yang digeser sirkular.", "Buy and hold = beli di awal periode uji."]}

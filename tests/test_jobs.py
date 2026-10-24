@@ -430,3 +430,51 @@ def test_news_log_has_no_source_key_when_headlines_do_not_declare_one(tmp_path):
     deps, _ = make_deps(tmp_path)
     run_daily(deps)
     assert "source" not in read_json(deps.live_dir / "news_log.json")["2026-10-14"]
+
+
+# ---- Fear & Greed basi tidak boleh diam-diam menjadi 50 pada prediksi yang lalu terkunci ----
+def _with_fg_until(deps, last_day):
+    import dataclasses
+    return dataclasses.replace(deps, fetch_fear_greed=lambda: pd.DataFrame(
+        {"date": pd.date_range("2026-08-01", last_day), "fear_greed_index": 55.0}))
+
+
+def test_stale_fear_greed_stops_the_job_without_publishing_or_locking_a_prediction(tmp_path):
+    deps, _ = make_deps(tmp_path)
+    stale = _with_fg_until(deps, "2026-10-12")                     # as_of 14 Okt, FGI terakhir 12 Okt: tertinggal 2 hari
+    with pytest.raises(RuntimeError, match="Fear & Greed"):
+        run_daily(stale)
+    assert not (deps.live_dir / "latest.json").exists() and not (deps.live_dir / "history.json").exists()
+
+
+def test_fear_greed_one_day_behind_is_still_accepted(tmp_path):
+    deps, _ = make_deps(tmp_path)
+    latest = run_daily(_with_fg_until(deps, "2026-10-13"))         # tertinggal 1 hari: ffill 1 hari wajar
+    assert latest["inputs"]["fear_greed_index"] == 55.0
+
+
+def test_empty_fear_greed_also_stops_the_job(tmp_path):
+    import dataclasses
+    deps, _ = make_deps(tmp_path)
+    empty = dataclasses.replace(deps, fetch_fear_greed=lambda: pd.DataFrame({"date": [], "fear_greed_index": []}))
+    with pytest.raises(RuntimeError, match="Fear & Greed"):
+        run_daily(empty)
+
+
+# ---- penanda versi model pada tiap entri riwayat (bukti prospektif harus bisa diaudit) ----
+def test_new_history_entries_carry_the_model_version(tmp_path):
+    from app import config
+    deps, _ = make_deps(tmp_path)
+    run_daily(deps)
+    assert read_json(deps.live_dir / "history.json")[-1]["model_version"] == config.MODEL_VERSION
+
+
+def test_legacy_entries_without_version_are_tagged_but_existing_versions_are_kept(tmp_path):
+    from app import config
+    deps, _ = make_deps(tmp_path)
+    atomic_write_json(deps.live_dir / "history.json", [
+        {"date": "2026-10-10", "close": 1.0, "horizons": {"1": {"prob": 0.5, "direction": "NAIK", "threshold": 0.4}}},
+        {"date": "2026-10-11", "close": 1.0, "model_version": "v-lama", "horizons": {"1": {"prob": 0.5, "direction": "NAIK", "threshold": 0.4}}}])
+    run_daily(deps)
+    hist = {e["date"]: e for e in read_json(deps.live_dir / "history.json")}
+    assert hist["2026-10-10"]["model_version"] == config.MODEL_VERSION and hist["2026-10-11"]["model_version"] == "v-lama"

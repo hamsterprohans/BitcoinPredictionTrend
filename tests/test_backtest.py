@@ -80,3 +80,60 @@ def test_collapse_check_rejects_a_model_that_always_predicts_one_class():
     assert bad["collapsed"] is True and bad["recall"] == 1.0
     with pytest.raises(BacktestError, match="runtuh"):
         check_not_collapsed(actual, np.zeros(10, dtype=int), strict=True)
+
+
+# ---- v2: biaya transaksi (fee per sisi), uji sinyal-digeser, CI selisih Sharpe ----
+from app.backtest import FEE, daily_returns, shift_test, sharpe_diff_ci   # noqa: E402
+
+
+def test_default_fee_is_010_percent_cost_plus_005_percent_slippage_per_side():
+    assert FEE == pytest.approx(0.0015)
+
+
+def test_simulate_charges_the_fee_on_every_entry_and_exit_and_counts_transactions():
+    r = simulate([0.9, 0.1, 0.9, 0.9], [0.10, -0.05, 0.02, -0.01], 0.5, capital=1000.0, fee=0.01)
+    # posisi [1,0,1,1]; pergantian [1,1,1,0] -> return harian [0,10-1, 0-1, 2-1, -1]%
+    assert r["final_equity"] == pytest.approx(1000 * 1.09 * 0.99 * 1.01 * 0.99)
+    assert r["n_transactions"] == 3 and r["n_trades"] == 2
+    free = simulate([0.9, 0.1, 0.9, 0.9], [0.10, -0.05, 0.02, -0.01], 0.5, capital=1000.0)
+    assert free["n_transactions"] == 3 and free["final_equity"] > r["final_equity"]
+
+
+def test_fee_zero_leaves_every_existing_result_unchanged():
+    a = simulate([0.9, 0.1, 0.9], [0.1, 0.05, -0.02], 0.5)
+    b = simulate([0.9, 0.1, 0.9], [0.1, 0.05, -0.02], 0.5, fee=0.0)
+    assert a == b
+
+
+def test_buy_and_hold_pays_one_entry_fee_only():
+    r = buy_and_hold([0.10, -0.05], capital=1000.0, fee=0.01)
+    assert r["final_equity"] == pytest.approx(1000 * 1.09 * 0.95) and r["n_transactions"] == 1
+
+
+def test_a_trade_is_net_of_entry_and_exit_fees():
+    r = simulate([0.9, 0.1], [0.10, 0.0], 0.5, fee=0.01)                                  # masuk +10%, keluar hari ke-2
+    assert r["avg_win_pct"] == pytest.approx((1.10 * 0.99 * 0.99 - 1) * 100)
+
+
+def test_daily_returns_match_the_simulated_equity():
+    pos = np.array([1, 1, 0, 1], dtype=float)
+    ret = np.array([0.01, -0.02, 0.03, 0.04])
+    r = daily_returns(pos, ret, fee=0.005)
+    assert r == pytest.approx([0.01 - 0.005, -0.02, -0.005, 0.04 - 0.005])
+
+
+def test_shift_test_compares_the_model_with_circularly_shifted_signals_of_the_same_exposure():
+    rng = np.random.default_rng(0)
+    ret = rng.normal(0, 0.02, 120)
+    prob = np.where(ret > 0, 0.7, 0.3)                                                    # sinyal sempurna: tahu return besok
+    out = shift_test(prob, ret, 0.5, fee=0.0)
+    assert out["total"]["p"] < 0.05 and out["total"]["model"] > out["total"]["median_random"]
+    noise = shift_test(rng.uniform(0, 1, 120), ret, 0.5, fee=0.0)
+    assert 0.0 <= noise["total"]["p"] <= 1.0 and noise["n_shifts"] == 120 - 20
+
+
+def test_sharpe_diff_ci_is_zero_for_identical_series_and_ordered_otherwise():
+    r = np.random.default_rng(1).normal(0.001, 0.02, 100)
+    assert sharpe_diff_ci(r, r) == pytest.approx([0.0, 0.0])
+    lo, hi = sharpe_diff_ci(r, r * 0.5 + 0.002)
+    assert lo < hi

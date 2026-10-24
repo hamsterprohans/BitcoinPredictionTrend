@@ -11,6 +11,7 @@ STATIC_DIR = WEBAPP / "static"
 SEED_PRICE_TSV = Path(os.environ.get("SEED_PRICE_TSV", ROOT / "data" / "coin_metrics.tsv"))
 
 SEQ_LEN = 20
+MODEL_VERSION = "v3_align"          # penanda model pada tiap entri riwayat; samakan dengan VERSI_LOG di notebook; naikkan bila model diganti
 CLIP_VAL = 5.0
 HORIZONS = [1, 3, 5, 7, 15, 20, 25, 30, 35]
 MH_SEEDS = [47, 123, 2024]

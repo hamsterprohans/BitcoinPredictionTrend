@@ -80,3 +80,20 @@ def test_about_page_experience_certifications_and_skills_from_linkedin(page, ser
     skills = page.inner_text("#about-skills")
     assert "Kepemimpinan Organisasi" in skills and "Pengembangan Aplikasi Cloud" in skills
     assert "profil LinkedIn" in page.inner_text("#about-source")                  # sumber disebut jelas
+
+
+def test_methodology_explains_why_models_and_thresholds_differ_per_horizon(page, server):
+    page.goto(server + "/metodologi")
+    text = " ".join(page.inner_text("main").split())
+    assert "Model dan ambang per horizon" in text
+    assert "1 hari memakai satu model" in text and "rata-rata probabilitas tiga seed (47, 123, 2024)" in text
+    assert "proporsi hari naik" in text and "56%" in text and "67%" in text            # alasan: kelas berubah menurut horizon
+    assert "Youden" in text and "validasi Model C" in text and "dibekukan dan dipakai pada Model F" in text
+    assert "Berita live diambil dari GDELT" not in text                                  # sumber berita live kini CryptoCompare, cadangan RSS
+    assert "CryptoCompare" in text
+
+
+def test_methodology_evaluation_matches_the_final_protocol(page, server):
+    page.goto(server + "/metodologi")
+    text = " ".join(page.inner_text("main").split())
+    assert "10 seed" in text and "15 pasangan" in text and "koreksi Holm" in text and "biaya transaksi" in text

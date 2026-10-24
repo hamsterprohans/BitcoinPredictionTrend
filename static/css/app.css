@@ -331,3 +331,4 @@ body.no-webgl #splash-canvas{display:none}
 .owner-stats div{display:flex;flex-direction:column}.owner-stats strong{font-family:var(--mono);font-size:1.15rem;color:var(--text)}
 .owner-bars{display:block;width:100%;height:56px}.owner-bars rect{fill:var(--gold);opacity:.5}
 .owner-pages{list-style:none;margin:10px 0;padding:0}.owner-pages li{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:.8rem}
+
