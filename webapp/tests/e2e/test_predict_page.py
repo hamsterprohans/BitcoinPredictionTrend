@@ -366,27 +366,28 @@ def _with_outside(page, labels):
     page.route("**/api/prediction/latest", handle)
 
 
-def test_warning_lists_features_outside_the_training_range(page, server):
+def test_range_note_sits_in_the_history_section_as_a_small_muted_line_not_a_banner(page, server):
     _with_outside(page, {"Rata-rata harga 7 hari", "Rata-rata harga 90 hari"})
     page.goto(server + "/")
     page.wait_for_selector("#prediction-direction:not(:text('—'))")
-    box = page.locator("#range-warning")
-    assert box.is_visible() and box.get_attribute("role") == "note"
-    text = " ".join(box.inner_text().split())
-    assert "di luar rentang data latih" in text
+    note = page.locator("#sec-hist #range-note")
+    assert note.is_visible() and note.get_attribute("role") == "note"
+    assert "small" in note.get_attribute("class") and "banner" not in note.get_attribute("class")
+    text = " ".join(note.inner_text().split())
+    assert "di luar rentang data latih" in text and "belum teruji" in text
     assert "Rata-rata harga 7 hari" in text and "Rata-rata harga 90 hari" in text and "Rata-rata harga 30 hari" not in text
-    assert "tidak teruji" in text or "belum teruji" in text                                   # mengapa ini penting
-    assert page.locator("#sec-pred").locator("#range-warning").count() == 1                 # di dalam kartu prediksi
+    assert page.locator("#sec-pred #range-note").count() == 0 and page.locator("#range-warning").count() == 0   # tidak ada peringatan di kartu prediksi
+    assert page.is_hidden("#banner")
 
 
-def test_no_range_warning_when_all_features_are_inside_the_training_range(page, server):
+def test_no_range_note_when_all_features_are_inside_the_training_range(page, server):
     _with_outside(page, set())
     page.goto(server + "/")
     page.wait_for_selector("#prediction-direction:not(:text('—'))")
-    assert page.is_hidden("#range-warning")
+    assert page.is_hidden("#range-note")
 
 
-def test_no_range_warning_and_no_crash_without_explanation_block(page, server):
+def test_no_range_note_and_no_crash_without_explanation_block(page, server):
     errs = collect_errors(page)
     def handle(route):
         data = route.fetch().json()
@@ -395,7 +396,7 @@ def test_no_range_warning_and_no_crash_without_explanation_block(page, server):
     page.route("**/api/prediction/latest", handle)
     page.goto(server + "/")
     page.wait_for_selector("#prediction-direction:not(:text('—'))")
-    assert page.is_hidden("#range-warning") and errs == []
+    assert page.is_hidden("#range-note") and errs == []
 
 
 def test_history_summary_has_wilson_interval_and_separates_backfilled_rows(page, server):
