@@ -502,5 +502,28 @@
    "https://timestabloid.com/expert-says-xrp-will-jump-bitcoin-heres-why/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-10-24": {
+  "titles": [
+   "Bitcoin ETF outflows hit $137.9 million, Ethereum funds gain $4.4 million",
+   "Evernorth CEO Explains Why He Chose XRP Over Bitcoin",
+   "BlackRock IBIT drives $301 million net inflows for US Bitcoin ETFs",
+   "Bitcoin falls below $80,000, $239M in BTC longs liquidated as ETF outflows hit $773M",
+   "Bitcoin struggles around $80,000 as ETF outflows increase, uncertainty grows"
+  ],
+  "scores": {
+   "pemahaman": -5,
+   "detail": -2,
+   "bullbear": -4,
+   "mean": -3.6666666666666665
+  },
+  "urls": [
+   "https://en.coin-turk.com/bitcoin-etf-outflows-hit-137-9-million-ethereum-funds-gain-4-4-million/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-etf-outflows-hit-137-9-million-ethereum-funds-gain-4-4-million",
+   "https://zycrypto.com/evernorth-ceo-explains-why-he-chose-xrp-over-bitcoin/",
+   "https://en.coin-turk.com/blackrock-ibit-drives-301-million-net-inflows-for-us-bitcoin-etfs/?utm_source=rss&utm_medium=rss&utm_campaign=blackrock-ibit-drives-301-million-net-inflows-for-us-bitcoin-etfs",
+   "https://en.coin-turk.com/bitcoin-falls-below-80000-239m-in-btc-longs-liquidated-as-etf-outflows-hit-773m/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-falls-below-80000-239m-in-btc-longs-liquidated-as-etf-outflows-hit-773m",
+   "https://en.coin-turk.com/bitcoin-struggles-around-80000-as-etf-outflows-increase-uncertainty-grows/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-struggles-around-80000-as-etf-outflows-increase-uncertainty-grows"
+  ],
+  "source": "cryptocompare"
  }
 }
