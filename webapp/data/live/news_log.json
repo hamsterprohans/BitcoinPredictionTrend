@@ -525,5 +525,28 @@
    "https://en.coin-turk.com/bitcoin-struggles-around-80000-as-etf-outflows-increase-uncertainty-grows/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-struggles-around-80000-as-etf-outflows-increase-uncertainty-grows"
   ],
   "source": "cryptocompare"
+ },
+ "2026-10-25": {
+  "titles": [
+   "Novogratz Sees Bitcoin (BTC) at $100,000 by Year-End, Not $50,000",
+   "Bitcoin (BTC) Will Reach $100,000 Before $60,000: Mike Alfred Stakes $1 Million on the Call",
+   "AI agents help rescue ETH’s Glamsterdam fork, ‘Steal My Bitcoin’ site: Hodler’s Digest",
+   "Bitcoin’s 7-Day Hashrate Returns to 1 ZH/s After Nearly 8 Months",
+   "Jordi Visser Calls Bitcoin (BTC) Zero-Value Claim a Joke, Citing 7-Year Security Window"
+  ],
+  "scores": {
+   "pemahaman": 7,
+   "detail": 5,
+   "bullbear": 5,
+   "mean": 5.666666666666667
+  },
+  "urls": [
+   "https://en.coinotag.com/novogratz-bitcoin-btc-100000-year-end-not-50000",
+   "https://en.coinotag.com/mike-alfred-bitcoin-btc-100000-before-60000-million-dollar-wager",
+   "https://cointelegraph.com/magazine/ai-agents-help-rescue-eths-glamsterdam-fork-steal-my-bitcoin-site-hodlers-digest?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+   "https://news.bitcoin.com/mining/bitcoins-7-day-hashrate-returns-to-1-zh-s-after-nearly-8-months/",
+   "https://en.coinotag.com/jordi-visser-bitcoin-btc-zero-value-forecast-joke-7-year-window"
+  ],
+  "source": "cryptocompare"
  }
 }
