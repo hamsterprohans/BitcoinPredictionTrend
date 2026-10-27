@@ -1,185 +1,185 @@
 {
- "as_of": "2026-10-25",
- "generated_at": "2026-10-26T04:43:40+00:00",
- "close": 80038.91,
- "change_pct": -0.82,
+ "as_of": "2026-10-26",
+ "generated_at": "2026-10-27T03:07:25+00:00",
+ "close": 79949.93,
+ "change_pct": -0.11,
  "inputs": {
-  "news_sentiment": 5.667,
-  "news_sentiment_raw": 5.667,
+  "news_sentiment": -2.0,
+  "news_sentiment_raw": -2.0,
   "headline_count": 41,
-  "fear_greed_index": 54.0
+  "fear_greed_index": 50.0
  },
  "horizons": {
   "1": {
-   "prob": 0.5255672931671143,
+   "prob": 0.49834269285202026,
    "threshold": 0.4768124222755432,
    "direction": "NAIK",
-   "target_date": "2026-10-26"
+   "target_date": "2026-10-27"
   },
   "3": {
-   "prob": 0.49304236968358356,
+   "prob": 0.49142057696978253,
    "threshold": 0.5177493095397949,
    "direction": "TURUN",
-   "target_date": "2026-10-28"
+   "target_date": "2026-10-29"
   },
   "5": {
-   "prob": 0.4481048087279002,
+   "prob": 0.4463789264361064,
    "threshold": 0.47828808426856995,
    "direction": "TURUN",
-   "target_date": "2026-10-30"
+   "target_date": "2026-10-31"
   },
   "7": {
-   "prob": 0.4591562549273173,
+   "prob": 0.4584757288297017,
    "threshold": 0.47223278880119324,
    "direction": "TURUN",
-   "target_date": "2026-11-01"
+   "target_date": "2026-11-02"
   },
   "15": {
-   "prob": 0.43669389684995014,
+   "prob": 0.43832994500796,
    "threshold": 0.45957493782043457,
    "direction": "TURUN",
-   "target_date": "2026-11-09"
+   "target_date": "2026-11-10"
   },
   "20": {
-   "prob": 0.44255491097768146,
+   "prob": 0.44438143571217853,
    "threshold": 0.4715519845485687,
    "direction": "TURUN",
-   "target_date": "2026-11-14"
+   "target_date": "2026-11-15"
   },
   "25": {
-   "prob": 0.4367020825544993,
+   "prob": 0.4344600836435954,
    "threshold": 0.4579542577266693,
    "direction": "TURUN",
-   "target_date": "2026-11-19"
+   "target_date": "2026-11-20"
   },
   "30": {
-   "prob": 0.447654922803243,
+   "prob": 0.4498874445756276,
    "threshold": 0.4812179505825043,
    "direction": "TURUN",
-   "target_date": "2026-11-24"
+   "target_date": "2026-11-25"
   },
   "35": {
-   "prob": 0.42669543623924255,
+   "prob": 0.42837948600451153,
    "threshold": 0.42857804894447327,
    "direction": "TURUN",
-   "target_date": "2026-11-29"
+   "target_date": "2026-11-30"
   }
  },
  "explain": {
   "headlines": [
    {
-    "title": "Novogratz Sees Bitcoin (BTC) at $100,000 by Year-End, Not $50,000",
-    "url": "https://en.coinotag.com/novogratz-bitcoin-btc-100000-year-end-not-50000"
+    "title": "Security Researcher Killa Extracts Bitcoin (BTC) Private Key From PHP Server in 2 Hours 47 Minutes",
+    "url": "https://en.coinotag.com/killa-extracts-bitcoin-btc-private-key-php-server"
    },
    {
-    "title": "Bitcoin (BTC) Will Reach $100,000 Before $60,000: Mike Alfred Stakes $1 Million on the Call",
-    "url": "https://en.coinotag.com/mike-alfred-bitcoin-btc-100000-before-60000-million-dollar-wager"
+    "title": "Altcoin Daily Frames Sub-$80,000 Bitcoin (BTC) as Generational Buying Opportunity",
+    "url": "https://en.coinotag.com/bitcoin-btc-below-80000-generational-buying-opportunity"
    },
    {
-    "title": "AI agents help rescue ETH’s Glamsterdam fork, ‘Steal My Bitcoin’ site: Hodler’s Digest",
-    "url": "https://cointelegraph.com/magazine/ai-agents-help-rescue-eths-glamsterdam-fork-steal-my-bitcoin-site-hodlers-digest?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound"
+    "title": "Elon Musk’s Grok AI Predicts When Bitcoin Will Finally Hit its Ultimate Price Target",
+    "url": "https://cryptonews.com/news/elon-musks-grok-ai-predicts-when-bitcoin-will-finally-hit-its-ultimate-price-target/"
    },
    {
-    "title": "Bitcoin’s 7-Day Hashrate Returns to 1 ZH/s After Nearly 8 Months",
-    "url": "https://news.bitcoin.com/mining/bitcoins-7-day-hashrate-returns-to-1-zh-s-after-nearly-8-months/"
+    "title": "$13.3T Vanguard Buys $7.5M Worth of Shares in Bitcoin Treasury Company Metaplanet",
+    "url": "https://zycrypto.com/13-3t-vanguard-buys-7-5m-worth-of-shares-in-bitcoin-treasury-company-metaplanet/"
    },
    {
-    "title": "Jordi Visser Calls Bitcoin (BTC) Zero-Value Claim a Joke, Citing 7-Year Security Window",
-    "url": "https://en.coinotag.com/jordi-visser-bitcoin-btc-zero-value-forecast-joke-7-year-window"
+    "title": "Are the Bears Taking Control of Bitcoin? Renowned Analyst Benjamin Cowen Outlines Critical Levels",
+    "url": "https://en.bitcoinsistemi.com/are-the-bears-taking-control-of-bitcoin-renowned-analyst-benjamin-cowen-outlines-critical-levels/"
    }
   ],
   "sentiment": {
    "has_news": true,
    "scores": {
-    "pemahaman": 7,
-    "detail": 5,
-    "bullbear": 5,
-    "mean": 5.666666666666667
+    "pemahaman": -3,
+    "detail": -1,
+    "bullbear": -2,
+    "mean": -2.0
    },
-   "used": 5.666666666666667
+   "used": -2.0
   },
   "contributions": [
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "delta_pp": 12.329
-   },
-   {
-    "feature": "Vol_7",
-    "label": "Volatilitas 7 hari",
-    "delta_pp": 5.184
+    "delta_pp": 10.048
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "delta_pp": -3.755
+    "delta_pp": -6.611
    },
    {
-    "feature": "Vol_30",
-    "label": "Volatilitas 30 hari",
-    "delta_pp": -2.367
-   },
-   {
-    "feature": "BB_width",
-    "label": "Lebar Bollinger",
-    "delta_pp": -2.185
-   },
-   {
-    "feature": "MACD_Histogram",
-    "label": "Histogram MACD",
-    "delta_pp": -1.503
-   },
-   {
-    "feature": "MACD_Signal",
-    "label": "Sinyal MACD",
-    "delta_pp": 1.227
-   },
-   {
-    "feature": "MA30",
-    "label": "Rata-rata harga 30 hari",
-    "delta_pp": 0.471
+    "feature": "Vol_7",
+    "label": "Volatilitas 7 hari",
+    "delta_pp": 5.401
    },
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "delta_pp": -0.397
+    "delta_pp": -3.048
+   },
+   {
+    "feature": "MACD_Histogram",
+    "label": "Histogram MACD",
+    "delta_pp": -2.27
+   },
+   {
+    "feature": "Vol_30",
+    "label": "Volatilitas 30 hari",
+    "delta_pp": -1.953
+   },
+   {
+    "feature": "BB_width",
+    "label": "Lebar Bollinger",
+    "delta_pp": -1.883
+   },
+   {
+    "feature": "MACD_Signal",
+    "label": "Sinyal MACD",
+    "delta_pp": 0.924
    },
    {
     "feature": "fear_greed_index_scaled",
     "label": "Fear & Greed Index",
-    "delta_pp": 0.279
-   },
-   {
-    "feature": "daily_return",
-    "label": "Return harian",
-    "delta_pp": 0.175
+    "delta_pp": 0.307
    },
    {
     "feature": "RSI14",
     "label": "RSI 14 hari",
-    "delta_pp": 0.172
+    "delta_pp": 0.28
+   },
+   {
+    "feature": "MA30",
+    "label": "Rata-rata harga 30 hari",
+    "delta_pp": -0.248
+   },
+   {
+    "feature": "daily_return",
+    "label": "Return harian",
+    "delta_pp": 0.126
    },
    {
     "feature": "MACD",
     "label": "MACD",
-    "delta_pp": -0.127
+    "delta_pp": -0.05
    }
   ],
   "features": [
    {
     "feature": "daily_return",
     "label": "Return harian",
-    "value": -0.00818355570042284,
-    "value_text": "-0,82%",
-    "percentile": 32,
-    "category": "rendah",
+    "value": -0.0011116028278246315,
+    "value_text": "-0,11%",
+    "percentile": 46,
+    "category": "sedang",
     "outside_train_range": false
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "value": 81701.80122384403,
-    "value_text": "US$81.702",
+    "value": 81420.62062995158,
+    "value_text": "US$81.421",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -187,8 +187,8 @@
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "value": 83028.31647214496,
-    "value_text": "US$83.028",
+    "value": 82880.43107920905,
+    "value_text": "US$82.880",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -196,8 +196,8 @@
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "value": 76605.23164077531,
-    "value_text": "US$76.605",
+    "value": 76785.47035333666,
+    "value_text": "US$76.785",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -205,7 +205,7 @@
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "value": 0.01634022643497297,
+    "value": 0.016315955847873723,
     "value_text": "1,63%",
     "percentile": 18,
     "category": "rendah",
@@ -214,7 +214,7 @@
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "value": 0.013147560474704128,
+    "value": 0.013108325262456985,
     "value_text": "1,31%",
     "percentile": 2,
     "category": "rendah",
@@ -223,8 +223,8 @@
    {
     "feature": "RSI14",
     "label": "RSI 14 hari",
-    "value": 41.727511570230526,
-    "value_text": "41,7",
+    "value": 41.41795564094499,
+    "value_text": "41,4",
     "percentile": 24,
     "category": "rendah",
     "outside_train_range": false
@@ -232,26 +232,26 @@
    {
     "feature": "MACD",
     "label": "MACD",
-    "value": -337.3194744275097,
-    "value_text": "US$-337,3",
-    "percentile": 26,
+    "value": -451.07250365043,
+    "value_text": "US$-451,1",
+    "percentile": 20,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "MACD_Signal",
     "label": "Sinyal MACD",
-    "value": 13.890194373915051,
-    "value_text": "US$+13,9",
-    "percentile": 54,
+    "value": -79.10234523095396,
+    "value_text": "US$-79,1",
+    "percentile": 42,
     "category": "sedang",
     "outside_train_range": false
    },
    {
     "feature": "MACD_Histogram",
     "label": "Histogram MACD",
-    "value": -351.20966880142475,
-    "value_text": "US$-351,2",
+    "value": -371.97015841947604,
+    "value_text": "US$-372,0",
     "percentile": 8,
     "category": "rendah",
     "outside_train_range": false
@@ -259,34 +259,34 @@
    {
     "feature": "BB_width",
     "label": "Lebar Bollinger",
-    "value": 0.06307842424926584,
-    "value_text": "6,3%",
-    "percentile": 4,
+    "value": 0.05589305401072435,
+    "value_text": "5,6%",
+    "percentile": 2,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "value": 5.666666666666667,
-    "value_text": "+5,67",
-    "percentile": 94,
-    "category": "tinggi",
+    "value": -2.0,
+    "value_text": "-2,00",
+    "percentile": 16,
+    "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "fear_greed_index_scaled",
     "label": "Fear & Greed Index",
-    "value": 0.54,
-    "value_text": "54 dari 100",
-    "percentile": 70,
-    "category": "tinggi",
+    "value": 0.5,
+    "value_text": "50 dari 100",
+    "percentile": 64,
+    "category": "sedang",
     "outside_train_range": false
    }
   ],
-  "level": "sedang",
+  "level": "rendah",
   "narrative": {
-   "text": "Model penelitian memprediksi harga Bitcoin naik pada 26 Oktober 2026 dengan probabilitas 0,5256 (keyakinan sedang). Sentimen berita paling memengaruhi skor model dengan pengaruh +12,3 poin persentase, mencerminkan sentimen tinggi di persentil 94. Volatilitas 7 hari bernilai 1,63% memberikan pengaruh +5,2 poin persentase, sementara rata-rata harga 7 hari sebesar US$81.702 berkontribusi dengan pengaruh -3,8 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+   "text": "Model penelitian memprediksi harga Bitcoin akan NAIK pada 27 Oktober 2026 dengan probabilitas 0,4983, menunjukkan tingkat keyakinan rendah. Sentimen berita memberikan pengaruh +10,0 poin persentase, sementara rata-rata harga 7 hari (US$81.421) memberikan pengaruh -6,6 poin persentase terhadap skor model. Volatilitas 7 hari bernilai 1,63% juga berkontribusi dengan pengaruh +5,4 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
    "source": "llm",
    "attempts": 1,
    "temperature": null

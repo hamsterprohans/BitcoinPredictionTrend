@@ -548,5 +548,28 @@
    "https://en.coinotag.com/jordi-visser-bitcoin-btc-zero-value-forecast-joke-7-year-window"
   ],
   "source": "cryptocompare"
+ },
+ "2026-10-26": {
+  "titles": [
+   "Security Researcher Killa Extracts Bitcoin (BTC) Private Key From PHP Server in 2 Hours 47 Minutes",
+   "Altcoin Daily Frames Sub-$80,000 Bitcoin (BTC) as Generational Buying Opportunity",
+   "Elon Musk’s Grok AI Predicts When Bitcoin Will Finally Hit its Ultimate Price Target",
+   "$13.3T Vanguard Buys $7.5M Worth of Shares in Bitcoin Treasury Company Metaplanet",
+   "Are the Bears Taking Control of Bitcoin? Renowned Analyst Benjamin Cowen Outlines Critical Levels"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": -1,
+   "bullbear": -2,
+   "mean": -2.0
+  },
+  "urls": [
+   "https://en.coinotag.com/killa-extracts-bitcoin-btc-private-key-php-server",
+   "https://en.coinotag.com/bitcoin-btc-below-80000-generational-buying-opportunity",
+   "https://cryptonews.com/news/elon-musks-grok-ai-predicts-when-bitcoin-will-finally-hit-its-ultimate-price-target/",
+   "https://zycrypto.com/13-3t-vanguard-buys-7-5m-worth-of-shares-in-bitcoin-treasury-company-metaplanet/",
+   "https://en.bitcoinsistemi.com/are-the-bears-taking-control-of-bitcoin-renowned-analyst-benjamin-cowen-outlines-critical-levels/"
+  ],
+  "source": "cryptocompare"
  }
 }
