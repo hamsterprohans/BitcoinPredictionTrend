@@ -571,5 +571,28 @@
    "https://en.bitcoinsistemi.com/are-the-bears-taking-control-of-bitcoin-renowned-analyst-benjamin-cowen-outlines-critical-levels/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-10-27": {
+  "titles": [
+   "Bitcoin faces $200 million whale deposits as price hovers above $80,000",
+   "Bitcoin Mining Firm Luxor Raises $16 Million to Accelerate AI Expansion",
+   "Bitcoin (BTC) Holds Near $81,000 After Israel's Election Ends With No Majority",
+   "Bitcoin (BTC) Holds $81,000 Line After Slide to Five-Week Low",
+   "Strive Adds 6,182 Bitcoin as Holdings Reach 43,000 BTC"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 4,
+   "bullbear": 5,
+   "mean": 4.0
+  },
+  "urls": [
+   "https://en.coin-turk.com/bitcoin-faces-200-million-whale-deposits-as-price-hovers-above-80000/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-faces-200-million-whale-deposits-as-price-hovers-above-80000",
+   "https://news.bitcoin.com/crypto-news/bitcoin-mining-firm-luxor-raises-16-million-accelerate-ai-expansion/",
+   "https://en.coinotag.com/bitcoin-btc-near-81000-israel-election-hung-parliament",
+   "https://en.coinotag.com/bitcoin-btc-holds-81000-line-after-five-week-low",
+   "https://www.newsbtc.com/news/strive-adds-6-182-bitcoin-as-holdings-reach-43-000-btc/"
+  ],
+  "source": "cryptocompare"
  }
 }
