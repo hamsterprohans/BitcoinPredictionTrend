@@ -1,185 +1,185 @@
 {
- "as_of": "2026-10-27",
- "generated_at": "2026-10-28T05:38:17+00:00",
- "close": 80800.54,
- "change_pct": 1.06,
+ "as_of": "2026-10-28",
+ "generated_at": "2026-10-29T03:39:18+00:00",
+ "close": 81237.44,
+ "change_pct": 0.54,
  "inputs": {
-  "news_sentiment": 4.0,
-  "news_sentiment_raw": 4.0,
-  "headline_count": 42,
-  "fear_greed_index": 48.0
+  "news_sentiment": 2.0,
+  "news_sentiment_raw": 2.0,
+  "headline_count": 5,
+  "fear_greed_index": 51.0
  },
  "horizons": {
   "1": {
-   "prob": 0.5009307861328125,
+   "prob": 0.4935968518257141,
    "threshold": 0.4768124222755432,
    "direction": "NAIK",
-   "target_date": "2026-10-28"
+   "target_date": "2026-10-29"
   },
   "3": {
-   "prob": 0.49206921458244324,
+   "prob": 0.4919745723406474,
    "threshold": 0.5177493095397949,
    "direction": "TURUN",
-   "target_date": "2026-10-30"
+   "target_date": "2026-10-31"
   },
   "5": {
-   "prob": 0.4483357071876526,
+   "prob": 0.44920507073402405,
    "threshold": 0.47828808426856995,
    "direction": "TURUN",
-   "target_date": "2026-11-01"
+   "target_date": "2026-11-02"
   },
   "7": {
-   "prob": 0.45734543601671857,
+   "prob": 0.4564296007156372,
    "threshold": 0.47223278880119324,
    "direction": "TURUN",
-   "target_date": "2026-11-03"
+   "target_date": "2026-11-04"
   },
   "15": {
-   "prob": 0.4397604962189992,
+   "prob": 0.44165076812108356,
    "threshold": 0.45957493782043457,
    "direction": "TURUN",
-   "target_date": "2026-11-11"
+   "target_date": "2026-11-12"
   },
   "20": {
-   "prob": 0.44505825638771057,
+   "prob": 0.44608713189760846,
    "threshold": 0.4715519845485687,
    "direction": "TURUN",
-   "target_date": "2026-11-16"
+   "target_date": "2026-11-17"
   },
   "25": {
-   "prob": 0.43623318274815875,
+   "prob": 0.43703149755795795,
    "threshold": 0.4579542577266693,
    "direction": "TURUN",
-   "target_date": "2026-11-21"
+   "target_date": "2026-11-22"
   },
   "30": {
-   "prob": 0.4492383400599162,
+   "prob": 0.4499002993106842,
    "threshold": 0.4812179505825043,
    "direction": "TURUN",
-   "target_date": "2026-11-26"
+   "target_date": "2026-11-27"
   },
   "35": {
-   "prob": 0.42940985163052875,
+   "prob": 0.4303751587867737,
    "threshold": 0.42857804894447327,
    "direction": "NAIK",
-   "target_date": "2026-12-01"
+   "target_date": "2026-12-02"
   }
  },
  "explain": {
   "headlines": [
    {
-    "title": "Bitcoin faces $200 million whale deposits as price hovers above $80,000",
-    "url": "https://en.coin-turk.com/bitcoin-faces-200-million-whale-deposits-as-price-hovers-above-80000/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-faces-200-million-whale-deposits-as-price-hovers-above-80000"
+    "title": "Microsoft Copilot AI Predicts a Historic BTC Move Post-FOMC",
+    "url": "https://cryptonews.com/news/microsoft-copilot-ai-predicts-historic-btc-move-post-fomc/"
    },
    {
-    "title": "Bitcoin Mining Firm Luxor Raises $16 Million to Accelerate AI Expansion",
-    "url": "https://news.bitcoin.com/crypto-news/bitcoin-mining-firm-luxor-raises-16-million-accelerate-ai-expansion/"
+    "title": "Bitcoin Treasury Datavault AI Says It Can’t Access Its BTC, Stock Tanks",
+    "url": "https://decrypt.co/382116/bitcoin-treasury-datavault-ai-stock-crashes-cant-access-btc"
    },
    {
-    "title": "Bitcoin (BTC) Holds Near $81,000 After Israel's Election Ends With No Majority",
-    "url": "https://en.coinotag.com/bitcoin-btc-near-81000-israel-election-hung-parliament"
+    "title": "Bitcoin-backed mortgages are coming to Canada, but borrowers are still unaware of the cost",
+    "url": "https://www.coindesk.com/markets/2026/10/28/bitcoin-backed-mortgages-are-coming-to-canada-but-borrowers-are-still-unaware-of-the-cost"
    },
    {
-    "title": "Bitcoin (BTC) Holds $81,000 Line After Slide to Five-Week Low",
-    "url": "https://en.coinotag.com/bitcoin-btc-holds-81000-line-after-five-week-low"
+    "title": "Fed Stands Pat, Bitcoin Holds Steady—But a December Rate Hike Is in Play",
+    "url": "https://decrypt.co/382092/fed-hold-interest-rate-steady-bitcoin-december-rate-hike"
    },
    {
-    "title": "Strive Adds 6,182 Bitcoin as Holdings Reach 43,000 BTC",
-    "url": "https://www.newsbtc.com/news/strive-adds-6-182-bitcoin-as-holdings-reach-43-000-btc/"
+    "title": "Bitcoin price bounce rejected at 50-day trend line ahead of FOMC, earnings",
+    "url": "https://cointelegraph.com/markets/bitcoin-price-bounce-rejected-at-50-day-trend-line-ahead-of-fomc-earnings?utm_source=rss_feed&utm_medium=rss_tag_bitcoin&utm_campaign=rss_partner_inbound"
    }
   ],
   "sentiment": {
    "has_news": true,
    "scores": {
-    "pemahaman": 3,
-    "detail": 4,
-    "bullbear": 5,
-    "mean": 4.0
+    "pemahaman": 2,
+    "detail": 2,
+    "bullbear": 2,
+    "mean": 2.0
    },
-   "used": 4.0
+   "used": 2.0
   },
   "contributions": [
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "delta_pp": 10.641
+    "delta_pp": 10.301
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "delta_pp": -5.958
+    "delta_pp": -6.228
    },
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "delta_pp": 5.26
+    "delta_pp": 5.201
    },
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "delta_pp": -3.316
-   },
-   {
-    "feature": "MACD_Histogram",
-    "label": "Histogram MACD",
-    "delta_pp": -2.549
+    "delta_pp": -3.764
    },
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "delta_pp": -2.175
+    "delta_pp": -2.572
+   },
+   {
+    "feature": "MACD_Histogram",
+    "label": "Histogram MACD",
+    "delta_pp": -2.423
    },
    {
     "feature": "BB_width",
     "label": "Lebar Bollinger",
-    "delta_pp": -1.729
+    "delta_pp": -1.58
    },
    {
     "feature": "MACD_Signal",
     "label": "Sinyal MACD",
-    "delta_pp": 0.71
-   },
-   {
-    "feature": "fear_greed_index_scaled",
-    "label": "Fear & Greed Index",
-    "delta_pp": 0.288
-   },
-   {
-    "feature": "RSI14",
-    "label": "RSI 14 hari",
-    "delta_pp": 0.253
-   },
-   {
-    "feature": "MACD",
-    "label": "MACD",
-    "delta_pp": 0.087
-   },
-   {
-    "feature": "daily_return",
-    "label": "Return harian",
-    "delta_pp": 0.038
+    "delta_pp": 0.516
    },
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "delta_pp": -0.031
+    "delta_pp": -0.246
+   },
+   {
+    "feature": "fear_greed_index_scaled",
+    "label": "Fear & Greed Index",
+    "delta_pp": 0.238
+   },
+   {
+    "feature": "RSI14",
+    "label": "RSI 14 hari",
+    "delta_pp": 0.23
+   },
+   {
+    "feature": "MACD",
+    "label": "MACD",
+    "delta_pp": 0.21
+   },
+   {
+    "feature": "daily_return",
+    "label": "Return harian",
+    "delta_pp": 0.015
    }
   ],
   "features": [
    {
     "feature": "daily_return",
     "label": "Return harian",
-    "value": 0.010639196264932593,
-    "value_text": "+1,06%",
-    "percentile": 68,
-    "category": "tinggi",
+    "value": 0.005407147876138607,
+    "value_text": "+0,54%",
+    "percentile": 60,
+    "category": "sedang",
     "outside_train_range": false
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "value": 81120.85308936253,
-    "value_text": "US$81.121",
+    "value": 80701.0471151319,
+    "value_text": "US$80.701",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -187,8 +187,8 @@
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "value": 82760.69991220934,
-    "value_text": "US$82.761",
+    "value": 82684.7224070451,
+    "value_text": "US$82.685",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -196,8 +196,8 @@
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "value": 76973.20249636786,
-    "value_text": "US$76.973",
+    "value": 77155.5343592566,
+    "value_text": "US$77.156",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -205,17 +205,17 @@
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "value": 0.016113865745432204,
-    "value_text": "1,61%",
-    "percentile": 18,
+    "value": 0.014518262227101007,
+    "value_text": "1,45%",
+    "percentile": 14,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "value": 0.013298601414628125,
-    "value_text": "1,33%",
+    "value": 0.013241792497775833,
+    "value_text": "1,32%",
     "percentile": 2,
     "category": "rendah",
     "outside_train_range": false
@@ -223,44 +223,44 @@
    {
     "feature": "RSI14",
     "label": "RSI 14 hari",
-    "value": 45.57492218194216,
-    "value_text": "45,6",
-    "percentile": 36,
+    "value": 47.6304852350028,
+    "value_text": "47,6",
+    "percentile": 44,
     "category": "sedang",
     "outside_train_range": false
    },
    {
     "feature": "MACD",
     "label": "MACD",
-    "value": -467.20044617516396,
-    "value_text": "US$-467,2",
-    "percentile": 20,
+    "value": -439.65961909948965,
+    "value_text": "US$-439,7",
+    "percentile": 22,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "MACD_Signal",
     "label": "Sinyal MACD",
-    "value": -156.72196541979596,
-    "value_text": "US$-156,7",
-    "percentile": 36,
-    "category": "sedang",
+    "value": -213.3094961557347,
+    "value_text": "US$-213,3",
+    "percentile": 32,
+    "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "MACD_Histogram",
     "label": "Histogram MACD",
-    "value": -310.47848075536797,
-    "value_text": "US$-310,5",
-    "percentile": 10,
+    "value": -226.35012294375494,
+    "value_text": "US$-226,4",
+    "percentile": 12,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "BB_width",
     "label": "Lebar Bollinger",
-    "value": 0.05523399690164976,
-    "value_text": "5,5%",
+    "value": 0.05563807555085933,
+    "value_text": "5,6%",
     "percentile": 2,
     "category": "rendah",
     "outside_train_range": false
@@ -268,29 +268,29 @@
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "value": 4.0,
-    "value_text": "+4,00",
-    "percentile": 83,
+    "value": 2.0,
+    "value_text": "+2,00",
+    "percentile": 74,
     "category": "tinggi",
     "outside_train_range": false
    },
    {
     "feature": "fear_greed_index_scaled",
     "label": "Fear & Greed Index",
-    "value": 0.48,
-    "value_text": "48 dari 100",
-    "percentile": 60,
+    "value": 0.51,
+    "value_text": "51 dari 100",
+    "percentile": 66,
     "category": "sedang",
     "outside_train_range": false
    }
   ],
   "level": "rendah",
   "narrative": {
-   "text": "Model penelitian memprediksi Bitcoin akan naik pada 28 Oktober 2026 dengan probabilitas 0,5009, tingkat keyakinan rendah. Sentimen berita memberikan pengaruh +10,6 poin persentase sebagai faktor teratas, sedangkan rata-rata harga 7 hari berkontribusi -6,0 poin persentase. Volatilitas 7 hari yang rendah (1,61%, persentil 18) menambah +5,3 poin persentase pada skor model. Model belum terbukti lebih baik dari tebakan acak. Prediksi ini tidak pasti dan dapat keliru. Ini bukan saran investasi.",
+   "text": "Model penelitian memprediksi Bitcoin NAIK pada 29 Oktober 2026 dengan skor 0,4936, hanya 0,0168 di atas ambang keputusan, menunjukkan tingkat keyakinan rendah. Fitur paling memengaruhi skor adalah sentimen berita dengan pengaruh +10,3 poin persentase, serta rata-rata harga 7 hari dengan pengaruh -6,2 poin persentase. AUC historis 0,4871 menunjukkan performa terbatas. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
    "source": "llm",
    "attempts": 1,
    "temperature": null
   },
-  "news_source": "cryptocompare"
+  "news_source": "rss"
  }
 }

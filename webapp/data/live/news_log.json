@@ -594,5 +594,28 @@
    "https://www.newsbtc.com/news/strive-adds-6-182-bitcoin-as-holdings-reach-43-000-btc/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-10-28": {
+  "titles": [
+   "Microsoft Copilot AI Predicts a Historic BTC Move Post-FOMC",
+   "Bitcoin Treasury Datavault AI Says It Can’t Access Its BTC, Stock Tanks",
+   "Bitcoin-backed mortgages are coming to Canada, but borrowers are still unaware of the cost",
+   "Fed Stands Pat, Bitcoin Holds Steady—But a December Rate Hike Is in Play",
+   "Bitcoin price bounce rejected at 50-day trend line ahead of FOMC, earnings"
+  ],
+  "scores": {
+   "pemahaman": 2,
+   "detail": 2,
+   "bullbear": 2,
+   "mean": 2.0
+  },
+  "urls": [
+   "https://cryptonews.com/news/microsoft-copilot-ai-predicts-historic-btc-move-post-fomc/",
+   "https://decrypt.co/382116/bitcoin-treasury-datavault-ai-stock-crashes-cant-access-btc",
+   "https://www.coindesk.com/markets/2026/10/28/bitcoin-backed-mortgages-are-coming-to-canada-but-borrowers-are-still-unaware-of-the-cost",
+   "https://decrypt.co/382092/fed-hold-interest-rate-steady-bitcoin-december-rate-hike",
+   "https://cointelegraph.com/markets/bitcoin-price-bounce-rejected-at-50-day-trend-line-ahead-of-fomc-earnings?utm_source=rss_feed&utm_medium=rss_tag_bitcoin&utm_campaign=rss_partner_inbound"
+  ],
+  "source": "rss"
  }
 }
