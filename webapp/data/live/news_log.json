@@ -617,5 +617,28 @@
    "https://cointelegraph.com/markets/bitcoin-price-bounce-rejected-at-50-day-trend-line-ahead-of-fomc-earnings?utm_source=rss_feed&utm_medium=rss_tag_bitcoin&utm_campaign=rss_partner_inbound"
   ],
   "source": "rss"
+ },
+ "2026-10-29": {
+  "titles": [
+   "$11 Billion in Bitcoin Options Expire Tomorrow—Here's What It Means",
+   "4M Bitcoin Bought Above $85K Could Cap Recovery: Glassnode",
+   "Bitcoin price jumps to $81.5K as US GDP data beats expectations",
+   "Why Switzerland’s first genuine spot bitcoin ETF could soon attract overseas banks and brokers",
+   "New quantum model slashes hardware needed to break bitcoin keys by 17 times"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 2,
+   "bullbear": 3,
+   "mean": 2.6666666666666665
+  },
+  "urls": [
+   "https://decrypt.co/382171/11-billion-bitcoin-options-expire-tomorrow-what-means",
+   "https://decrypt.co/382161/4m-bitcoin-bought-above-85k-could-cap-recovery-glassnode",
+   "https://cointelegraph.com/markets/bitcoin-reaction-to-pce-data?utm_source=rss_feed&utm_medium=rss_tag_bitcoin&utm_campaign=rss_partner_inbound",
+   "https://www.coindesk.com/business/2026/10/29/switzerland-s-first-bitcoin-etf-gets-rare-exemption-will-open-to-overseas-brokers",
+   "https://www.coindesk.com/tech/2026/10/29/new-quantum-model-slashes-hardware-needed-to-break-bitcoin-keys-by-17-times"
+  ],
+  "source": "rss"
  }
 }
