@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="id" data-theme="dark">
+<head>
+  <script src="/BitcoinPredictionTrend/static/js/base.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.coinbase.com https://pzpldabfnatehnsjqxqw.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Latar Belakang — Bitcoin Trend</title>
+  <meta name="description" content="Latar belakang, rumusan masalah, dan apa yang dijawab oleh tugas akhir sistem prediksi tren harga Bitcoin.">
+  <link rel="preload" href="/BitcoinPredictionTrend/static/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/BitcoinPredictionTrend/static/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/BitcoinPredictionTrend/static/css/tokens.css">
+  <link rel="stylesheet" href="/BitcoinPredictionTrend/static/css/app.css">
+  <script src="/BitcoinPredictionTrend/static/js/app-config.js"></script>
+</head>
+<body class="page-background no-webgl">
+  <div class="notice-bar" role="note">Angka ini hanyalah prediksi, bukan saran investasi. Kami tidak bertanggung jawab apabila terjadi kerugian atas investasi yang dilakukan.</div>
+  <header class="topbar">
+    <a class="brand" href="/BitcoinPredictionTrend/">Bitcoin&nbsp;Trend</a>
+    <nav id="main-nav" aria-label="Utama"><a href="/BitcoinPredictionTrend/">Prediksi</a><a href="/BitcoinPredictionTrend/latar-belakang" aria-current="page">Latar Belakang</a><a href="/BitcoinPredictionTrend/retrospektif">Retrospektif</a><a href="/BitcoinPredictionTrend/riset">Riset</a><a href="/BitcoinPredictionTrend/metodologi">Metodologi</a><a href="/BitcoinPredictionTrend/kuesioner">Kuesioner</a><a href="/BitcoinPredictionTrend/tentang">Tentang</a><div class="nav-tools"><div class="tool"><span class="tool-label">Ukuran teks</span><div class="text-size" role="group" aria-label="Ukuran teks"><button id="font-dec" class="icon-btn" type="button" aria-label="Perkecil teks">A<small>−</small></button><button id="font-inc" class="icon-btn" type="button" aria-label="Perbesar teks">A<small>+</small></button></div></div><div class="tool"><span class="tool-label">Tema</span><button id="theme-toggle" class="icon-btn" type="button" aria-label="Ganti tema terang/gelap">◐</button></div></div></nav>
+    <button id="nav-toggle" class="icon-btn nav-toggle" type="button" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="main-nav"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </header>
+  <main>
+    <article class="prose">
+      <h1 style="font-size:clamp(1.8rem,6vw,2.6rem)">Latar belakang</h1>
+
+      <h2>Masalah</h2>
+      <p>Pasar Bitcoin berjalan 24 jam dengan perubahan harga yang sangat ekstrem, sehingga arah harga sulit diperkirakan. Jumlah akun konsumen aset kripto di Indonesia terus naik (21,7 juta akun pada April 2026 menurut OJK), sehingga investor baru semakin banyak dan kebutuhan akan alat yang menjelaskan alasan di balik prediksi semakin penting.</p>
+      <p>Model LSTM yang hanya memakai data harga dan indikator teknikal dilaporkan hanya mencapai akurasi klasifikasi arah harian sekitar 52%, sedikit di atas tebakan acak (McNally dkk., 2018). Survei terhadap 146 penelitian perdagangan kripto menyimpulkan bahwa banyak model hanya sedikit lebih baik daripada tebakan acak (Fang dkk., 2022).</p>
+
+      <h2>Celah penelitian</h2>
+      <p>Indikator teknikal hanya merangkum informasi yang sudah ada pada harga masa lalu. Sentimen pasar dilaporkan berhubungan dengan pergerakan harga Bitcoin (López-Cabarcos dkk., 2021), fitur sentimen dari media sosial meningkatkan akurasi arah harian kripto 6–9% (Valencia dkk., 2019), dan Fear and Greed Index dapat meramalkan harga Bitcoin (Gaies dkk., 2023). Large Language Model dilaporkan lebih baik daripada BERT/FinBERT untuk menilai sentimen berita kripto (Roumeliotis dkk., 2024). Namun, kontribusi indikator teknikal, sentimen berita berbasis LLM, dan Fear and Greed Index belum diuji terpisah dan terkontrol dalam satu model LSTM.</p>
+
+      <h2>Hipotesis</h2>
+      <p>LSTM yang menggabungkan indikator teknikal dan fitur sentimen menghasilkan F1-weighted setidaknya 5 poin persentase lebih tinggi daripada model tanpa sentimen, dengan perbedaan yang signifikan secara statistik.</p>
+
+      <h2>Rumusan masalah dan apa yang dijawab</h2>
+      <ol class="rq" id="rq">
+        <li><b>Bagaimana mengubah sentimen berita Bitcoin menjadi fitur numerik dengan LLM?</b>
+          <p class="answer"><b>Dijawab:</b> Claude Haiku 4.5 menilai maksimal 5 judul berita per hari secara zero-shot pada skala −10 sampai +10 dengan tiga prompt berbeda (pemahaman konteks, kriteria terperinci, arah harga), lalu dirata-ratakan. Hari tanpa berita diisi forward-fill maksimal 2 hari, lalu 0.</p></li>
+        <li><b>Bagaimana menghitung indikator teknikal sebagai fitur?</b>
+          <p class="answer"><b>Dijawab:</b> 11 indikator (return harian, MA7/30/90, volatilitas 7 dan 30 hari, RSI14, MACD beserta sinyal dan histogramnya, lebar Bollinger) dihitung dengan parameter standar tanpa optimasi, hanya memakai data sampai hari t sehingga tidak ada look-ahead bias.</p></li>
+        <li><b>Bagaimana mengintegrasikan semua fitur ke LSTM (early fusion)?</b>
+          <p class="answer"><b>Dijawab:</b> 13 fitur (11 teknikal, 1 sentimen berita, 1 Fear and Greed Index) digabung pada tingkat input dan dimasukkan sebagai jendela 20 hari ke LSTM dua lapis 64 unit. Fitur teknikal dan sentimen dinormalisasi RobustScaler, Fear and Greed hanya dibagi 100.</p></li>
+        <li><b>Bagaimana performa LSTM dibandingkan baseline?</b>
+          <p class="answer"><b>Dijawab:</b> Enam model (A–F) dibandingkan pada data uji kronologis. Akurasi semua model berada di sekitar tebakan acak (lihat ringkasan di bawah dan tabel di halaman Riset). Hasil simulasi backtesting <b>belum tersedia</b> di website ini karena outputnya belum diekspor dari notebook.</p></li>
+        <li><b>Kombinasi fitur mana yang terbaik, dan seberapa besar kontribusi tiap kelompok fitur?</b>
+          <p class="answer"><b>Dijawab:</b> Ablation study dengan McNemar dan Wilcoxon berpasangan antar-seed tidak menemukan keunggulan yang meyakinkan dari penambahan sentimen atau Fear and Greed Index (lihat ringkasan di bawah). Kontribusi fitur diukur dengan Permutation Feature Importance, bukan SHAP, karena DeepSHAP tidak kompatibel dengan lingkungan yang dipakai.</p></li>
+        <li><b>Bagaimana merancang lapisan penjelas (explainer) berbasis LLM?</b>
+          <p class="answer"><b>Dijawab di notebook:</b> explainer layer, validator angka dan label, serta uji faithfulness dibangun pada notebook. Lapisan ini <b>belum ditampilkan</b> di website ini, dan uji usabilitas dengan calon pengguna belum dilaporkan di sini.</p></li>
+        </ol>
+
+      <h2>Ringkasan hasil</h2>
+      <p class="muted">Angka di bawah dibaca langsung dari hasil riset yang diekspor dari notebook, sehingga selalu sama dengan halaman Riset.</p>
+      <div class="card" id="summary">
+        <dl class="facts">
+          <dt>Akurasi uji model A–F</dt><dd class="mono" data-fill="accuracy">…</dd>
+          <dt>McNemar</dt><dd class="mono" data-fill="mcnemar">…</dd>
+          <dt>Wilcoxon berpasangan</dt><dd class="mono" data-fill="wilcoxon">…</dd>
+          <dt>Prediksi multi-horizon</dt><dd class="mono" data-fill="horizons">…</dd>
+        </dl>
+      </div>
+      <p><b>Kesimpulan sementara:</b> hipotesis bahwa sentimen meningkatkan kinerja secara signifikan <b>belum terbukti</b> pada data dan konfigurasi ini. Temuan negatif ini tetap berguna: ia menunjukkan bahwa prediksi arah harga Bitcoin tetap sulit, dan website ini menampilkan hasilnya dengan label yang jujur. Rincian ada di halaman <a href="/BitcoinPredictionTrend/riset">Riset</a> dan <a href="/BitcoinPredictionTrend/metodologi">Metodologi</a><a href="/BitcoinPredictionTrend/kuesioner">Kuesioner</a>.</p>
+    </article>
+  </main>
+  <footer class="footer"><p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir.</p></footer>
+  <script type="module" src="/BitcoinPredictionTrend/static/js/latar.js"></script>
+  <script type="module" src="/BitcoinPredictionTrend/static/js/visits.js"></script>
+</body>
+</html>

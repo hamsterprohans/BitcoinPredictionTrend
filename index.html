@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="id" data-theme="dark">
+<head>
+  <script src="/BitcoinPredictionTrend/static/js/base.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.coinbase.com https://pzpldabfnatehnsjqxqw.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bitcoin Trend — Prediksi Arah Harga</title>
+  <meta name="description" content="Prediksi arah harga Bitcoin berbasis LSTM, sentimen berita LLM, dan Fear & Greed Index, lengkap dengan hasil uji statistiknya.">
+  <script src="/BitcoinPredictionTrend/static/js/early.js"></script>
+  <link rel="preload" href="/BitcoinPredictionTrend/static/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/BitcoinPredictionTrend/static/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/BitcoinPredictionTrend/static/css/tokens.css">
+  <link rel="stylesheet" href="/BitcoinPredictionTrend/static/css/app.css">
+  <script src="/BitcoinPredictionTrend/static/vendor/lightweight-charts.standalone.production.js"></script>
+  <script src="/BitcoinPredictionTrend/static/js/app-config.js"></script>
+</head>
+<body class="page-predict">
+  <div id="splash" role="dialog" aria-modal="true" aria-labelledby="splash-title">
+    <canvas id="splash-canvas" aria-hidden="true"></canvas>
+    <div class="splash-inner">
+      <svg id="splash-fallback-mark" viewBox="0 0 120 150" width="110" height="138" aria-hidden="true" fill="currentColor">
+        <text x="60" y="118" text-anchor="middle" font-family="Geist, system-ui, sans-serif" font-weight="800" font-size="112">B</text>
+        <rect x="41" y="2" width="9" height="20"/><rect x="70" y="2" width="9" height="20"/>
+        <rect x="41" y="128" width="9" height="20"/><rect x="70" y="128" width="9" height="20"/>
+      </svg>
+      <h2 id="splash-title" class="splash-title">Bitcoin Trend</h2>
+      <p class="splash-tag">Prediksi arah harga berbasis LSTM, sentimen berita LLM, dan Fear &amp; Greed Index</p>
+      <p class="splash-author">Oleh Hans Christian Cakrawangsa</p>
+      <button id="splash-enter" class="splash-btn" type="button" autofocus>Lanjutkan ke Dashboard Prediksi</button>
+      <p class="splash-hint">Tekan Enter atau klik tombol untuk melanjutkan</p>
+    </div>
+  </div>
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="notice-bar" role="note">Angka ini hanyalah prediksi, bukan saran investasi. Kami tidak bertanggung jawab apabila terjadi kerugian atas investasi yang dilakukan.</div>
+  <header class="topbar">
+    <a class="brand" href="/BitcoinPredictionTrend/">Bitcoin&nbsp;Trend</a>
+    <nav id="main-nav" aria-label="Utama"><a href="/BitcoinPredictionTrend/" aria-current="page">Prediksi</a><a href="/BitcoinPredictionTrend/latar-belakang">Latar Belakang</a><a href="/BitcoinPredictionTrend/retrospektif">Retrospektif</a><a href="/BitcoinPredictionTrend/riset">Riset</a><a href="/BitcoinPredictionTrend/metodologi">Metodologi</a><a href="/BitcoinPredictionTrend/kuesioner">Kuesioner</a><a href="/BitcoinPredictionTrend/tentang">Tentang</a><div class="nav-tools"><div class="tool"><span class="tool-label">Ukuran teks</span><div class="text-size" role="group" aria-label="Ukuran teks"><button id="font-dec" class="icon-btn" type="button" aria-label="Perkecil teks">A<small>−</small></button><button id="font-inc" class="icon-btn" type="button" aria-label="Perbesar teks">A<small>+</small></button></div></div><div class="tool"><span class="tool-label">Tema</span><button id="theme-toggle" class="icon-btn" type="button" aria-label="Ganti tema terang/gelap">◐</button></div></div></nav>
+    <button id="nav-toggle" class="icon-btn nav-toggle" type="button" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="main-nav"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </header>
+
+  <main tabindex="-1">
+    <section class="hero" aria-labelledby="pair">
+      <p class="pair" id="pair"><span class="sym">BTC</span>Bitcoin / USD</p>
+      <div class="price-row">
+        <h1 class="price mono" id="price">—</h1>
+        <span class="chg mono" id="change"></span>
+        <span class="live-badge mono" id="live-badge" hidden>● LIVE</span>
+      </div>
+      <p class="asof" id="asof">Memuat data…</p>
+      <p class="asof mono" id="since-close" hidden></p>
+      <dl class="stats">
+        <div><dt>Sentimen berita (−10…+10)</dt><dd class="mono" id="stat-sent">—</dd></div>
+        <div><dt>Fear &amp; Greed</dt><dd class="mono" id="stat-fg">—</dd></div>
+        <div><dt>Judul berita dinilai</dt><dd class="mono" id="stat-news">—</dd></div>
+        <div><dt>Diperbarui (UTC)</dt><dd class="mono" id="stat-gen">—</dd></div>
+      </dl>
+    </section>
+
+    <div id="banner" class="banner" role="status" hidden></div>
+
+    <section class="card" id="sec-pred" aria-labelledby="h-pred">
+      <h2 id="h-pred">Prediksi arah harga</h2>
+      <div class="tabs" id="horizon-tabs" role="tablist" aria-label="Horizon prediksi"></div>
+      <canvas id="horizon-canvas" aria-hidden="true"></canvas>
+      <div class="panel" id="prediction-panel" aria-live="polite">
+        <div class="dir-row">
+          <span id="prediction-arrow" class="arrow" aria-hidden="true"></span>
+          <span id="prediction-direction" class="dir mono">—</span>
+          <span id="prediction-prob" class="prob mono"></span>
+        </div>
+        <p class="meta mono" id="prediction-meta"></p>
+        <p class="meta mono" id="prediction-live" hidden></p>
+        <div class="margin-gauge" id="margin-gauge">
+          <p class="margin-text" id="margin-text"></p>
+          <div class="gauge" id="gauge" role="img" aria-label="">
+            <i class="tick" id="gauge-tick"></i><i class="dot" id="gauge-dot"></i>
+          </div>
+          <div class="gauge-scale mono small"><span id="gauge-min"></span><span id="gauge-thr"></span><span id="gauge-max"></span></div>
+          <p class="small muted"><a href="#g-ambang">Apa itu ambang keputusan?</a></p>
+        </div>
+        <p class="small muted gloss-hint"><a href="#sec-glossary">Ada istilah yang sulit dipahami? Lihat glosarium di bawah.</a></p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="h-chart">
+      <div class="card-head">
+        <div>
+          <h2 id="h-chart">Grafik harga</h2>
+          <p class="muted mono tf" id="tf-label">Timeframe: Harian (D)</p>
+        </div>
+        <div class="controls">
+          <div class="ranges" id="intervals" role="group" aria-label="Interval (timeframe)"></div>
+          <div class="ranges" id="ranges" role="group" aria-label="Rentang waktu"></div>
+        </div>
+      </div>
+      <div class="legend mono" aria-hidden="true">
+        <span><i style="background:#e6c068"></i>Harga</span><span><i style="background:#f3d98b"></i>MA7</span>
+        <span><i style="background:#7aa7ff"></i>MA30</span><span><i style="background:#b58cff"></i>MA90</span>
+        <span><i style="background:#a39a88"></i>Bollinger(20,2)</span>
+      </div>
+      <div id="chart-price" class="chart"></div>
+      <div class="chart-label mono">RSI(14)</div>
+      <div id="chart-rsi" class="chart small"></div>
+      <div class="chart-label mono">MACD(12,26,9)</div>
+      <div id="chart-macd" class="chart small"></div>
+    </section>
+
+    <section class="card" id="sec-explain" aria-labelledby="h-explain" hidden>
+      <h2 id="h-explain">Dari mana prediksi ini datang</h2>
+      <div class="grid-2">
+        <div><h3 class="small muted">Berita dan sentimen hari ini</h3><div id="live-news"></div></div>
+        <div><h3 class="small muted">Kontribusi fitur</h3><div id="live-contrib"></div></div>
+        <div class="wide"><h3 class="small muted">Penjelasan</h3><div id="live-narrative"></div></div>
+        <div class="wide"><h3 class="small muted">Keandalan historis (periode uji)</h3><div id="live-reliability"></div></div>
+      </div>
+    </section>
+
+    <section class="card" id="sec-hist" aria-labelledby="h-hist">
+      <h2 id="h-hist">Riwayat prediksi vs kenyataan <span class="muted mono" id="hist-h"></span></h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Prediksi untuk</th><th>Prediksi</th><th class="num"><span class="th-full">Probabilitas</span><span class="th-short">Prob.</span></th><th>Kenyataan</th></tr></thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+      <p id="hist-note" class="muted small" hidden></p>
+      <p id="range-note" class="muted small" role="note" hidden></p>
+    </section>
+
+    <section class="card" id="sec-glossary" aria-labelledby="h-gloss">
+      <h2 id="h-gloss">Glosarium: istilah yang sering muncul</h2>
+      <p class="muted">Penjelasan singkat untuk istilah teknis di halaman ini, diurutkan abjad. Gulir ke bawah, atau ketik kata kunci untuk mencari.</p>
+      <div class="gloss-tools">
+        <input id="gloss-search" type="search" placeholder="Cari istilah, mis. RSI, AUC, ambang" aria-label="Cari istilah" autocomplete="off">
+        <p id="gloss-count" class="muted small" role="status" aria-live="polite">27 istilah</p>
+      </div>
+      <div class="gloss-group" id="gl-A">
+        <h3>A</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-ai" data-alias="kecerdasan buatan"><dt>AI</dt><dd><p>Program komputer yang meniru sebagian kemampuan berpikir manusia, misalnya memahami teks.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Artificial Intelligence</i> <span class="arti">= kecerdasan buatan</span></li><li><b>Kegunaan:</b> Di situs ini AI (lewat LLM) dipakai untuk menilai nada berita dan menulis narasi penjelas.</li><li><b>Mengapa dipakai:</b> Membaca banyak judul berita secara konsisten jauh lebih cepat daripada manusia. Hasilnya tetap bisa keliru, sehingga diperiksa otomatis dan diberi catatan.</li></ul></dd></div>
+          <div class="gl" id="g-akurasi" data-alias="benar persentase"><dt>Akurasi</dt><dd>Persentase prediksi arah yang benar. Contoh: akurasi 50% berarti benar pada separuh dari seluruh prediksi.</dd></div>
+          <div class="gl" id="g-ambang" data-alias="threshold batas"><dt>Ambang keputusan</dt><dd>Batas probabilitas yang memisahkan prediksi NAIK dari TURUN: probabilitas di atas ambang menghasilkan NAIK. Ambangnya tidak harus 50%. Nilainya dipilih dari data validasi (untuk prediksi 1 hari sekitar 0,48), sehingga bisa sedikit di bawah 50%.</dd></div>
+          <div class="gl" id="g-auc" data-alias="area under curve"><dt>AUC</dt><dd><p>Ukuran kemampuan model membedakan hari naik dari hari turun. Nilai 0,5 sama dengan tebakan acak, 1 berarti sempurna, dan di bawah 0,5 berarti lebih buruk dari tebakan acak. Di penelitian ini nilainya mendekati 0,5 (lihat halaman Riset).</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Area Under the ROC Curve</i> <span class="arti">= luas di bawah kurva ROC (lihat ROC)</span></li><li><b>Kegunaan:</b> Mengukur kemampuan model membedakan hari naik dari hari turun pada semua kemungkinan ambang keputusan.</li><li><b>Mengapa dipakai:</b> Lebih adil daripada akurasi ketika ambang diubah atau jumlah hari naik dan turun tidak seimbang. Di penelitian ini nilainya mendekati 0,5, artinya belum lebih baik dari tebakan acak.</li></ul></dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-B">
+        <h3>B</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-btc" data-alias="bitcoin ticker kode"><dt>BTC</dt><dd><p>Kode singkat (ticker) Bitcoin di bursa dan situs harga. Tulisan BTC / USD berarti harga satu Bitcoin dalam dolar Amerika Serikat.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Bitcoin (kode ticker BTC)</i> <span class="arti">= kode singkat yang dipakai bursa dan situs harga untuk Bitcoin</span></li><li><b>Kegunaan:</b> Menandai aset yang dibahas dan pasangan harganya, misalnya BTC / USD di bagian atas halaman.</li><li><b>Mengapa dipakai:</b> Kode yang sama dipakai di seluruh bursa, sehingga tidak membingungkan dan mudah dicocokkan dengan sumber data harga.</li></ul></dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-D">
+        <h3>D</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-susulan" data-alias="backfill terlewat"><dt>Dihitung susulan</dt><dd>Prediksi yang dihitung setelah harinya lewat, dari data yang sudah tersimpan, karena prediksi hari itu sempat terlewat. Hanya memakai data sampai hari itu, tetapi bukan prediksi yang terbit tepat waktu.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-F">
+        <h3>F</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-fng" data-alias="takut serakah"><dt>Fear &amp; Greed Index</dt><dd>Indeks 0 sampai 100 yang menggambarkan suasana pasar kripto: mendekati 0 berarti ketakutan ekstrem, mendekati 100 berarti keserakahan ekstrem. Sumbernya alternative.me.</dd></div>
+          <div class="gl" id="g-fitur" data-alias="input masukan"><dt>Fitur</dt><dd>Data masukan yang dibaca model setiap hari: 11 indikator harga, skor sentimen berita, dan Fear &amp; Greed Index (total 13 nilai).</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-H">
+        <h3>H</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-live" data-alias="real time terkini"><dt>Harga live</dt><dd>Harga Bitcoin saat ini dari Coinbase, diperbarui tiap 30 detik. Hanya untuk tampilan: tidak dipakai model dan tidak mengubah probabilitas.</dd></div>
+          <div class="gl" id="g-penutupan" data-alias="close tutup zona waktu"><dt>Harga penutupan (UTC)</dt><dd>Harga terakhir pada satu hari menurut zona waktu UTC; pergantian harinya jatuh pada pukul 07:00 WIB. Model memakai harga penutupan yang lengkap, sehingga prediksi baru terbit sekali sehari setelah hari itu ditutup.</dd></div>
+          <div class="gl" id="g-horizon" data-alias="jangka waktu hari"><dt>Horizon prediksi</dt><dd>Seberapa jauh ke depan prediksi dibuat: 1 hari, 3 hari, sampai 35 hari. Makin jauh horizonnya, makin sulit diperkirakan.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-I">
+        <h3>I</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-ci" data-alias="rentang"><dt>Interval kepercayaan 95% (CI, Wilson)</dt><dd><p>Rentang perkiraan akurasi yang sebenarnya, mengingat jumlah hari uji terbatas. Bila rentang itu memuat 50%, hasilnya belum bisa dibedakan dari tebakan acak.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Confidence Interval</i> <span class="arti">= interval kepercayaan, yaitu rentang nilai yang masuk akal untuk angka yang sebenarnya</span></li><li><b>Kegunaan:</b> Menunjukkan rentang perkiraan akurasi yang sebenarnya, bukan satu angka tunggal. Wilson adalah nama metode hitungnya.</li><li><b>Mengapa dipakai:</b> Jumlah hari uji terbatas, sehingga satu angka akurasi bisa menipu. Rentang memperlihatkan ketidakpastian itu, dan metode Wilson andal untuk proporsi seperti akurasi.</li></ul></dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-K">
+        <h3>K</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-keandalan" data-alias="tabel"><dt>Keandalan historis</dt><dd>Tabel akurasi model pada hari-hari uji, dipisah menurut tingkat keyakinan, agar terlihat apakah keyakinan yang tinggi benar-benar lebih akurat.</dd></div>
+          <div class="gl" id="g-kontribusi" data-alias="pengaruh importance"><dt>Kontribusi fitur (poin persentase)</dt><dd>Perkiraan seberapa besar satu fitur menggeser probabilitas, dihitung dengan mengganti fitur itu dengan nilai tipikal data latih. Batang hijau menaikkan, merah menurunkan. Ini ukuran ketergantungan model, bukan hubungan sebab-akibat di pasar.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-L">
+        <h3>L</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-llm" data-alias="model bahasa besar claude ai"><dt>LLM</dt><dd><p>Program AI yang membaca dan menulis teks, seperti Claude.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Large Language Model</i> <span class="arti">= model bahasa besar, program AI yang dilatih dari teks dalam jumlah sangat besar</span></li><li><b>Kegunaan:</b> Di situs ini dipakai untuk menilai nada judul berita (skor sentimen) dan menulis narasi penjelas.</li><li><b>Mengapa dipakai:</b> Bisa memahami bahasa sehari-hari tanpa dilatih khusus untuk tugas ini. Karena bisa keliru, keluarannya diperiksa otomatis dan tetap bukan jaminan.</li></ul></dd></div>
+          <div class="gl" id="g-lstm" data-alias="jaringan saraf neural network"><dt>LSTM</dt><dd><p>Jenis jaringan saraf tiruan yang dirancang untuk data berurutan, seperti harga dari hari ke hari.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Long Short-Term Memory</i> <span class="arti">= memori jangka pendek yang panjang, jaringan saraf yang bisa mengingat informasi penting dari urutan data</span></li><li><b>Kegunaan:</b> Membaca data 20 hari terakhir sekaligus lalu menghitung probabilitas naik untuk hari berikutnya.</li><li><b>Mengapa dipakai:</b> Data harga berurutan, dan kejadian beberapa hari lalu bisa memengaruhi hari ini. LSTM dirancang mengingat pola urutan dan mengurangi masalah lupa pada jaringan saraf biasa.</li></ul></dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-M">
+        <h3>M</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-macd" data-alias="momentum tren"><dt>MACD, Sinyal MACD, dan Histogram MACD</dt><dd><p>Indikator tren dari selisih rata-rata harga 12 dan 26 hari (MACD). Sinyal MACD adalah rata-rata 9 harinya, dan histogram adalah selisih keduanya: histogram positif berarti tren naik sedang menguat.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Moving Average Convergence Divergence</i> <span class="arti">= konvergensi dan divergensi rata-rata bergerak, yaitu mengukur kapan dua rata-rata saling mendekat atau menjauh</span></li><li><b>Kegunaan:</b> Menilai arah dan kekuatan momentum tren dari selisih rata-rata harga 12 dan 26 hari.</li><li><b>Mengapa dipakai:</b> Indikator populer yang menangkap perubahan tren lebih cepat daripada satu rata-rata saja. Model memakainya sebagai tiga fitur: MACD, sinyalnya, dan histogramnya.</li></ul></dd></div>
+          <div class="gl" id="g-menunggu" data-alias="belum ada hasil"><dt>Menunggu</dt><dd>Status prediksi yang hari targetnya belum ditutup, sehingga belum bisa dibandingkan dengan kenyataan.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-P">
+        <h3>P</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-uji" data-alias="data latih validasi test"><dt>Periode uji</dt><dd>Rentang waktu yang tidak dipakai untuk melatih model, khusus untuk menguji apakah model bekerja pada data baru. Data dibagi menurut urutan waktu (terlama untuk latih, lalu validasi, lalu uji) agar model tidak mengintip masa depan.</dd></div>
+          <div class="gl" id="g-bollinger" data-alias="bb band"><dt>Pita Bollinger (lebar Bollinger)</dt><dd>Dua pita di atas dan di bawah rata-rata harga 20 hari (berjarak 2 simpangan baku). Lebar pita menunjukkan volatilitas: melebar saat harga bergejolak, menyempit saat tenang.</dd></div>
+          <div class="gl" id="g-prediksi" data-alias=""><dt>Prediksi arah harga</dt><dd>Perkiraan apakah harga penutupan pada hari target akan lebih tinggi (NAIK) atau lebih rendah (TURUN) dibanding harga penutupan hari data. Ini perkiraan arah, bukan perkiraan angka harga.</dd></div>
+          <div class="gl" id="g-probabilitas" data-alias="peluang kemungkinan persen"><dt>Probabilitas naik</dt><dd>Angka 0 sampai 100% dari model yang menunjukkan seberapa condong model ke arah NAIK. Nilai 50% berarti tidak condong ke mana pun. Ini bukan peluang pasti: pada pengujian model belum terbukti lebih baik dari tebakan acak, jadi jangan dibaca sebagai jaminan.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-R">
+        <h3>R</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-ma" data-alias="moving average"><dt>Rata-rata harga 7, 30, dan 90 hari (MA)</dt><dd><p>Rata-rata harga penutupan selama sekian hari terakhir. Dipakai untuk melihat arah tren: harga di atas rata-ratanya sering dianggap tren naik.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Moving Average</i> <span class="arti">= rata-rata bergerak, rata-rata yang digeser setiap hari mengikuti data terbaru</span></li><li><b>Kegunaan:</b> Meratakan gejolak harian agar arah tren lebih mudah dilihat.</li><li><b>Mengapa dipakai:</b> Harga harian sangat bergejolak. Rata-rata 7, 30, dan 90 hari memberi gambaran tren jangka pendek, menengah, dan panjang yang dibaca model.</li></ul></dd></div>
+          <div class="gl" id="g-return" data-alias="perubahan harga"><dt>Return harian</dt><dd>Persentase perubahan harga penutupan dibanding hari sebelumnya.</dd></div>
+          <div class="gl" id="g-roc" data-alias="kurva receiver operating"><dt>ROC</dt><dd><p>Grafik yang menunjukkan seberapa baik model memisahkan hari naik dari hari turun pada setiap kemungkinan ambang keputusan. Luas di bawah kurvanya adalah AUC.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Receiver Operating Characteristic</i> <span class="arti">= karakteristik operasi penerima, istilah dari teknik radar tentang menangkap sinyal benar tanpa banyak alarm palsu</span></li><li><b>Kegunaan:</b> Menggambarkan kinerja model untuk semua ambang sekaligus, dengan luas di bawah kurvanya menjadi AUC.</li><li><b>Mengapa dipakai:</b> Satu ambang saja tidak cukup menggambarkan kualitas model. Kurva ROC memperlihatkan keseluruhan pertukaran antara tebakan naik yang benar dan tebakan naik yang keliru.</li></ul></dd></div>
+          <div class="gl" id="g-rsi" data-alias="relative strength index"><dt>RSI 14 hari</dt><dd><p>Indikator 0 sampai 100 yang membandingkan kekuatan kenaikan dan penurunan harga selama 14 hari. Di atas 70 sering disebut jenuh beli, di bawah 30 jenuh jual. Itu kebiasaan analis, bukan jaminan arah harga.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Relative Strength Index</i> <span class="arti">= indeks kekuatan relatif</span></li><li><b>Kegunaan:</b> Mengukur apakah kenaikan atau penurunan harga belakangan terlalu cepat, dalam skala 0 sampai 100.</li><li><b>Mengapa dipakai:</b> Membantu mengenali kondisi jenuh beli atau jenuh jual. Hanya satu petunjuk di antara banyak fitur, bukan jaminan arah harga.</li></ul></dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-S">
+        <h3>S</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-sentimen" data-alias="berita nada"><dt>Sentimen berita</dt><dd>Skor -10 sampai +10 untuk nada lima judul berita Bitcoin pada hari itu (negatif berarti pesimis, positif berarti optimis), dinilai oleh AI. Model memakai rata-rata dari tiga cara penilaian.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-T">
+        <h3>T</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-acak" data-alias="koin random"><dt>Tebakan acak</dt><dd>Pembanding paling sederhana: menebak naik atau turun seperti melempar koin, yang benar sekitar 50%. Sama dengan tebakan acak berarti model tidak lebih pandai daripada koin. Belum terbukti lebih baik dari tebakan acak berarti hasil model masih bisa saja kebetulan.</dd></div>
+          <div class="gl" id="g-keyakinan" data-alias="confidence"><dt>Tingkat keyakinan (rendah, sedang, tinggi)</dt><dd>Seberapa jauh probabilitas model dari ambang keputusan: makin jauh, makin yakin model. Pada data uji, tingkat keyakinan tinggi belum terbukti lebih akurat daripada yang rendah (lihat tabel keandalan historis).</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-U">
+        <h3>U</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-usd" data-alias="dolar amerika"><dt>USD</dt><dd><p>Mata uang dolar Amerika Serikat, satuan harga Bitcoin yang tampil di situs ini.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">United States Dollar</i> <span class="arti">= dolar Amerika Serikat</span></li><li><b>Kegunaan:</b> Menjadi satuan semua harga di situs ini, misalnya harga live dan harga penutupan.</li><li><b>Mengapa dipakai:</b> Harga Bitcoin dunia umumnya dikutip dalam dolar, dan data penelitian memakai dolar. Nilai dalam rupiah bergantung pada kurs yang berubah setiap saat.</li></ul></dd></div>
+          <div class="gl" id="g-utc" data-alias="waktu universal"><dt>UTC</dt><dd><p>Standar waktu dunia yang tidak mengenal jam musim panas. Indonesia bagian barat (WIB) selalu 7 jam lebih cepat.</p><ul class="abbr"><li><b>Kepanjangan:</b> <i lang="en">Coordinated Universal Time</i> <span class="arti">= waktu universal terkoordinasi, standar jam acuan seluruh dunia</span></li><li><b>Kegunaan:</b> Menjadi acuan batas hari pada data harga: satu hari berakhir pukul 00:00 UTC, yaitu 07:00 WIB.</li><li><b>Mengapa dipakai:</b> Pasar kripto buka 24 jam, jadi perlu satu batas hari yang sama bagi semua orang. UTC dipakai oleh sumber data, sehingga tanggal di situs ini selaras dengan datanya.</li></ul></dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-V">
+        <h3>V</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-volatilitas" data-alias="gejolak naik turun"><dt>Volatilitas (7 dan 30 hari)</dt><dd>Seberapa besar harga naik-turun belakangan ini (simpangan baku return harian). Makin tinggi, makin bergejolak.</dd></div>
+        </dl>
+      </div>
+      <div class="gloss-group" id="gl-W">
+        <h3>W</h3>
+        <dl class="glossary">
+          <div class="gl" id="g-wib" data-alias="waktu indonesia barat zona"><dt>WIB</dt><dd><p>Zona waktu Sumatra, Jawa, serta Kalimantan Barat dan Tengah; selalu 7 jam lebih cepat dari UTC.</p><ul class="abbr"><li><b>Kepanjangan:</b> Waktu Indonesia Barat <span class="arti">= zona waktu UTC+7 yang berlaku di Indonesia bagian barat</span></li><li><b>Kegunaan:</b> Membantu pembaca Indonesia mengubah jam UTC menjadi waktu setempat.</li><li><b>Mengapa dipakai:</b> Penutupan harian jatuh pukul 07:00 WIB, sehingga prediksi baru untuk hari berikutnya muncul pada pagi hari.</li></ul></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="card survey-promo" id="sec-survey" aria-labelledby="h-survey">
+      <div>
+        <h2 id="h-survey">Bantu saya menyempurnakan situs ini</h2>
+        <p>Situs ini bagian dari penelitian tugas akhir. Saya ingin tahu apakah informasinya membantu Anda dan apa yang perlu ditingkatkan.
+        Mengisi kuesioner sekitar 8 menit, semua pertanyaan wajib diisi, dan cukup diisi sekali.</p>
+        <ul class="promo-list">
+          <li>Apakah prediksi dan penjelasannya mudah dipahami?</li>
+          <li>Bagian mana yang paling berguna, dan mana yang membingungkan?</li>
+          <li>Fitur apa yang ingin Anda lihat berikutnya?</li>
+        </ul>
+      </div>
+      <a class="btn-link promo-btn" href="/BitcoinPredictionTrend/kuesioner">Isi kuesioner</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir; pada semua horizon (termasuk 1 hari) model belum terbukti lebih baik dari tebakan acak (lihat halaman Riset).</p>
+    <p>Grafik oleh <a href="https://www.tradingview.com/" rel="noopener">TradingView Lightweight Charts™</a>.</p>
+  </footer>
+  <script type="module" src="/BitcoinPredictionTrend/static/js/predict.js"></script>
+  <script type="module" src="/BitcoinPredictionTrend/static/js/visits.js"></script>
+</body>
+</html>
