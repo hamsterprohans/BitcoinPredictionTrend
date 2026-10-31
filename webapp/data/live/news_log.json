@@ -640,5 +640,28 @@
    "https://www.coindesk.com/tech/2026/10/29/new-quantum-model-slashes-hardware-needed-to-break-bitcoin-keys-by-17-times"
   ],
   "source": "rss"
+ },
+ "2026-10-30": {
+  "titles": [
+   "Worried About Crypto Hacks? Buy Bitcoin Proxies in Stock Market Instead, Say Wall Street Firms",
+   "Binance Hack: Why Bitcoin Didn't Crash Like It Did in 2018",
+   "Bitcoin risks worst October in 12 years as tech sell-off spreads to gold",
+   "Strategy’s preferred-stock fix sets up renewed bitcoin buying, analysts say",
+   "Grok AI Predicts Wild Bitcoin Price Amid $6.3Bn Binance Hack"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": -2,
+   "bullbear": -2,
+   "mean": -2.3333333333333335
+  },
+  "urls": [
+   "https://decrypt.co/382282/crypto-hacks-buy-bitcoin-proxies-stock-market-wall-street",
+   "https://decrypt.co/382257/binance-hack-why-bitcoin-didnt-crash",
+   "https://cointelegraph.com/markets/bitcoin-risks-worst-october-in-12-years-as-tech-sell-off-spreads-to-gold?utm_source=rss_feed&utm_medium=rss_tag_bitcoin&utm_campaign=rss_partner_inbound",
+   "https://www.theblock.co/news/business/2026-10-30-strategy-mstr-preferred-stock-bitcoin-buying-analysts-432214",
+   "https://cryptonews.com/news/grok-ai-predicts-wild-bitcoin-price-amid-6-3bn-binance-hack/"
+  ],
+  "source": "rss"
  }
 }
