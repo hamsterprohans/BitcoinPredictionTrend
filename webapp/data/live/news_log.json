@@ -663,5 +663,28 @@
    "https://cryptonews.com/news/grok-ai-predicts-wild-bitcoin-price-amid-6-3bn-binance-hack/"
   ],
   "source": "rss"
+ },
+ "2026-10-31": {
+  "titles": [
+   "The Largest Crypto Hacks in History Ranked by Dollar Value and Bitcoin Stolen",
+   "Binance Hack Jolts Bitcoin Treasury Firm Into Weighing BTC Sales",
+   "Bitcoin Vs. Stablecoins Vs. CBDCs: The Fight Over Digital Money",
+   "Moscow Exchange Sets December 1 for Dollar-Backed USDT, Bitcoin and Ethereum Trading",
+   "Bitcoin ETFs Lose $643M After Binance Hack Ends 4-Day Inflow Run"
+  ],
+  "scores": {
+   "pemahaman": -6,
+   "detail": -4,
+   "bullbear": -4,
+   "mean": -4.666666666666667
+  },
+  "urls": [
+   "https://news.bitcoin.com/featured/the-largest-crypto-hacks-in-history-ranked-by-dollar-value-and-bitcoin-stolen/",
+   "https://news.bitcoin.com/crypto-news/binance-hack-jolts-bitcoin-treasury-firm-into-weighing-btc-sales/",
+   "https://www.forbes.com/sites/digital-assets/2026/10/31/bitcoin-vs-stablecoins-vs-cbdcs-the-fight-over-digital-money/",
+   "https://en.coinotag.com/moscow-exchange-usdt-bitcoin-ethereum-trading-december-1",
+   "https://news.bitcoin.com/market-updates/bitcoin-etfs-lose-643m-after-binance-hack-ends-4-day-inflow-run/"
+  ],
+  "source": "cryptocompare"
  }
 }
