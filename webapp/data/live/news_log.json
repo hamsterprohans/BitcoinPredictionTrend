@@ -686,5 +686,28 @@
    "https://news.bitcoin.com/market-updates/bitcoin-etfs-lose-643m-after-binance-hack-ends-4-day-inflow-run/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-01": {
+  "titles": [
+   "Benjamin Cowen Warns Bitcoin (BTC) May Repeat 2015's 40% Drop",
+   "Bitcoin (BTC) Mining Revenue Hits 11-Month High at $1.215 Billion",
+   "Bitcoin Mining Revenue Hits 11-Month High Despite Brutal Hashprice Decline",
+   "Bloomberg analyst warns Bitcoin could face broader risks if price stays below $80,000",
+   "Canary Capital CEO Sees Bitcoin (BTC) Doubling Within 3 Years"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 0,
+   "bullbear": 2,
+   "mean": 0.0
+  },
+  "urls": [
+   "https://en.coinotag.com/benjamin-cowen-bitcoin-btc-2015-drop-warning",
+   "https://en.coinotag.com/bitcoin-btc-mining-revenue-october-record-hashprice-falls",
+   "https://news.bitcoin.com/mining/bitcoin-mining-revenue-hits-11-month-high-despite-brutal-hashprice-decline/",
+   "https://en.coin-turk.com/bloomberg-analyst-warns-bitcoin-could-face-broader-risks-if-price-stays-below-80000/?utm_source=rss&utm_medium=rss&utm_campaign=bloomberg-analyst-warns-bitcoin-could-face-broader-risks-if-price-stays-below-80000",
+   "https://en.coinotag.com/bitcoin-btc-canary-capital-ceo-sees-doubling-3-years"
+  ],
+  "source": "cryptocompare"
  }
 }
