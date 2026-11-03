@@ -709,5 +709,28 @@
    "https://en.coinotag.com/bitcoin-btc-canary-capital-ceo-sees-doubling-3-years"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-02": {
+  "titles": [
+   "Michaël van de Poppe Names $75,000 Bitcoin (BTC) Entry if Support Fails",
+   "Bitcoin trades below 50-day moving average as ETF outflows hit $614 million",
+   "Bitcoin (BTC) Peak Buyers of 2017 Turn $1,000 Into $3,925 in Nine Years",
+   "Bitcoin slips after steep October losses, as Binance hack keeps lid on sentiment",
+   "Swan Bitcoin Founder Klippsten Flags AI Hackers as Nearer-Term Bitcoin (BTC) Threat"
+  ],
+  "scores": {
+   "pemahaman": -4,
+   "detail": -2,
+   "bullbear": -4,
+   "mean": -3.3333333333333335
+  },
+  "urls": [
+   "https://en.coinotag.com/michael-van-de-poppe-75000-bitcoin-btc-buy-level-support-fail",
+   "https://en.coin-turk.com/bitcoin-trades-below-50-day-moving-average-as-etf-outflows-hit-614-million/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-trades-below-50-day-moving-average-as-etf-outflows-hit-614-million",
+   "https://en.coinotag.com/bitcoin-2017-peak-1000-investment-worth-3925",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-steadies-at-78k-after-october-losses-binance-resumes-withdrawals-4989972",
+   "https://en.coinotag.com/swan-klippsten-ai-hackers-near-term-bitcoin-security-threat"
+  ],
+  "source": "cryptocompare"
  }
 }
