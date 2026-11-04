@@ -732,5 +732,28 @@
    "https://en.coinotag.com/swan-klippsten-ai-hackers-near-term-bitcoin-security-threat"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-03": {
+  "titles": [
+   "Dormant Bitcoin (BTC) Wallets Moved $167.56 Million in October, a Second Monthly Drop",
+   "Bitcoin rises as risk sentiment prevails on Wall Street; midterm elections eyed",
+   "Aave Freezes New tBTC Supply and Borrowing After Mint-and-Redeem Pause",
+   "Strive's Bitcoin (BTC) Holdings Reach 43,124 After Weekly Purchase",
+   "Tether Holds 150,000 Bitcoin, CEO Says—About 50,000 More Than Its Reserve Report Shows"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 2,
+   "bullbear": 4,
+   "mean": 3.0
+  },
+  "urls": [
+   "https://en.coinotag.com/dormant-bitcoin-btc-wallets-167-56-million-october",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-slips-to-over-1mth-low-of-765k-as-us-midterm-caution-weighs-4993602",
+   "https://www.newsbtc.com/news/aave-freezes-new-tbtc-supply-and-borrowing-after-mint-and-redeem-pause/",
+   "https://en.coinotag.com/strive-bitcoin-btc-holdings-43124-weekly-purchase",
+   "https://decrypt.co/382474/tether-holds-150000-bitcoin-ceo-says"
+  ],
+  "source": "cryptocompare"
  }
 }
