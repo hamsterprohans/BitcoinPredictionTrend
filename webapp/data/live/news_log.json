@@ -755,5 +755,28 @@
    "https://decrypt.co/382474/tether-holds-150000-bitcoin-ceo-says"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-04": {
+  "titles": [
+   "Mercado Bitcoin says phased reopening to begin Monday, will cover losses",
+   "Bitcoin and Ethereum ETFs shed $1.8B – Why investors are pulling back",
+   "Why Bitcoin's Next Soft Fork Could Feel Like a Practice Run",
+   "Bitcoin tops $80k as Democrats sweep midterm elections, boosting risk sentiment",
+   "Mark Zuckerberg’s Meta AI Predicts the Bitcoin Price: Is This Actually Possible?"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 1,
+   "bullbear": 2,
+   "mean": 2.0
+  },
+  "urls": [
+   "https://cointelegraph.com/news/mercado-bitcoin-phased-reopening-to-begin-monday-pledges-to-cover-losses?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+   "https://ambcrypto.com/bitcoin-and-ethereum-etfs-shed-1-8b-why-investors-are-pulling-back/",
+   "https://decrypt.co/382568/why-bitcoin-next-soft-fork-could-feel-like-practice-run",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-recovers-to-near-78k-as-democrats-sweep-midterm-elections-4997542",
+   "https://cryptonews.com/news/mark-zuckerbergs-meta-ai-predicts-bitcoin-price/"
+  ],
+  "source": "cryptocompare"
  }
 }
