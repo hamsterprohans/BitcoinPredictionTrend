@@ -778,5 +778,28 @@
    "https://cryptonews.com/news/mark-zuckerbergs-meta-ai-predicts-bitcoin-price/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-05": {
+  "titles": [
+   "Fundstrat's Sean Farrell Says Bitcoin (BTC) Bottom Is In With $6B Treasury Buybacks",
+   "US spot Bitcoin ETF inflows hit $74.6 million after $1.15 billion in outflows",
+   "American Bitcoin posts $126 million net profit as rising costs, rivals pivot to AI",
+   "Bitcoin slides over 6% as risk sentiment battered amid historic Wall Street rout",
+   "Arthur Hayes Warns AI Stock Selling Could Push Bitcoin (BTC) Toward $75,000"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 2,
+   "bullbear": 3,
+   "mean": 1.0
+  },
+  "urls": [
+   "https://en.coinotag.com/fundstrat-sean-farrell-bitcoin-bottom-treasury-buybacks",
+   "https://en.coin-turk.com/us-spot-bitcoin-etf-inflows-hit-74-6-million-after-1-15-billion-in-outflows/?utm_source=rss&utm_medium=rss&utm_campaign=us-spot-bitcoin-etf-inflows-hit-74-6-million-after-1-15-billion-in-outflows",
+   "https://en.coin-turk.com/american-bitcoin-posts-126-million-net-profit-as-rising-costs-rivals-pivot-to-ai/?utm_source=rss&utm_medium=rss&utm_campaign=american-bitcoin-posts-126-million-net-profit-as-rising-costs-rivals-pivot-to-ai",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-firms-to-805k-as-us-elections-buoy-risk-appetite-but-outlook-unclear-5002271",
+   "https://en.coinotag.com/arthur-hayes-75000-bitcoin-downside-ai-stock-selling"
+  ],
+  "source": "cryptocompare"
  }
 }
