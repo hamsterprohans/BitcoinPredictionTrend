@@ -48,3 +48,21 @@ def daily_sentiment_detail(client, headlines: list, sleep=time.sleep):
 def daily_sentiment(client, headlines: list, sleep=time.sleep):
     d = daily_sentiment_detail(client, headlines, sleep)
     return None if d is None else d["mean"]
+
+
+def tone_of(score: int) -> str:
+    return "bearish" if score <= -1 else "bullish" if score >= 1 else "netral"
+
+
+def headline_tones(client, headlines: list, sleep=time.sleep) -> list:
+    """Nada tiap judul (prompt bullbear, satu judul per panggilan). Penilaian terpisah untuk tampilan: model memakai skor gabungan harian.
+    Judul yang gagal dinilai diberi None, tanpa menggagalkan job."""
+    out = []
+    for h in headlines[:5]:
+        try:
+            score = score_one(client, "bullbear", [h], sleep)
+        except SentimentError:
+            out.append(None)
+            continue
+        out.append({"score": score, "tone": tone_of(score)})
+    return out

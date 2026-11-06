@@ -268,7 +268,7 @@ async function renderExplain() {
   const ex = state.latest?.explain;
   if (!ex) return;
   $("#sec-explain").hidden = false;
-  renderNews($("#live-news"), ex.headlines, ex.sentiment, { source: ex.news_source });
+  renderNews($("#live-news"), ex.headlines, ex.sentiment, { source: ex.news_source, view: ex.news_view });
   renderContrib($("#live-contrib"), ex.contributions);
   renderNarrative($("#live-narrative"), ex.narrative);
   try {
@@ -317,8 +317,14 @@ async function main() {
 }
 
 // ---- Harga live (hanya tampilan; probabilitas tetap resmi harian dari penutupan lengkap) ----
+let liveBusy = false;
 async function refreshLive() {
-  if (document.hidden || state.close == null || state.demo) return;   // demo: jangan campur harga live asli dengan patokan palsu
+  if (liveBusy || document.hidden || state.close == null || state.demo) return;
+  liveBusy = true;
+  try { await refreshLiveOnce(); } finally { liveBusy = false; }
+}
+
+async function refreshLiveOnce() {   // demo: jangan campur harga live asli dengan patokan palsu
   const badge = $("#live-badge");
   try {
     const { price } = await getJSON("/api/price/live");

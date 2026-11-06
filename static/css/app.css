@@ -161,6 +161,9 @@ body.no-webgl #splash-canvas{display:none}
 .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:18px}   /* min(...,100%): tak melebihi kartu di ponsel */
 .news-list{margin:0 0 10px;padding-left:1.1rem}
 .news-list li{margin:4px 0}
+.tone{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.tone-bearish{color:var(--down)} .tone-bullish{color:var(--up)} .tone-netral{color:var(--muted,inherit)}
+.news-role,.news-summary{margin:8px 0}
 .dv{position:relative;height:10px;border-radius:6px;background:var(--surface-2);overflow:hidden}
 .dv>span{position:absolute;top:0;height:100%}
 .dv>span.pos{left:50%;background:var(--up)}

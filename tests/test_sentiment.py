@@ -76,3 +76,26 @@ def test_daily_detail_none_for_empty_headlines():
     from app.sentiment import daily_sentiment_detail
     c = FakeClient([])
     assert daily_sentiment_detail(c, [], sleep=no_sleep) is None and c.prompts == []
+
+
+def test_headline_tones_scores_each_headline_separately_with_bullbear():
+    from app.sentiment import headline_tones
+    c = FakeClient(["-4", "0", "3"])
+    out = headline_tones(c, ["judul A", "judul B", "judul C"], no_sleep)
+    assert [o["tone"] for o in out] == ["bearish", "netral", "bullish"]
+    assert [o["score"] for o in out] == [-4, 0, 3]
+    assert all("PRICE DIRECTION" in p for p in c.prompts)
+    assert "judul A" in c.prompts[0] and "judul B" not in c.prompts[0]
+
+
+def test_headline_tones_uses_at_most_five_headlines():
+    from app.sentiment import headline_tones
+    c = FakeClient(["1"] * 5)
+    assert len(headline_tones(c, [f"j{i}" for i in range(8)], no_sleep)) == 5
+
+
+def test_headline_tones_gives_none_for_a_headline_that_keeps_failing():
+    from app.sentiment import headline_tones
+    c = FakeClient(["-2", RuntimeError("x"), RuntimeError("x"), RuntimeError("x"), "1"])
+    out = headline_tones(c, ["a", "b", "c"], no_sleep)
+    assert out[0]["tone"] == "bearish" and out[1] is None and out[2]["tone"] == "bullish"

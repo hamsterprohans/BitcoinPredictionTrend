@@ -15,7 +15,7 @@ const STATIC_BASE = window.__STATIC_BASE__;
 
 async function staticJSON(url) {
   if (url === "/api/price/live") {                 // satu-satunya data live: langsung dari Coinbase
-    const r = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+    const r = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot", { signal: AbortSignal.timeout(8000) });   // koneksi basi setelah tidur tidak boleh menggantung
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     return { price: parseFloat((await r.json()).data.amount) };
   }
