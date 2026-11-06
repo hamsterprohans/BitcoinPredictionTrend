@@ -64,3 +64,19 @@ def test_live_explain_passes_the_news_source_through_or_none():
     kw = dict(predictor=FakePredictor(), frame=_frame(), pred=PRED, as_of="2026-10-14", stats=_stats(), series=SERIES)
     assert build_live_explain(news={**NEWS, "source": "rss"}, **kw)["news_source"] == "rss"
     assert build_live_explain(news=NEWS, **kw)["news_source"] is None
+
+
+def test_news_view_without_llm_has_role_but_no_tones_or_summary():
+    ex = build_live_explain(predictor=FakePredictor(), frame=_frame(), pred=PRED, news=NEWS, as_of="2026-10-14",
+                            stats=_stats(), series=SERIES, client=None)
+    assert "Sentimen berita" in ex["news_view"]["role"] and ex["news_view"]["summary"] is None
+    assert all("tone" not in h for h in ex["headlines"])
+
+
+def test_news_view_tones_and_bearish_summary_with_llm():
+    summary = "Satu judul bernada bearish menyoroti kekhawatiran pasar terhadap harga Bitcoin."
+    llm = FakeLLM(["salah"] * 3 + ["-4", "1"] + [summary])      # narasi gagal x3 -> template; dua nada judul; rangkuman
+    ex = build_live_explain(predictor=FakePredictor(), frame=_frame(), pred=PRED, news=NEWS, as_of="2026-10-14",
+                            stats=_stats(), series=SERIES, client=llm)
+    assert [h["tone"] for h in ex["headlines"]] == ["bearish", "bullish"]
+    assert ex["news_view"]["summary"] == {"text": summary, "source": "llm"}

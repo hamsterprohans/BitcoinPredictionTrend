@@ -273,6 +273,8 @@ def validate(text: str, facts: dict) -> list:
         failed.append("tanda_pengaruh")
     if _FORBIDDEN_RE.search(text):
         failed.append("kata_terlarang")
+    if re.search(r"(?m)^\s*#|\*\*|^\s*[-*] ", text):     # sisa markdown (judul, tebal, butir) tidak boleh tampil apa adanya
+        failed.append("format")
     if not _DISC_RE.search(text.strip()):
         failed.append("disclaimer")
     if not _LIMIT_RE.search(text.strip()):
@@ -346,6 +348,64 @@ def generate_narrative(client, facts: dict, retries: int = 3) -> dict:
     return {"text": template_narrative(facts), "source": "template", "attempts": retries, "temperature": temperature}
 
 
+def news_role(contributions: list, direction: str, has_news: bool = True):
+    """Satu kalimat deterministik tentang peran sentimen berita pada skor, dari kontribusi yang sudah dihitung."""
+    if not has_news:
+        return None
+    rank = next((i for i, c in enumerate(contributions, 1) if c["feature"] == "news_sentiment"), None)
+    if rank is None:
+        return None
+    delta = contributions[rank - 1]["delta_pp"]
+    if abs(delta) < 0.05:
+        return f"Sentimen berita hampir tidak memengaruhi skor model (pengaruh {_id(delta, 1, sign=True)} poin persentase)."
+    arah = "naik" if delta > 0 else "turun"
+    head = f"Sentimen berita berpengaruh {_id(delta, 1, sign=True)} poin persentase pada skor model, mendorongnya ke arah {arah}"
+    if arah.upper() != direction:
+        head += ", berlawanan dengan arah prediksi"
+    if rank <= 3:
+        return head + "; ia termasuk tiga fitur yang paling memengaruhi skor."
+    return head + f" (urutan ke-{rank} dari {len(contributions)} fitur); arah prediksi ini tidak terutama dibentuk oleh berita."
+
+
+SUMMARY_PROMPT = """Anda meringkas judul berita Bitcoin berbahasa Inggris ke dalam Bahasa Indonesia untuk pembaca awam.
+Judul berikut dinilai bernada bearish (condong menekan harga) oleh penilaian terpisah. Tulis rangkuman 1 sampai 2 kalimat tentang apa yang dilaporkan.
+
+ATURAN KETAT:
+- Hanya isi judul; jangan menambah fakta.
+- Jangan memakai angka sama sekali (gunakan kata seperti "sejumlah" bila perlu).
+- Jangan menyatakan sebab-akibat, dan jangan menyatakan bahwa berita ini memprediksi atau menentukan arah harga.
+- Jangan mengajak membeli atau menjual. Tanpa markdown, tanpa judul, satu paragraf.
+
+JUDUL:
+{titles}
+{feedback}
+Tulis rangkumannya sekarang."""
+
+
+def _summary_ok(text: str) -> bool:
+    return bool(text) and not re.search(r"\d", text) and not _FORBIDDEN_RE.search(text) \
+        and not re.search(r"(?m)^\s*#|\*|^\s*-\s", text) and len(text.split()) <= 70
+
+
+def bearish_summary(client, bearish_titles: list, retries: int = 2) -> dict:
+    """Rangkuman judul bernada bearish. LLM bila lolos pemeriksaan; jika tidak, daftar judul apa adanya."""
+    if not bearish_titles:
+        return {"text": "Tidak ada judul yang dinilai bernada bearish pada hari ini.", "source": "template"}
+    prompt = SUMMARY_PROMPT.replace("{titles}", "\n".join(f"- {t}" for t in bearish_titles))
+    for _ in range(retries):
+        try:
+            resp = client.messages.create(model=MODEL, max_tokens=250,
+                                          messages=[{"role": "user", "content": prompt.replace("{feedback}", "")}])
+        except Exception as e:  # noqa: BLE001
+            if _is_fatal(e):
+                raise FatalAPIError(str(e)) from e
+            continue
+        text = resp.content[0].text.strip()
+        if _summary_ok(text):
+            return {"text": text, "source": "llm"}
+    return {"text": "Judul bernada bearish: " + "; ".join(f"«{t}»" for t in bearish_titles) + ".", "source": "template"}
+
+
 def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=None, client=None) -> dict:
     from datetime import date, timedelta
     X = predictor.build_window(frame)
@@ -361,8 +421,16 @@ def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=Non
     rec["sentiment"] = {"has_news": bool(titles)}
     narrative = generate_narrative(client, build_facts(rec, auc=(series or {}).get("auc"))) if client else None
     urls = (news or {}).get("urls") or []
-    return {"headlines": [{"title": t, **({"url": urls[i]} if i < len(urls) and urls[i] else {})}
+    from .sentiment import headline_tones
+    tones = headline_tones(client, titles) if client and titles else [None] * len(titles)
+    summary = None
+    if any(tones):
+        summary = bearish_summary(client, [t for t, tn in zip(titles, tones) if tn and tn["tone"] == "bearish"])
+    news_view = {"role": news_role(contrib, "NAIK" if prob > thr else "TURUN", bool(titles)), "summary": summary}
+    return {"headlines": [{"title": t, **({"url": urls[i]} if i < len(urls) and urls[i] else {}),
+                           **({"tone": tones[i]["tone"]} if tones[i] else {})}
                           for i, t in enumerate(titles)],
+            "news_view": news_view,
             "sentiment": {"has_news": bool(titles), "scores": (news or {}).get("scores"),
                           "used": values["news_sentiment"]},
             "contributions": contrib, "features": feats, "level": level, "narrative": narrative,

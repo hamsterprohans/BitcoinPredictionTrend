@@ -32,11 +32,14 @@ def _explain_block():
     feats, contrib = feature_rows({f: 5.0 for f in FEATURE_ORDER}, stats), rank_contributions(deltas)
     rec = {"date": "2026-10-14", "target_date": "2026-10-15", "prob": 0.52, "threshold": 0.4557, "level": "tinggi",
            "features": feats, "contributions": contrib}
-    return {"headlines": [{"title": "Judul berita 0", "url": "https://contoh.com/berita-0"},
-                          {"title": "Judul berita 1", "url": "javascript:alert(1)"},        # skema berbahaya: tidak boleh jadi tautan
+    return {"headlines": [{"title": "Judul berita 0", "url": "https://contoh.com/berita-0", "tone": "bearish"},
+                          {"title": "Judul berita 1", "url": "javascript:alert(1)", "tone": "bullish"},        # skema berbahaya: tidak boleh jadi tautan
                           {"title": "Judul berita 2 SuperPanjangTanpaSpasiBitcoin(BTC)Worth$72.64MtoCoinbasePrimeAndMore"}],   # tanpa URL; kata panjang menguji pembungkusan
             "sentiment": {"has_news": True, "scores": {"pemahaman": 3, "detail": 2, "bullbear": 1, "mean": 2.0}, "used": 1.67},
             "contributions": contrib, "features": feats, "level": "tinggi",
+            "news_view": {"role": "Sentimen berita berpengaruh +2,4 poin persentase pada skor model (urutan ke-5 dari 13 fitur), "
+                                  "mendorongnya ke arah naik; arah prediksi ini tidak terutama dibentuk oleh berita.",
+                          "summary": {"text": "Satu judul menyoroti kekhawatiran pasar.", "source": "llm"}},
             "narrative": {"text": template_narrative(build_facts(rec, auc=0.52)), "source": "llm",
                           "attempts": 1, "temperature": 0.1}}
 

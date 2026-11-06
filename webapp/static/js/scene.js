@@ -105,7 +105,7 @@ export function createHero(canvas, { reduced = false, mobile = false, onSlow = (
   function loop(now) {
     raf = requestAnimationFrame(loop);
     if (document.hidden || !visible) { last = now; return; }
-    const dt = now - last;
+    const dt = Math.min(now - last, 100);           // tab yang baru dibuka lagi: jangan hitung jeda panjang sebagai frame lambat
     last = now;
     ema = ema * 0.95 + dt * 0.05;
     u.uTime.value += dt / 1000;
@@ -120,6 +120,8 @@ export function createHero(canvas, { reduced = false, mobile = false, onSlow = (
   }
   const io = new IntersectionObserver((e) => { visible = e[0].isIntersecting; });
   io.observe(canvas);
+  document.addEventListener("visibilitychange", () => { last = performance.now(); ema = 16; });
+  canvas.addEventListener("webglcontextlost", (e) => { e.preventDefault(); cancelAnimationFrame(raf); onSlow(); });   // GPU diambil browser saat tab lama idle
   const onMove = (e) => { pointer.x = (e.clientX / window.innerWidth - 0.5) * 2; };
 
   if (reduced) renderOnce();

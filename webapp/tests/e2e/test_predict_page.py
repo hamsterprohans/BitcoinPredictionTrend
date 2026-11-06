@@ -279,8 +279,31 @@ def test_headlines_link_to_the_original_articles_safely(page, server):
     assert link.get_attribute("href") == "https://contoh.com/berita-0" and link.inner_text() == "Judul berita 0"
     assert link.get_attribute("target") == "_blank"
     assert set(link.get_attribute("rel").split()) >= {"noopener", "noreferrer"}              # tab asal tidak bisa dibajak
-    assert items.nth(1).locator("a").count() == 0 and items.nth(1).inner_text() == "Judul berita 1"   # javascript: tidak menjadi tautan
+    assert items.nth(1).locator("a").count() == 0 and items.nth(1).inner_text().startswith("Judul berita 1")   # javascript: tidak menjadi tautan
     assert items.nth(2).locator("a").count() == 0                                            # tanpa URL: teks biasa
+
+
+def test_news_view_shows_tones_role_summary_and_a_non_causal_note(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#live-news li")
+    items = page.locator("#live-news li")
+    assert items.nth(0).locator(".tone-bearish").inner_text() == "bernada turun"
+    assert items.nth(1).locator(".tone-bullish").inner_text() == "bernada naik"
+    assert items.nth(2).locator(".tone").count() == 0                                       # tanpa nada: tanpa label
+    text = page.inner_text("#live-news")
+    assert "+2,4 poin persentase" in text and "tidak terutama dibentuk oleh berita" in text
+    assert "Rangkuman berita bernada turun: Satu judul menyoroti kekhawatiran pasar." in text
+    assert "bukan input model" in text and "bukan penyebab prediksi" in text
+
+
+def test_narrative_hides_a_leftover_markdown_heading(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#live-narrative .narr")
+    page.evaluate("""async () => {
+      const m = await import('/static/js/panels.js');
+      m.renderNarrative(document.querySelector('#live-narrative'), {text: '# Prediksi Bitcoin 6 November 2026\\nModel memprediksi turun.', source: 'llm'});
+    }""")
+    assert page.inner_text("#live-narrative .narr") == "Model memprediksi turun."
 
 
 def test_explanation_panel_spans_the_full_card_width_without_empty_side(page, server):

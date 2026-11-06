@@ -36,6 +36,8 @@ def test_template_passes_every_check_by_construction():
     (lambda t: t.replace("Ini bukan saran investasi.", ""), "disclaimer"),
     (lambda t: t.replace("belum terbukti lebih baik dari tebakan acak", "cukup baik"), "keterbatasan"),
     (lambda t: t.replace("tidak pasti dan bisa keliru", "perlu dibaca hati-hati"), "ketidakpastian"),
+    (lambda t: "# Prediksi Bitcoin\n" + t, "format"),
+    (lambda t: t.replace("Model belum", "**Model** belum"), "format"),
     (lambda t: "Terlalu pendek.", "panjang"),
     (lambda t: t + " " + "kata " * 200, "panjang"),
 ])

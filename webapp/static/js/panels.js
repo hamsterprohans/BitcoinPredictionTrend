@@ -7,6 +7,22 @@ const el = (tag, text, cls) => {
   return e;
 };
 
+const TONE_LABEL = { bearish: "bernada turun", netral: "netral", bullish: "bernada naik" };
+
+function renderNewsView(root, view, hasTones) {
+  if (!view) return;
+  if (view.role) root.append(el("p", view.role, "news-role"));
+  if (view.summary) {
+    const p = el("p", undefined, "news-summary");
+    p.append(el("strong", "Rangkuman berita bernada turun: "), document.createTextNode(view.summary.text));
+    root.append(p);
+  }
+  if (hasTones) {
+    root.append(el("p", "Nada tiap judul dinilai terpisah oleh LLM untuk tampilan ini. Itu bukan input model (model hanya memakai skor rata-rata harian) " +
+      "dan bukan penyebab prediksi.", "muted small tone-note"));
+  }
+}
+
 export function renderNews(root, headlines, sentiment, opts = {}) {
   root.replaceChildren();
   if (headlines?.length) {
@@ -22,9 +38,11 @@ export function renderNews(root, headlines, sentiment, opts = {}) {
       } else {
         li.textContent = h.title;
       }
+      if (h.tone) li.append(" ", el("span", TONE_LABEL[h.tone] || h.tone, `tone tone-${h.tone}`));
       ul.append(li);
     });
     root.append(ul);
+    renderNewsView(root, opts.view, headlines.some((h) => h.tone));
     if (opts.source && opts.source !== "cryptocompare") {      // jujur: sumber cadangan bisa sedikit berbeda dari data latih
       const label = { rss: "RSS CoinDesk, Cointelegraph, Decrypt, dll.", gdelt: "GDELT" }[opts.source] || opts.source;
       root.append(el("p", `Sumber berita cadangan (${label}): outlet sejenis dengan sumber utama, tetapi cakupannya bisa sedikit berbeda dari data latih.`, "muted small source-note"));
@@ -102,7 +120,7 @@ export function renderNarrative(root, narrative) {
     root.append(el("p", "Narasi belum dibuat untuk hari ini.", "muted"));
     return;
   }
-  root.append(el("p", narrative.text, "narr"));
+  root.append(el("p", narrative.text.replace(/^\s*#+[^\n]*\n+/, ""), "narr"));       // sisa judul markdown dari LLM tidak ditampilkan
   root.append(el("p", narrative.source === "llm"
     ? "Ditulis oleh LLM dan lolos pemeriksaan otomatis atas angka, arah prediksi, dan disclaimer; ini bukan jaminan penjelasannya benar."
     : "Narasi template: keluaran LLM tidak lolos pemeriksaan otomatis, sehingga memakai template berbasis fakta.",
