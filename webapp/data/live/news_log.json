@@ -801,5 +801,28 @@
    "https://en.coinotag.com/arthur-hayes-75000-bitcoin-downside-ai-stock-selling"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-06": {
+  "titles": [
+   "Binance hackers swap $124M of stolen altcoins into Bitcoin as withdrawals reopen",
+   "Bitcoin set for weekly loss on post-midterms regulatory uncertainty, jobs report",
+   "Terawulf and IREN Bet Big on AI as Bitcoin Mining Revenue Shrinks",
+   "Crypto liquidations hit $1 billion as Bitcoin briefly slips below $75,000",
+   "Whale Factor sees Bitcoin recovery if $74,967 support holds, $98M BTC withdrawn from Binance"
+  ],
+  "scores": {
+   "pemahaman": -4,
+   "detail": -4,
+   "bullbear": -4,
+   "mean": -4.0
+  },
+  "urls": [
+   "https://www.cryptopolitan.com/binance-hackers-124m-stolen-altcoins-bitcoin/",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-slips-to-75k-as-us-regulatory-uncertainty-grows-5006596",
+   "https://news.bitcoin.com/mining/terawulf-iren-bet-big-ai-bitcoin-mining-revenue-shrinks/",
+   "https://en.coin-turk.com/crypto-liquidations-hit-1-billion-as-bitcoin-briefly-slips-below-75000/?utm_source=rss&utm_medium=rss&utm_campaign=crypto-liquidations-hit-1-billion-as-bitcoin-briefly-slips-below-75000",
+   "https://en.coin-turk.com/whale-factor-sees-bitcoin-recovery-if-74967-support-holds-98m-btc-withdrawn-from-binance/?utm_source=rss&utm_medium=rss&utm_campaign=whale-factor-sees-bitcoin-recovery-if-74967-support-holds-98m-btc-withdrawn-from-binance"
+  ],
+  "source": "cryptocompare"
  }
 }
