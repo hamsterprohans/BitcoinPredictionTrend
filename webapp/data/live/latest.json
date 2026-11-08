@@ -1,197 +1,197 @@
 {
- "as_of": "2026-11-06",
- "generated_at": "2026-11-07T00:31:40+00:00",
- "close": 75826.53,
- "change_pct": 0.03,
+ "as_of": "2026-11-07",
+ "generated_at": "2026-11-08T00:31:46+00:00",
+ "close": 75724.41,
+ "change_pct": -0.13,
  "inputs": {
-  "news_sentiment": -4.0,
-  "news_sentiment_raw": -4.0,
-  "headline_count": 36,
-  "fear_greed_index": 28.0
+  "news_sentiment": 0.0,
+  "news_sentiment_raw": 0.0,
+  "headline_count": 38,
+  "fear_greed_index": 25.0
  },
  "horizons": {
   "1": {
-   "prob": 0.41163569688796997,
+   "prob": 0.4058399200439453,
    "threshold": 0.4768124222755432,
    "direction": "TURUN",
-   "target_date": "2026-11-07"
+   "target_date": "2026-11-08"
   },
   "3": {
-   "prob": 0.504209299882253,
+   "prob": 0.5059297184149424,
    "threshold": 0.5177493095397949,
    "direction": "TURUN",
-   "target_date": "2026-11-09"
+   "target_date": "2026-11-10"
   },
   "5": {
-   "prob": 0.4660230278968811,
+   "prob": 0.46768032511075336,
    "threshold": 0.47828808426856995,
    "direction": "TURUN",
-   "target_date": "2026-11-11"
+   "target_date": "2026-11-12"
   },
   "7": {
-   "prob": 0.4509562651316325,
+   "prob": 0.45108067989349365,
    "threshold": 0.47223278880119324,
    "direction": "TURUN",
-   "target_date": "2026-11-13"
+   "target_date": "2026-11-14"
   },
   "15": {
-   "prob": 0.4517871340115865,
+   "prob": 0.4517444372177124,
    "threshold": 0.45957493782043457,
    "direction": "TURUN",
-   "target_date": "2026-11-21"
+   "target_date": "2026-11-22"
   },
   "20": {
-   "prob": 0.4490843613942464,
+   "prob": 0.45070891578992206,
    "threshold": 0.4715519845485687,
    "direction": "TURUN",
-   "target_date": "2026-11-26"
+   "target_date": "2026-11-27"
   },
   "25": {
-   "prob": 0.4327234427134196,
+   "prob": 0.4338583747545878,
    "threshold": 0.4579542577266693,
    "direction": "TURUN",
-   "target_date": "2026-12-01"
+   "target_date": "2026-12-02"
   },
   "30": {
-   "prob": 0.4647361834843953,
+   "prob": 0.4654974738756816,
    "threshold": 0.4812179505825043,
    "direction": "TURUN",
-   "target_date": "2026-12-06"
+   "target_date": "2026-12-07"
   },
   "35": {
-   "prob": 0.4458240270614624,
+   "prob": 0.447833647330602,
    "threshold": 0.42857804894447327,
    "direction": "NAIK",
-   "target_date": "2026-12-11"
+   "target_date": "2026-12-12"
   }
  },
  "explain": {
   "headlines": [
    {
-    "title": "Binance hackers swap $124M of stolen altcoins into Bitcoin as withdrawals reopen",
-    "url": "https://www.cryptopolitan.com/binance-hackers-124m-stolen-altcoins-bitcoin/",
-    "tone": "bearish"
-   },
-   {
-    "title": "Bitcoin set for weekly loss on post-midterms regulatory uncertainty, jobs report",
-    "url": "https://www.investing.com/news/cryptocurrency-news/bitcoin-slips-to-75k-as-us-regulatory-uncertainty-grows-5006596",
-    "tone": "bearish"
-   },
-   {
-    "title": "Terawulf and IREN Bet Big on AI as Bitcoin Mining Revenue Shrinks",
-    "url": "https://news.bitcoin.com/mining/terawulf-iren-bet-big-ai-bitcoin-mining-revenue-shrinks/",
-    "tone": "bearish"
-   },
-   {
-    "title": "Crypto liquidations hit $1 billion as Bitcoin briefly slips below $75,000",
-    "url": "https://en.coin-turk.com/crypto-liquidations-hit-1-billion-as-bitcoin-briefly-slips-below-75000/?utm_source=rss&utm_medium=rss&utm_campaign=crypto-liquidations-hit-1-billion-as-bitcoin-briefly-slips-below-75000",
-    "tone": "bearish"
-   },
-   {
-    "title": "Whale Factor sees Bitcoin recovery if $74,967 support holds, $98M BTC withdrawn from Binance",
-    "url": "https://en.coin-turk.com/whale-factor-sees-bitcoin-recovery-if-74967-support-holds-98m-btc-withdrawn-from-binance/?utm_source=rss&utm_medium=rss&utm_campaign=whale-factor-sees-bitcoin-recovery-if-74967-support-holds-98m-btc-withdrawn-from-binance",
+    "title": "US Adds 165,000 Jobs in October: Why Bitcoin Traders Are Watching the Fed",
+    "url": "https://www.newsbtc.com/news/bitcoin/us-adds-165-000-jobs-in-october-why-bitcoin-traders-are-watching-the-fed/",
     "tone": "bullish"
+   },
+   {
+    "title": "Bitcoin (BTC) Short-Term Holders Flip From $49 Billion Profit to $162 Million Loss",
+    "url": "https://en.coinotag.com/bitcoin-short-term-holders-49b-profit-to-162m-loss",
+    "tone": "bearish"
+   },
+   {
+    "title": "Solo Bitcoin Miners Strike Digital Gold as 2026 Jackpot Wins Reach 36 Blocks",
+    "url": "https://news.bitcoin.com/mining/solo-bitcoin-miners-strike-digital-gold-as-2026-jackpot-wins-reach-36-blocks/",
+    "tone": "bullish"
+   },
+   {
+    "title": "IREN’s Bitcoin Mining Revenue Falls as AI Cloud Sales Nearly Triple",
+    "url": "https://www.newsbtc.com/news/bitcoin/iren-s-bitcoin-mining-revenue-falls-as-ai-cloud-sales-nearly-triple/",
+    "tone": "bearish"
+   },
+   {
+    "title": "Bitcoin trades near Strategy’s average cost as gold doubles since 2020",
+    "url": "https://en.coin-turk.com/bitcoin-trades-near-strategys-average-cost-as-gold-doubles-since-2020/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-trades-near-strategys-average-cost-as-gold-doubles-since-2020",
+    "tone": "netral"
    }
   ],
   "news_view": {
-   "role": "Sentimen berita berpengaruh +1,6 poin persentase pada skor model, mendorongnya ke arah naik, berlawanan dengan arah prediksi (urutan ke-8 dari 13 fitur); arah prediksi ini tidak terutama dibentuk oleh berita.",
+   "role": "Sentimen berita berpengaruh +0,7 poin persentase pada skor model, mendorongnya ke arah naik, berlawanan dengan arah prediksi (urutan ke-11 dari 13 fitur); arah prediksi ini tidak terutama dibentuk oleh berita.",
    "summary": {
-    "text": "Judul bernada bearish: «Binance hackers swap $124M of stolen altcoins into Bitcoin as withdrawals reopen»; «Bitcoin set for weekly loss on post-midterms regulatory uncertainty, jobs report»; «Terawulf and IREN Bet Big on AI as Bitcoin Mining Revenue Shrinks»; «Crypto liquidations hit $1 billion as Bitcoin briefly slips below $75,000».",
+    "text": "Judul bernada bearish: «Bitcoin (BTC) Short-Term Holders Flip From $49 Billion Profit to $162 Million Loss»; «IREN’s Bitcoin Mining Revenue Falls as AI Cloud Sales Nearly Triple».",
     "source": "template"
    }
   },
   "sentiment": {
    "has_news": true,
    "scores": {
-    "pemahaman": -4,
-    "detail": -4,
-    "bullbear": -4,
-    "mean": -4.0
+    "pemahaman": -2,
+    "detail": 0,
+    "bullbear": 2,
+    "mean": 0.0
    },
-   "used": -4.0
+   "used": 0.0
   },
   "contributions": [
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "delta_pp": -11.807
+    "delta_pp": -12.188
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "delta_pp": -9.517
+    "delta_pp": -10.55
    },
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "delta_pp": -6.34
+    "delta_pp": -8.095
    },
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "delta_pp": -5.681
+    "delta_pp": -5.231
    },
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "delta_pp": 3.376
+    "delta_pp": 2.489
    },
    {
     "feature": "MACD",
     "label": "MACD",
-    "delta_pp": 2.488
+    "delta_pp": 2.351
    },
    {
     "feature": "RSI14",
     "label": "RSI 14 hari",
-    "delta_pp": 2.195
-   },
-   {
-    "feature": "news_sentiment",
-    "label": "Sentimen berita",
-    "delta_pp": 1.598
-   },
-   {
-    "feature": "daily_return",
-    "label": "Return harian",
-    "delta_pp": 0.642
+    "delta_pp": 2.189
    },
    {
     "feature": "BB_width",
     "label": "Lebar Bollinger",
-    "delta_pp": -0.602
+    "delta_pp": -0.939
    },
    {
     "feature": "MACD_Signal",
     "label": "Sinyal MACD",
-    "delta_pp": 0.58
+    "delta_pp": 0.813
    },
    {
-    "feature": "fear_greed_index_scaled",
-    "label": "Fear & Greed Index",
-    "delta_pp": -0.048
+    "feature": "daily_return",
+    "label": "Return harian",
+    "delta_pp": 0.703
+   },
+   {
+    "feature": "news_sentiment",
+    "label": "Sentimen berita",
+    "delta_pp": 0.679
    },
    {
     "feature": "MACD_Histogram",
     "label": "Histogram MACD",
-    "delta_pp": 0.038
+    "delta_pp": -0.495
+   },
+   {
+    "feature": "fear_greed_index_scaled",
+    "label": "Fear & Greed Index",
+    "delta_pp": -0.072
    }
   ],
   "features": [
    {
     "feature": "daily_return",
     "label": "Return harian",
-    "value": 0.000308675390519042,
-    "value_text": "+0,03%",
-    "percentile": 48,
+    "value": -0.0013467544718211988,
+    "value_text": "-0,13%",
+    "percentile": 46,
     "category": "sedang",
     "outside_train_range": false
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "value": 77427.11787657262,
-    "value_text": "US$77.427",
+    "value": 77187.6020004175,
+    "value_text": "US$77.188",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -199,8 +199,8 @@
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "value": 80512.56659791167,
-    "value_text": "US$80.513",
+    "value": 80312.31746515284,
+    "value_text": "US$80.312",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -208,8 +208,8 @@
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "value": 78511.08860673776,
-    "value_text": "US$78.511",
+    "value": 78631.7494830116,
+    "value_text": "US$78.632",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -217,8 +217,8 @@
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "value": 0.029724781624964842,
-    "value_text": "2,97%",
+    "value": 0.02962138543078784,
+    "value_text": "2,96%",
     "percentile": 54,
     "category": "sedang",
     "outside_train_range": false
@@ -226,17 +226,17 @@
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "value": 0.018885331728363035,
-    "value_text": "1,89%",
-    "percentile": 12,
+    "value": 0.018655906765230164,
+    "value_text": "1,87%",
+    "percentile": 10,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "RSI14",
     "label": "RSI 14 hari",
-    "value": 38.373366068151746,
-    "value_text": "38,4",
+    "value": 38.1355522799268,
+    "value_text": "38,1",
     "percentile": 18,
     "category": "rendah",
     "outside_train_range": false
@@ -244,8 +244,8 @@
    {
     "feature": "MACD",
     "label": "MACD",
-    "value": -1384.7904795790528,
-    "value_text": "US$-1.384,8",
+    "value": -1479.2585112530505,
+    "value_text": "US$-1.479,3",
     "percentile": 6,
     "category": "rendah",
     "outside_train_range": false
@@ -253,17 +253,17 @@
    {
     "feature": "MACD_Signal",
     "label": "Sinyal MACD",
-    "value": -1068.16098789661,
-    "value_text": "US$-1.068,2",
-    "percentile": 10,
+    "value": -1150.3804925678983,
+    "value_text": "US$-1.150,4",
+    "percentile": 8,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "MACD_Histogram",
     "label": "Histogram MACD",
-    "value": -316.6294916824427,
-    "value_text": "US$-316,6",
+    "value": -328.87801868515226,
+    "value_text": "US$-328,9",
     "percentile": 10,
     "category": "rendah",
     "outside_train_range": false
@@ -271,34 +271,34 @@
    {
     "feature": "BB_width",
     "label": "Lebar Bollinger",
-    "value": 0.12062731549781254,
-    "value_text": "12,1%",
-    "percentile": 22,
+    "value": 0.1256205778643962,
+    "value_text": "12,6%",
+    "percentile": 24,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "value": -4.0,
-    "value_text": "-4,00",
-    "percentile": 5,
-    "category": "rendah",
+    "value": 0.0,
+    "value_text": "+0,00",
+    "percentile": 46,
+    "category": "sedang",
     "outside_train_range": false
    },
    {
     "feature": "fear_greed_index_scaled",
     "label": "Fear & Greed Index",
-    "value": 0.28,
-    "value_text": "28 dari 100",
-    "percentile": 30,
+    "value": 0.25,
+    "value_text": "25 dari 100",
+    "percentile": 24,
     "category": "rendah",
     "outside_train_range": false
    }
   ],
-  "level": "sedang",
+  "level": "tinggi",
   "narrative": {
-   "text": "Model penelitian memprediksi arah TURUN untuk Bitcoin pada 7 November 2026 berdasarkan data 6 November dengan probabilitas naik 0,4116 (tingkat keyakinan sedang). Fitur paling memengaruhi skor adalah Rata-rata harga 90 hari senilai US$78.511 dengan pengaruh -11,8 poin persentase, diikuti Rata-rata harga 7 hari senilai US$77.427 dengan pengaruh -9,5 poin persentase, dan Rata-rata harga 30 hari senilai US$80.513 dengan pengaruh -6,3 poin persentase. Model belum terbukti lebih baik dari tebakan acak. Hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
+   "text": "Model penelitian memprediksi Bitcoin bergerak TURUN pada 8 November 2026 dengan skor 0,4058 (keyakinan tinggi). Dua fitur teratas paling memengaruhi prediksi: rata-rata harga 90 hari sebesar US$78.632 dengan pengaruh -12,2 poin persentase, dan rata-rata harga 7 hari sebesar US$77.188 dengan pengaruh -10,6 poin persentase. Kedua indikator harga jangka pendek dan menengah berada di level historis tertinggi, mendorong skor model ke bawah ambang keputusan. Model belum terbukti lebih baik dari tebakan acak. Hasil prediksi tidak pasti dan bisa keliru. Ini bukan saran investasi.",
    "source": "llm",
    "attempts": 2,
    "temperature": null

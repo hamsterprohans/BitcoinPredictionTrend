@@ -824,5 +824,28 @@
    "https://en.coin-turk.com/whale-factor-sees-bitcoin-recovery-if-74967-support-holds-98m-btc-withdrawn-from-binance/?utm_source=rss&utm_medium=rss&utm_campaign=whale-factor-sees-bitcoin-recovery-if-74967-support-holds-98m-btc-withdrawn-from-binance"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-07": {
+  "titles": [
+   "US Adds 165,000 Jobs in October: Why Bitcoin Traders Are Watching the Fed",
+   "Bitcoin (BTC) Short-Term Holders Flip From $49 Billion Profit to $162 Million Loss",
+   "Solo Bitcoin Miners Strike Digital Gold as 2026 Jackpot Wins Reach 36 Blocks",
+   "IREN’s Bitcoin Mining Revenue Falls as AI Cloud Sales Nearly Triple",
+   "Bitcoin trades near Strategy’s average cost as gold doubles since 2020"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 0,
+   "bullbear": 2,
+   "mean": 0.0
+  },
+  "urls": [
+   "https://www.newsbtc.com/news/bitcoin/us-adds-165-000-jobs-in-october-why-bitcoin-traders-are-watching-the-fed/",
+   "https://en.coinotag.com/bitcoin-short-term-holders-49b-profit-to-162m-loss",
+   "https://news.bitcoin.com/mining/solo-bitcoin-miners-strike-digital-gold-as-2026-jackpot-wins-reach-36-blocks/",
+   "https://www.newsbtc.com/news/bitcoin/iren-s-bitcoin-mining-revenue-falls-as-ai-cloud-sales-nearly-triple/",
+   "https://en.coin-turk.com/bitcoin-trades-near-strategys-average-cost-as-gold-doubles-since-2020/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-trades-near-strategys-average-cost-as-gold-doubles-since-2020"
+  ],
+  "source": "cryptocompare"
  }
 }
