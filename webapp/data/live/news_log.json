@@ -847,5 +847,28 @@
    "https://en.coin-turk.com/bitcoin-trades-near-strategys-average-cost-as-gold-doubles-since-2020/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-trades-near-strategys-average-cost-as-gold-doubles-since-2020"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-08": {
+  "titles": [
+   "Bitcoin faces fresh volatility ahead of key US inflation data and CoreWeave earnings",
+   "Which Bitcoin Treasury Stocks Could Surge on Bullish CPI Data Drop?",
+   "Bitcoin slides over 6% as risk sentiment battered amid historic Wall Street rout",
+   "AntPool Mines Bitcoin (BTC) Block With 11,255 Transactions, 984 Short of Record",
+   "While Bitcoin and Altcoins Fell, It Rose by 71 Percent—This Altcoin Stood Out on Its Own on the New List"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": -2,
+   "bullbear": -4,
+   "mean": -3.0
+  },
+  "urls": [
+   "https://en.coin-turk.com/bitcoin-faces-fresh-volatility-ahead-of-key-us-inflation-data-and-coreweave-earnings/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-faces-fresh-volatility-ahead-of-key-us-inflation-data-and-coreweave-earnings",
+   "https://cryptonews.com/news/which-bitcoin-treasury-stocks-could-surge-on-bullish-cpi-data-drop/",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-firms-to-805k-as-us-elections-buoy-risk-appetite-but-outlook-unclear-5002271",
+   "https://en.coinotag.com/antpool-bitcoin-btc-block-974961-11255-transactions-near-record",
+   "https://en.bitcoinsistemi.com/while-bitcoin-and-altcoins-fell-it-rose-by-71-percent-this-altcoin-stood-out-on-its-own-on-the-new-l/"
+  ],
+  "source": "cryptocompare"
  }
 }
