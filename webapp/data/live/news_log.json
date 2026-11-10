@@ -870,5 +870,28 @@
    "https://en.bitcoinsistemi.com/while-bitcoin-and-altcoins-fell-it-rose-by-71-percent-this-altcoin-stood-out-on-its-own-on-the-new-l/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-09": {
+  "titles": [
+   "Bitcoin turns slightly higher amid Wall Street rally, slide in oil prices",
+   "How To Value Bitcoin Miners After The AI Selloff And Texas Shock",
+   "Michael Saylor teases fresh Bitcoin move amid Strategy’s $1B paper loss",
+   "Bitcoin slides to 2-month low as US inflation data approaches",
+   "MARA Holdings Q3 earnings beat, buoyed by bitcoin's value increase"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 0,
+   "bullbear": -2,
+   "mean": -1.3333333333333333
+  },
+  "urls": [
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-slips-to-74k-as-regulatory-uncertainty-etf-outflows-weigh-5010570",
+   "https://www.forbes.com/sites/murtuza-merchant/2026/11/09/how-to-value-bitcoin-miners-after-the-ai-selloff-and-texas-shock/",
+   "https://ambcrypto.com/michael-saylor-teases-fresh-bitcoin-move-amid-strategys-1b-paper-loss/",
+   "https://en.coin-turk.com/bitcoin-slides-to-2-month-low-as-us-inflation-data-approaches/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-slides-to-2-month-low-as-us-inflation-data-approaches",
+   "https://seekingalpha.com/news/4669212-mara-holdings-q3-earnings-beat-buoyed-by-bitcoins-value-increase?utm_source=cryptocompare.com&utm_medium=referral&feed_item_type=news"
+  ],
+  "source": "cryptocompare"
  }
 }
