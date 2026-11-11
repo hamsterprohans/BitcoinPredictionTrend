@@ -893,5 +893,28 @@
    "https://seekingalpha.com/news/4669212-mara-holdings-q3-earnings-beat-buoyed-by-bitcoins-value-increase?utm_source=cryptocompare.com&utm_medium=referral&feed_item_type=news"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-10": {
+  "titles": [
+   "CryptoQuant Weekly Report Puts Bitcoin (BTC) Bull Score at 20",
+   "Bitcoin (BTC) Trades Near $73,600 With Daily Volume Above $22.4 Billion",
+   "Bitcoin Miner HIVE Eyes $45 Million in Annual Revenue From AI Deal",
+   "Bitcoin falls over 2%, drops under $74k after hot CPI data, hawkish Waller",
+   "Trump Media reports $409.7 million Q3 profit as Bitcoin holdings surge"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": 1,
+   "bullbear": 2,
+   "mean": 0.0
+  },
+  "urls": [
+   "https://en.coinotag.com/bitcoin-btc-bull-score-20-cryptoquant-report",
+   "https://en.coinotag.com/bitcoin-btc-trades-near-73600-22-4-billion-volume",
+   "https://decrypt.co/382982/bitcoin-miner-hive-eyes-45-million-ai-data-center",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-pinned-below-75k-as-regulatory-uncertainty-etf-outflows-persist-5014179",
+   "https://en.coin-turk.com/trump-media-reports-409-7-million-q3-profit-as-bitcoin-holdings-surge/?utm_source=rss&utm_medium=rss&utm_campaign=trump-media-reports-409-7-million-q3-profit-as-bitcoin-holdings-surge"
+  ],
+  "source": "cryptocompare"
  }
 }
