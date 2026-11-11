@@ -38,6 +38,7 @@ export function createBars(canvas, items, { reduced = false } = {}) {
     const w = canvas.clientWidth || 600, h = canvas.clientHeight || 240;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
+    camera.position.z = 8.2 * Math.max(1, 2.3 / camera.aspect);      // layar sempit: mundurkan kamera agar semua batang (dan putarannya) tetap termuat
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);
   };

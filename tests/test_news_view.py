@@ -61,3 +61,32 @@ def test_summary_rejects_invalid_text_and_falls_back_to_listing_titles(bad):
     llm = FakeLLM([bad, bad])
     out = bearish_summary(llm, ["ETFs shed money"])
     assert out["source"] == "template" and "«ETFs shed money»" in out["text"]
+
+
+GOOD_DIGEST = ("Berita hari ini mencakup pembukaan kembali bertahap sebuah bursa kripto setelah insiden, arus keluar dana dari ETF, "
+               "serta pembahasan perubahan teknis jaringan Bitcoin. Nada pemberitaan campuran dan tidak searah.")
+
+
+def test_digest_uses_all_headlines_and_accepts_a_clean_text():
+    from app.explain import news_digest
+    llm = FakeLLM([GOOD_DIGEST])
+    out = news_digest(llm, ["Exchange reopens", "ETF outflows", "Soft fork debate"])
+    assert out == {"text": GOOD_DIGEST, "source": "llm"}
+    prompt = llm.calls[0]["messages"][0]["content"]
+    assert "Exchange reopens" in prompt and "ETF outflows" in prompt and "Soft fork debate" in prompt
+
+
+@pytest.mark.parametrize("bad", [
+    "Dana ETF keluar 1,8 miliar dolar hari ini.",
+    "Harga turun karena berita buruk hari ini.",
+    "**Ringkasan** berita hari ini.",
+])
+def test_digest_returns_none_when_llm_text_never_validates(bad):
+    from app.explain import news_digest
+    assert news_digest(FakeLLM([bad, bad]), ["x"]) is None
+
+
+def test_digest_is_none_without_headlines_and_makes_no_call():
+    from app.explain import news_digest
+    llm = FakeLLM([])
+    assert news_digest(llm, []) is None and llm.calls == []

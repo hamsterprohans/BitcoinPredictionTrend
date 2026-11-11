@@ -29,14 +29,14 @@ void main() {
   gl_FragColor = vec4(col, a);
 }`;
 
-export function createHero(canvas, { reduced = false, mobile = false, onSlow = () => {} } = {}) {
+export function createHero(canvas, { reduced = false, mobile = false, banner = false, onSlow = () => {} } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "low-power" });
   const dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2);
   renderer.setPixelRatio(dpr);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-  camera.position.set(0, 5, 14);
+  camera.position.set(0, banner ? 2.6 : 5, banner ? 8 : 14);      // banner: bingkai lebar dan pendek di kepala halaman
   camera.lookAt(0, 0, 0);
 
   const N = mobile ? 64 : 128;

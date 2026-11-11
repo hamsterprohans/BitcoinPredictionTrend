@@ -99,8 +99,14 @@ function renderPanel() {
   renderHistory();
 }
 
-function renderHistory() {
-  const rows = state.history.filter((e) => e.horizons[state.selected]).slice(-30).reverse();
+const HIST_PAGE = 10;                                         // baris per halaman riwayat
+function renderHistory(focusPager = false) {
+  const all = state.history.filter((e) => e.horizons[state.selected]).reverse();     // seluruh riwayat, terbaru dulu
+  const pages = Math.max(1, Math.ceil(all.length / HIST_PAGE));
+  if (state.histFor !== state.selected) { state.histFor = state.selected; state.histPage = 1; }   // ganti horizon: kembali ke halaman 1
+  state.histPage = clamp(state.histPage || 1, 1, pages);
+  const rows = all.slice((state.histPage - 1) * HIST_PAGE, state.histPage * HIST_PAGE);
+  renderPager(pages, all.length, focusPager);
   const body = $("#history-body");
   body.replaceChildren();
   const tally = { pro: [0, 0], bf: [0, 0] };               // [benar, selesai]: prospektif (terbit pada harinya) vs dihitung susulan
@@ -127,8 +133,11 @@ function renderHistory() {
       if (i === 3 && h.actual) td.className = h.correct ? "up" : "down";
       tr.append(td);
     });
-    if (h.actual) { const t = tally[e.backfilled ? "bf" : "pro"]; t[1]++; if (h.correct) t[0]++; }
     body.append(tr);
+  }
+  for (const e of all) {                                       // ringkasan dihitung dari seluruh riwayat horizon ini, bukan hanya halaman yang tampil
+    const h = e.horizons[state.selected];
+    if (h.actual) { const t = tally[e.backfilled ? "bf" : "pro"]; t[1]++; if (h.correct) t[0]++; }
   }
   const [ok, done] = tally.pro, [bok, bdone] = tally.bf;
   const summary = [];
@@ -139,13 +148,40 @@ function renderHistory() {
   if (bdone) summary.push(`dihitung susulan ${bok}/${bdone}`);
   $("#hist-h").textContent = `${state.selected} hari · ` + (summary.length ? summary.join(" · ") : "belum ada hasil yang jatuh tempo");
   const note = $("#hist-note");
-  const versions = [...new Set(rows.map((e) => e.model_version).filter(Boolean))];
+  const versions = [...new Set(all.map((e) => e.model_version).filter(Boolean))];
   note.hidden = !(done || bdone);
   note.textContent = (done || bdone)
     ? `Sampel kecil (n=${done}): rentang kepercayaan masih lebar dan belum menunjukkan hasil yang berbeda dari tebakan acak (50%). ` +
       "Prospektif = prediksi yang terbit pada harinya; susulan dihitung belakangan dari data tersimpan dan tidak dihitung sebagai bukti. " +
       (versions.length ? `Versi model: ${versions.join(", ")}.` : "")
     : "";
+}
+
+function renderPager(pages, total, focus) {
+  const nav = $("#hist-pager");
+  nav.hidden = pages <= 1;
+  if (pages <= 1) { nav.replaceChildren(); return; }
+  const cur = state.histPage, from = (cur - 1) * HIST_PAGE + 1, to = Math.min(cur * HIST_PAGE, total);
+  const go = (n) => { state.histPage = n; renderHistory(true); };
+  const btn = (label, n, { aria, current = false, disabled = false } = {}) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "pg"; b.textContent = label;
+    if (aria) b.setAttribute("aria-label", aria);
+    if (current) b.setAttribute("aria-current", "page");
+    b.disabled = disabled;
+    b.addEventListener("click", () => go(n));
+    return b;
+  };
+  const info = document.createElement("p");
+  info.className = "pg-info muted small mono";
+  info.textContent = `Hari ke-${from}–${to} dari ${total} (terbaru ke terlama)`;
+  const row = document.createElement("div");
+  row.className = "pg-row";
+  row.append(btn("Lebih baru", cur - 1, { aria: "Halaman lebih baru", disabled: cur === 1 }));
+  for (let n = 1; n <= pages; n++) row.append(btn(String(n), n, { aria: `Halaman ${n}`, current: n === cur }));
+  row.append(btn("Lebih lama", cur + 1, { aria: "Halaman lebih lama", disabled: cur === pages }));
+  nav.replaceChildren(row, info);
+  if (focus) nav.querySelector("[aria-current]")?.focus();
 }
 
 function select(h) {
@@ -270,7 +306,7 @@ async function renderExplain() {
   $("#sec-explain").hidden = false;
   renderNews($("#live-news"), ex.headlines, ex.sentiment, { source: ex.news_source, view: ex.news_view });
   renderContrib($("#live-contrib"), ex.contributions);
-  renderNarrative($("#live-narrative"), ex.narrative);
+  renderNarrative($("#live-narrative"), ex.narrative, ex.news_view?.digest);
   try {
     if (!(await getJSON("/api/retro/status")).built) throw new Error("belum dibangun");
     const series = await getJSON("/api/retro/series");
@@ -328,10 +364,16 @@ async function refreshLiveOnce() {   // demo: jangan campur harga live asli deng
   const badge = $("#live-badge");
   try {
     const { price } = await getJSON("/api/price/live");
+    const prevLive = state.livePrice;
     state.livePrice = price;
     applyLiveToChart();
     const pct = (price / state.close - 1) * 100;
     $("#price").textContent = fmtUSD(price);
+    if (prevLive != null && price !== prevLive && !reducedMotion) {      // kilatan warna singkat saat harga live berubah
+      const el = $("#price");
+      el.classList.remove("tick-up", "tick-down"); void el.offsetWidth;
+      el.classList.add(price > prevLive ? "tick-up" : "tick-down");
+    }
     const ch = $("#change");
     ch.textContent = `${pct >= 0 ? "▲" : "▼"} ${fmtPct(pct)}`;     // perubahan terhadap penutupan terakhir
     ch.className = "chg mono " + (pct >= 0 ? "up" : "down");

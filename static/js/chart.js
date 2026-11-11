@@ -34,7 +34,7 @@ export function createCharts({ priceEl, rsiEl, macdEl }) {
   const price = LC.createChart(priceEl, base());
   const gold = cssVar("--gold");
   const area = price.addAreaSeries({ lineColor: gold, topColor: hexA(gold, 0.28), bottomColor: hexA(gold, 0), lineWidth: 2, priceLineColor: gold });
-  const ma = { MA7: line(price, "#f3d98b"), MA30: line(price, "#7aa7ff"), MA90: line(price, "#b58cff") };
+  const ma = { MA7: line(price, "#ff5fb0"), MA30: line(price, "#7aa7ff"), MA90: line(price, "#b58cff") };
   const dashed = { lineStyle: LC.LineStyle.Dashed };
   const bb = { BB_up: line(price, cssVar("--text-2"), 1, dashed), BB_mid: line(price, cssVar("--text-2"), 1, { lineStyle: LC.LineStyle.Dotted }), BB_dn: line(price, cssVar("--text-2"), 1, dashed) };
 

@@ -296,6 +296,14 @@ def test_news_view_shows_tones_role_summary_and_a_non_causal_note(page, server):
     assert "bukan input model" in text and "bukan penyebab prediksi" in text
 
 
+def test_explanation_includes_the_daily_news_digest_with_a_non_causal_note(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#live-narrative .narr")
+    text = page.inner_text("#live-narrative")
+    assert "Rangkuman berita hari ini: Berita hari ini mencakup pasar yang berhati-hati; nada pemberitaan campuran." in text
+    assert "bukan penyebab prediksi" in text
+
+
 def test_narrative_hides_a_leftover_markdown_heading(page, server):
     page.goto(server + "/")
     page.wait_for_selector("#live-narrative .narr")
@@ -311,7 +319,7 @@ def test_explanation_panel_spans_the_full_card_width_without_empty_side(page, se
     page.wait_for_selector("#live-narrative .narr")
     card = page.locator("#sec-explain").bounding_box()
     panel = page.locator("#live-narrative").bounding_box()
-    pad = 2 * 18                                                           # padding kartu kiri+kanan
+    pad = 2 * (18 + 1)                                                     # padding kartu kiri+kanan plus garis tepi 1px
     assert panel["width"] >= card["width"] - pad - 2                       # selebar isi kartu: tidak ada kolom kosong di samping
     narr = page.locator("#live-narrative .narr").bounding_box()
     assert narr["width"] >= card["width"] - pad - 2
@@ -446,3 +454,50 @@ def test_history_note_is_hidden_when_nothing_has_resolved_yet(page, server):
     page.goto(server + "/")
     page.wait_for_selector("#history-body tr")
     assert "belum ada hasil yang jatuh tempo" in page.inner_text("#hist-h")
+
+
+def _long_history(page, n=25):
+    import json
+    from datetime import date, timedelta
+
+    def fulfil(route):                                         # n hari riwayat berurutan dari 1 Okt (lama ke baru)
+        base = date(2026, 10, 1)
+        rows = [{"date": (base + timedelta(days=i)).isoformat(), "close": 1.0, "model_version": "v3_align",
+                 "horizons": {"1": {"prob": 0.5, "threshold": 0.4557, "direction": "NAIK",
+                                    "actual": "NAIK", "correct": True, "locked": True}}} for i in range(n)]
+        route.fulfill(status=200, content_type="application/json", body=json.dumps(rows))
+    page.route("**/api/prediction/history", fulfil)
+
+
+def test_history_is_paged_ten_rows_each_newest_first(page, server):
+    _long_history(page)
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    first = lambda: page.locator("#history-body tr td:first-child").all_inner_texts()      # noqa: E731
+    cells = first()
+    assert len(cells) == 10
+    assert cells[0].startswith("26 Okt 2026") and cells[-1].startswith("17 Okt 2026")      # target = asal + 1 hari; terbaru di atas
+    assert "Hari ke-1–10 dari 25" in page.inner_text("#hist-pager")
+    assert page.locator("#hist-pager .pg[aria-current]").inner_text() == "1"
+    assert page.locator("#hist-pager button", has_text="Lebih baru").is_disabled()
+    page.locator("#hist-pager .pg", has_text="Lebih lama").click()                          # halaman 2: yang lebih lama
+    cells = first()
+    assert len(cells) == 10 and cells[0].startswith("16 Okt 2026") and cells[-1].startswith("7 Okt 2026")
+    assert page.evaluate("document.activeElement.getAttribute('aria-current')") == "page"   # fokus tetap di pager setelah pindah halaman
+    page.locator("#hist-pager .pg", has_text="3").click()                                   # halaman terakhir: sisa 5 hari tertua
+    cells = first()
+    assert len(cells) == 5 and cells[0].startswith("6 Okt 2026") and cells[-1].startswith("2 Okt 2026")
+    assert page.locator("#hist-pager button", has_text="Lebih lama").is_disabled()
+
+
+def test_history_summary_counts_the_whole_history_not_only_the_visible_page(page, server):
+    _long_history(page)
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    assert "n=25" in page.inner_text("#hist-h")
+
+
+def test_history_pager_is_hidden_when_one_page_is_enough(page, server):
+    page.goto(server + "/")                                                                 # data contoh: 10 hari
+    page.wait_for_selector("#history-body tr")
+    assert page.locator("#history-body tr").count() == 10 and page.locator("#hist-pager").is_hidden()

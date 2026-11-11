@@ -1,6 +1,6 @@
 import pytest
 
-from tests.e2e.conftest import collect_errors
+from tests.e2e.conftest import BASE_NOW, collect_errors
 
 pytestmark = pytest.mark.e2e
 
@@ -78,20 +78,35 @@ def test_other_pages_have_no_splash(page, server):
     assert page.locator("#splash").count() == 0
 
 
-def test_bitcoin_mark_has_ring_that_encloses_the_symbol(browser, server):
+def test_bitcoin_mark_is_the_symbol_alone_without_a_ring(browser, server):
     ctx, page = _fresh(browser)
     page.goto(server + "/")
     r = page.evaluate("""async () => {
       const m = await import('/static/js/splash-scene.js');
       const sym = await m.sampleBitcoin(3000, 3.6);
-      const R = m.ringRadiusFor(sym), T = 0.16;
-      const ring = m.ringPoints(1500, R, T);
-      const dist = ([x, y]) => Math.hypot(x, y - m.CENTER_Y);
-      return { R, T, n: ring.length, symMax: Math.max(...sym.map(dist)),
-               ringMin: Math.min(...ring.map(dist)), ringMax: Math.max(...ring.map(dist)) };
+      return { n: sym.length, ring: typeof m.ringPoints, ymin: Math.min(...sym.map((p) => p[1])), ymax: Math.max(...sym.map((p) => p[1])) };
     }""")
-    assert r["n"] == 1500
-    assert r["symMax"] < r["R"] - r["T"] / 2                       # ring melingkupi seluruh simbol
-    assert r["R"] - r["T"] / 2 - 1e-6 <= r["ringMin"] and r["ringMax"] <= r["R"] + r["T"] / 2 + 1e-6   # titik berada pada pita cincin
-    page.wait_for_function("document.getElementById('splash').dataset.ring === '1'", timeout=5000)
+    assert r["n"] == 3000 and r["ring"] == "undefined"                 # tidak ada cincin di sekeliling simbol
+    assert r["ymax"] - r["ymin"] > 3.4                                  # tinggi simbol sesuai permintaan (~3,6)
+    page.wait_for_function("document.getElementById('splash').dataset.mark === 'bitcoin'", timeout=5000)
+    assert page.evaluate("document.getElementById('splash').dataset.ring") is None
+    ctx.close()
+
+
+def test_splash_shows_todays_brief_from_the_same_data_as_the_dashboard(browser, server):
+    ctx, page = _fresh(browser)
+    page.goto(server + "/")
+    page.wait_for_selector("#splash-brief:not([hidden])", timeout=5000)
+    text = page.inner_text("#splash-brief")
+    assert "Penutupan" in text and "$" in text and "Arah 1 hari" in text and "NAIK" in text and "52,0%" in text   # data contoh: horizon 1 hari NAIK 0,52
+    ctx.close()
+
+
+def test_splash_brief_stays_hidden_when_data_is_unavailable(browser, make_server):
+    url = make_server(BASE_NOW, seed=False)
+    ctx, page = _fresh(browser)
+    page.goto(url + "/")
+    page.wait_for_selector("#splash:not([hidden])")
+    page.wait_for_timeout(1500)
+    assert page.locator("#splash-brief").is_hidden()                    # tanpa data: tidak ada angka karangan
     ctx.close()
