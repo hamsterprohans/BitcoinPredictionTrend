@@ -29,12 +29,16 @@
       <h2 id="splash-title" class="splash-title">Bitcoin Trend</h2>
       <p class="splash-tag">Prediksi arah harga berbasis LSTM, sentimen berita LLM, dan Fear &amp; Greed Index</p>
       <p class="splash-author">Oleh Hans Christian Cakrawangsa</p>
+      <dl class="splash-brief" id="splash-brief" aria-label="Ringkasan hari ini" hidden>
+        <div><dt id="brief-close-l">Penutupan</dt><dd id="brief-close" class="mono">—</dd></div>
+        <div><dt>Arah 1 hari</dt><dd id="brief-dir" class="mono">—</dd></div>
+        <div><dt>Probabilitas naik</dt><dd id="brief-prob" class="mono">—</dd></div>
+      </dl>
       <button id="splash-enter" class="splash-btn" type="button" autofocus>Lanjutkan ke Dashboard Prediksi</button>
       <p class="splash-hint">Tekan Enter atau klik tombol untuk melanjutkan</p>
     </div>
   </div>
-  <canvas id="hero-canvas" aria-hidden="true"></canvas>
-  <div class="notice-bar" role="note">Angka ini hanyalah prediksi, bukan saran investasi. Kami tidak bertanggung jawab apabila terjadi kerugian atas investasi yang dilakukan.</div>
+  <div class="notice-bar" role="note"><span class="notice-text">Angka ini hanyalah prediksi, bukan saran investasi. Kami tidak bertanggung jawab apabila terjadi kerugian atas investasi yang dilakukan.</span></div>
   <header class="topbar">
     <a class="brand" href="/">Bitcoin&nbsp;Trend</a>
     <nav id="main-nav" aria-label="Utama"><a href="/" aria-current="page">Prediksi</a><a href="/latar-belakang">Latar Belakang</a><a href="/retrospektif">Retrospektif</a><a href="/riset">Riset</a><a href="/metodologi">Metodologi</a><a href="/kuesioner">Kuesioner</a><a href="/tentang">Tentang</a><div class="nav-tools"><div class="tool"><span class="tool-label">Ukuran teks</span><div class="text-size" role="group" aria-label="Ukuran teks"><button id="font-dec" class="icon-btn" type="button" aria-label="Perkecil teks">A<small>−</small></button><button id="font-inc" class="icon-btn" type="button" aria-label="Perbesar teks">A<small>+</small></button></div></div><div class="tool"><span class="tool-label">Tema</span><button id="theme-toggle" class="icon-btn" type="button" aria-label="Ganti tema terang/gelap">◐</button></div></div></nav>
@@ -43,6 +47,8 @@
 
   <main tabindex="-1">
     <section class="hero" aria-labelledby="pair">
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero-body">
       <p class="pair" id="pair"><span class="sym">BTC</span>Bitcoin / USD</p>
       <div class="price-row">
         <h1 class="price mono" id="price">—</h1>
@@ -57,11 +63,23 @@
         <div><dt>Judul berita dinilai</dt><dd class="mono" id="stat-news">—</dd></div>
         <div><dt>Diperbarui (UTC)</dt><dd class="mono" id="stat-gen">—</dd></div>
       </dl>
+      </div>
+    </section>
+
+    <nav id="toc" class="toc" aria-label="Di halaman ini"></nav>
+
+    <section class="guide" id="sec-guide" aria-labelledby="h-guide">
+      <h2 id="h-guide">Cara membaca halaman ini</h2>
+      <ol class="guide-steps">
+        <li><b>Baca arah dan probabilitasnya.</b> Arah NAIK atau TURUN ditentukan terhadap <a class="term" href="#g-ambang">ambang keputusan</a>, bukan terhadap 50%.</li>
+        <li><b>Periksa alasannya.</b> Berita hari ini dan fitur yang paling menggeser skor, ditulis dengan bahasa biasa.</li>
+        <li><b>Timbang keandalannya.</b> Lihat <a href="#sec-hist">riwayat benar dan meleset</a>. Model belum terbukti lebih baik dari <a class="term" href="#g-acak">tebakan acak</a>.</li>
+      </ol>
     </section>
 
     <div id="banner" class="banner" role="status" hidden></div>
 
-    <section class="card" id="sec-pred" aria-labelledby="h-pred">
+    <section class="card" id="sec-pred" data-toc="Prediksi" aria-labelledby="h-pred">
       <h2 id="h-pred">Prediksi arah harga</h2>
       <div class="tabs" id="horizon-tabs" role="tablist" aria-label="Horizon prediksi"></div>
       <canvas id="horizon-canvas" aria-hidden="true"></canvas>
@@ -79,13 +97,13 @@
             <i class="tick" id="gauge-tick"></i><i class="dot" id="gauge-dot"></i>
           </div>
           <div class="gauge-scale mono small"><span id="gauge-min"></span><span id="gauge-thr"></span><span id="gauge-max"></span></div>
-          <p class="small muted"><a href="#g-ambang">Apa itu ambang keputusan?</a></p>
+          <p class="small muted"><a class="term" href="#g-ambang">Apa itu ambang keputusan?</a></p>
         </div>
         <p class="small muted gloss-hint"><a href="#sec-glossary">Ada istilah yang sulit dipahami? Lihat glosarium di bawah.</a></p>
       </div>
     </section>
 
-    <section class="card" aria-labelledby="h-chart">
+    <section class="card" id="sec-chart" data-toc="Grafik" aria-labelledby="h-chart">
       <div class="card-head">
         <div>
           <h2 id="h-chart">Grafik harga</h2>
@@ -97,7 +115,7 @@
         </div>
       </div>
       <div class="legend mono" aria-hidden="true">
-        <span><i style="background:#e6c068"></i>Harga</span><span><i style="background:#f3d98b"></i>MA7</span>
+        <span><i style="background:#e6c068"></i>Harga</span><span><i style="background:#ff5fb0"></i>MA7</span>
         <span><i style="background:#7aa7ff"></i>MA30</span><span><i style="background:#b58cff"></i>MA90</span>
         <span><i style="background:#a39a88"></i>Bollinger(20,2)</span>
       </div>
@@ -108,7 +126,7 @@
       <div id="chart-macd" class="chart small"></div>
     </section>
 
-    <section class="card" id="sec-explain" aria-labelledby="h-explain" hidden>
+    <section class="card" id="sec-explain" data-toc="Alasan" aria-labelledby="h-explain" hidden>
       <h2 id="h-explain">Dari mana prediksi ini datang</h2>
       <div class="grid-2">
         <div><h3 class="small muted">Berita dan sentimen hari ini</h3><div id="live-news"></div></div>
@@ -118,7 +136,7 @@
       </div>
     </section>
 
-    <section class="card" id="sec-hist" aria-labelledby="h-hist">
+    <section class="card" id="sec-hist" data-toc="Riwayat" aria-labelledby="h-hist">
       <h2 id="h-hist">Riwayat prediksi vs kenyataan <span class="muted mono" id="hist-h"></span></h2>
       <div class="table-wrap">
         <table>
@@ -126,11 +144,12 @@
           <tbody id="history-body"></tbody>
         </table>
       </div>
+      <nav id="hist-pager" class="pager" aria-label="Halaman riwayat prediksi" hidden></nav>
       <p id="hist-note" class="muted small" hidden></p>
       <p id="range-note" class="muted small" role="note" hidden></p>
     </section>
 
-    <section class="card" id="sec-glossary" aria-labelledby="h-gloss">
+    <section class="card" id="sec-glossary" data-toc="Istilah" aria-labelledby="h-gloss">
       <h2 id="h-gloss">Glosarium: istilah yang sering muncul</h2>
       <p class="muted">Penjelasan singkat untuk istilah teknis di halaman ini, diurutkan abjad. Gulir ke bawah, atau ketik kata kunci untuk mencari.</p>
       <div class="gloss-tools">
@@ -253,6 +272,7 @@
     </section>
 
     <section class="card survey-promo" id="sec-survey" aria-labelledby="h-survey">
+      <img class="promo-mark" src="/static/img/icon.svg" alt="" width="72" height="72">
       <div>
         <h2 id="h-survey">Bantu saya menyempurnakan situs ini</h2>
         <p>Situs ini bagian dari penelitian tugas akhir. Saya ingin tahu apakah informasinya membantu Anda dan apa yang perlu ditingkatkan.
@@ -270,8 +290,12 @@
   <footer class="footer">
     <p><strong>Bukan saran investasi.</strong> Hasil ini berasal dari penelitian tugas akhir; pada semua horizon (termasuk 1 hari) model belum terbukti lebih baik dari tebakan acak (lihat halaman Riset).</p>
     <p>Grafik oleh <a href="https://www.tradingview.com/" rel="noopener">TradingView Lightweight Charts™</a>.</p>
+    <div class="foot-bar"><a class="foot-brand" href="/"><img src="/static/img/icon.svg" alt="" width="36" height="36">Bitcoin&nbsp;Trend</a><nav class="foot-nav" aria-label="Halaman situs"><a href="/" aria-current="page">Prediksi</a><a href="/latar-belakang">Latar Belakang</a><a href="/retrospektif">Retrospektif</a><a href="/riset">Riset</a><a href="/metodologi">Metodologi</a><a href="/kuesioner">Kuesioner</a><a href="/tentang">Tentang</a></nav></div>
   </footer>
   <script type="module" src="/static/js/predict.js"></script>
+  <script type="module" src="/static/js/toc.js"></script>
+  <script type="module" src="/static/js/fold.js"></script>
+  <script type="module" src="/static/js/notice.js"></script>
   <script type="module" src="/static/js/visits.js"></script>
 </body>
 </html>

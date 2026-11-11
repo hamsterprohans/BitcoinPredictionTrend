@@ -114,7 +114,7 @@ export function renderReliability(root, reliability, series) {
   }
 }
 
-export function renderNarrative(root, narrative) {
+export function renderNarrative(root, narrative, digest) {
   root.replaceChildren();
   if (!narrative) {
     root.append(el("p", "Narasi belum dibuat untuk hari ini.", "muted"));
@@ -125,4 +125,10 @@ export function renderNarrative(root, narrative) {
     ? "Ditulis oleh LLM dan lolos pemeriksaan otomatis atas angka, arah prediksi, dan disclaimer; ini bukan jaminan penjelasannya benar."
     : "Narasi template: keluaran LLM tidak lolos pemeriksaan otomatis, sehingga memakai template berbasis fakta.",
     "muted small"));
+  if (digest?.text) {
+    const p = el("p", undefined, "narr-digest");
+    p.append(el("strong", "Rangkuman berita hari ini: "), document.createTextNode(digest.text));
+    root.append(p);
+    root.append(el("p", "Rangkuman ditulis oleh LLM dari judul-judul berita hari itu. Ini bukan penyebab prediksi, dan model hanya memakai skor sentimen rata-rata.", "muted small"));
+  }
 }

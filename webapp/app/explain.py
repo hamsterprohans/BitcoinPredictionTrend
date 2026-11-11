@@ -382,9 +382,9 @@ JUDUL:
 Tulis rangkumannya sekarang."""
 
 
-def _summary_ok(text: str) -> bool:
+def _summary_ok(text: str, max_words: int = 70) -> bool:
     return bool(text) and not re.search(r"\d", text) and not _FORBIDDEN_RE.search(text) \
-        and not re.search(r"(?m)^\s*#|\*|^\s*-\s", text) and len(text.split()) <= 70
+        and not re.search(r"(?m)^\s*#|\*|^\s*-\s", text) and len(text.split()) <= max_words
 
 
 def bearish_summary(client, bearish_titles: list, retries: int = 2) -> dict:
@@ -404,6 +404,39 @@ def bearish_summary(client, bearish_titles: list, retries: int = 2) -> dict:
         if _summary_ok(text):
             return {"text": text, "source": "llm"}
     return {"text": "Judul bernada bearish: " + "; ".join(f"«{t}»" for t in bearish_titles) + ".", "source": "template"}
+
+
+DIGEST_PROMPT = """Anda merangkum berita Bitcoin hari ini dalam Bahasa Indonesia untuk pembaca awam. Berikut judul-judul berita (berbahasa Inggris) yang terbit pada hari itu.
+Tulis rangkuman 3 sampai 4 kalimat tentang apa saja yang dilaporkan hari ini, dan sebutkan secara umum apakah nada pemberitaannya condong negatif, condong positif, atau campuran.
+
+ATURAN KETAT:
+- Hanya isi judul; jangan menambah fakta.
+- Jangan memakai angka sama sekali (gunakan kata seperti "sejumlah" bila perlu).
+- Jangan menyatakan sebab-akibat, dan jangan menyatakan bahwa berita ini memprediksi atau menentukan arah harga.
+- Jangan mengajak membeli atau menjual. Tanpa markdown, tanpa judul, satu paragraf.
+
+JUDUL:
+{titles}
+
+Tulis rangkumannya sekarang."""
+
+
+def news_digest(client, titles: list, retries: int = 2):
+    """Rangkuman seluruh berita hari itu. None bila tidak ada judul atau teks LLM tak lolos pemeriksaan (daftar judul sudah tampil di panel)."""
+    if not titles:
+        return None
+    prompt = DIGEST_PROMPT.replace("{titles}", "\n".join(f"- {t}" for t in titles))
+    for _ in range(retries):
+        try:
+            resp = client.messages.create(model=MODEL, max_tokens=400, messages=[{"role": "user", "content": prompt}])
+        except Exception as e:  # noqa: BLE001
+            if _is_fatal(e):
+                raise FatalAPIError(str(e)) from e
+            continue
+        text = resp.content[0].text.strip()
+        if _summary_ok(text, max_words=110):
+            return {"text": text, "source": "llm"}
+    return None
 
 
 def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=None, client=None) -> dict:
@@ -426,7 +459,8 @@ def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=Non
     summary = None
     if any(tones):
         summary = bearish_summary(client, [t for t, tn in zip(titles, tones) if tn and tn["tone"] == "bearish"])
-    news_view = {"role": news_role(contrib, "NAIK" if prob > thr else "TURUN", bool(titles)), "summary": summary}
+    digest = news_digest(client, titles) if client else None
+    news_view = {"role": news_role(contrib, "NAIK" if prob > thr else "TURUN", bool(titles)), "summary": summary, "digest": digest}
     return {"headlines": [{"title": t, **({"url": urls[i]} if i < len(urls) and urls[i] else {}),
                            **({"tone": tones[i]["tone"]} if tones[i] else {})}
                           for i, t in enumerate(titles)],

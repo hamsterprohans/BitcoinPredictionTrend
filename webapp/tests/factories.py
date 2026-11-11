@@ -39,7 +39,8 @@ def _explain_block():
             "contributions": contrib, "features": feats, "level": "tinggi",
             "news_view": {"role": "Sentimen berita berpengaruh +2,4 poin persentase pada skor model (urutan ke-5 dari 13 fitur), "
                                   "mendorongnya ke arah naik; arah prediksi ini tidak terutama dibentuk oleh berita.",
-                          "summary": {"text": "Satu judul menyoroti kekhawatiran pasar.", "source": "llm"}},
+                          "summary": {"text": "Satu judul menyoroti kekhawatiran pasar.", "source": "llm"},
+                          "digest": {"text": "Berita hari ini mencakup pasar yang berhati-hati; nada pemberitaan campuran.", "source": "llm"}},
             "narrative": {"text": template_narrative(build_facts(rec, auc=0.52)), "source": "llm",
                           "attempts": 1, "temperature": 0.1}}
 

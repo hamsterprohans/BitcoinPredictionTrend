@@ -15,7 +15,7 @@
   --up:#35c08a; --down:#ef6a5e;
   --font:"Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:"Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --radius:18px;
+  --radius:14px; --glow-text:0 0 12px color-mix(in srgb,var(--gold) 60%,transparent),0 0 30px color-mix(in srgb,var(--gold) 28%,transparent); --beam:34%; --beam-ray:24%; --radius-sm:8px; --measure:68ch; --gold-soft:color-mix(in srgb,var(--gold) 12%,transparent);
   color-scheme: dark;
 }
 :root[data-theme="light"] {
@@ -23,5 +23,6 @@
   --text:#1b1812; --text-2:#6b6354;
   --gold:#a8791a; --gold-dim:#8a6213; --on-gold:#ffffff;
   --up:#12805a; --down:#c2382d;
+  --glow-text:0 0 10px color-mix(in srgb,var(--gold) 22%,transparent); --beam:12%; --beam-ray:8%;
   color-scheme: light;
 }
