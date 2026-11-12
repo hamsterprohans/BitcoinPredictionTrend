@@ -916,5 +916,28 @@
    "https://en.coin-turk.com/trump-media-reports-409-7-million-q3-profit-as-bitcoin-holdings-surge/?utm_source=rss&utm_medium=rss&utm_campaign=trump-media-reports-409-7-million-q3-profit-as-bitcoin-holdings-surge"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-11": {
+  "titles": [
+   "Bitcoin subdued, hovers under $74k as rise in Fed rate hike expectations weigh",
+   "Bitcoin Core Discloses High-Severity Security Bug That Could Halt Mining Nodes",
+   "CryptoQuant: 47,300 BTC moved to exchanges at a loss as Bitcoin nears $74,000",
+   "Stablecoin supply contracts by $14.2 billion, Bitcoin investors realize $3.6 billion loss",
+   "BREAKING: Fears Confirmed—Bad News for Bitcoin Giant Strategy"
+  ],
+  "scores": {
+   "pemahaman": -6,
+   "detail": -5,
+   "bullbear": -4,
+   "mean": -5.0
+  },
+  "urls": [
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-falls-below-74k-as-hot-cpi-data-spurs-rate-hike-bets-5017791",
+   "https://news.bitcoin.com/security/bitcoin-core-discloses-high-severity-security-bug-halt-mining-nodes/",
+   "https://en.coin-turk.com/cryptoquant-47300-btc-moved-to-exchanges-at-a-loss-as-bitcoin-nears-74000/?utm_source=rss&utm_medium=rss&utm_campaign=cryptoquant-47300-btc-moved-to-exchanges-at-a-loss-as-bitcoin-nears-74000",
+   "https://en.coin-turk.com/stablecoin-supply-contracts-by-14-2-billion-bitcoin-investors-realize-3-6-billion-loss/?utm_source=rss&utm_medium=rss&utm_campaign=stablecoin-supply-contracts-by-14-2-billion-bitcoin-investors-realize-3-6-billion-loss",
+   "https://en.bitcoinsistemi.com/breaking-fears-confirmed-bad-news-for-bitcoin-giant-strategy/"
+  ],
+  "source": "cryptocompare"
  }
 }

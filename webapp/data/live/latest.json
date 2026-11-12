@@ -1,197 +1,201 @@
 {
- "as_of": "2026-11-10",
- "generated_at": "2026-11-11T00:31:42+00:00",
- "close": 73661.0,
- "change_pct": -2.0,
+ "as_of": "2026-11-11",
+ "generated_at": "2026-11-12T00:31:30+00:00",
+ "close": 73805.52,
+ "change_pct": 0.2,
  "inputs": {
-  "news_sentiment": 0.0,
-  "news_sentiment_raw": 0.0,
-  "headline_count": 37,
-  "fear_greed_index": 32.0
+  "news_sentiment": -5.0,
+  "news_sentiment_raw": -5.0,
+  "headline_count": 33,
+  "fear_greed_index": 29.0
  },
  "horizons": {
   "1": {
-   "prob": 0.40583106875419617,
+   "prob": 0.40682515501976013,
    "threshold": 0.4768124222755432,
    "direction": "TURUN",
-   "target_date": "2026-11-11"
+   "target_date": "2026-11-12"
   },
   "3": {
-   "prob": 0.5099476476510366,
+   "prob": 0.5088874697685242,
    "threshold": 0.5177493095397949,
    "direction": "TURUN",
-   "target_date": "2026-11-13"
+   "target_date": "2026-11-14"
   },
   "5": {
-   "prob": 0.4731511374314626,
+   "prob": 0.47503111759821576,
    "threshold": 0.47828808426856995,
    "direction": "TURUN",
-   "target_date": "2026-11-15"
+   "target_date": "2026-11-16"
   },
   "7": {
-   "prob": 0.45087677240371704,
+   "prob": 0.45002997914950055,
    "threshold": 0.47223278880119324,
    "direction": "TURUN",
-   "target_date": "2026-11-17"
+   "target_date": "2026-11-18"
   },
   "15": {
-   "prob": 0.4543149967988332,
+   "prob": 0.45522409677505493,
    "threshold": 0.45957493782043457,
    "direction": "TURUN",
-   "target_date": "2026-11-25"
+   "target_date": "2026-11-26"
   },
   "20": {
-   "prob": 0.4551883935928345,
+   "prob": 0.45849547783533734,
    "threshold": 0.4715519845485687,
    "direction": "TURUN",
-   "target_date": "2026-11-30"
+   "target_date": "2026-12-01"
   },
   "25": {
-   "prob": 0.43676544229189557,
+   "prob": 0.4377686381340027,
    "threshold": 0.4579542577266693,
    "direction": "TURUN",
-   "target_date": "2026-12-05"
+   "target_date": "2026-12-06"
   },
   "30": {
-   "prob": 0.47076624631881714,
+   "prob": 0.47231871883074444,
    "threshold": 0.4812179505825043,
    "direction": "TURUN",
-   "target_date": "2026-12-10"
+   "target_date": "2026-12-11"
   },
   "35": {
-   "prob": 0.4530164798100789,
+   "prob": 0.4564434885978699,
    "threshold": 0.42857804894447327,
    "direction": "NAIK",
-   "target_date": "2026-12-15"
+   "target_date": "2026-12-16"
   }
  },
  "explain": {
   "headlines": [
    {
-    "title": "CryptoQuant Weekly Report Puts Bitcoin (BTC) Bull Score at 20",
-    "url": "https://en.coinotag.com/bitcoin-btc-bull-score-20-cryptoquant-report",
-    "tone": "bullish"
-   },
-   {
-    "title": "Bitcoin (BTC) Trades Near $73,600 With Daily Volume Above $22.4 Billion",
-    "url": "https://en.coinotag.com/bitcoin-btc-trades-near-73600-22-4-billion-volume",
-    "tone": "netral"
-   },
-   {
-    "title": "Bitcoin Miner HIVE Eyes $45 Million in Annual Revenue From AI Deal",
-    "url": "https://decrypt.co/382982/bitcoin-miner-hive-eyes-45-million-ai-data-center",
-    "tone": "bullish"
-   },
-   {
-    "title": "Bitcoin falls over 2%, drops under $74k after hot CPI data, hawkish Waller",
-    "url": "https://www.investing.com/news/cryptocurrency-news/bitcoin-pinned-below-75k-as-regulatory-uncertainty-etf-outflows-persist-5014179",
+    "title": "Bitcoin subdued, hovers under $74k as rise in Fed rate hike expectations weigh",
+    "url": "https://www.investing.com/news/cryptocurrency-news/bitcoin-falls-below-74k-as-hot-cpi-data-spurs-rate-hike-bets-5017791",
     "tone": "bearish"
    },
    {
-    "title": "Trump Media reports $409.7 million Q3 profit as Bitcoin holdings surge",
-    "url": "https://en.coin-turk.com/trump-media-reports-409-7-million-q3-profit-as-bitcoin-holdings-surge/?utm_source=rss&utm_medium=rss&utm_campaign=trump-media-reports-409-7-million-q3-profit-as-bitcoin-holdings-surge",
-    "tone": "bullish"
+    "title": "Bitcoin Core Discloses High-Severity Security Bug That Could Halt Mining Nodes",
+    "url": "https://news.bitcoin.com/security/bitcoin-core-discloses-high-severity-security-bug-halt-mining-nodes/",
+    "tone": "bearish"
+   },
+   {
+    "title": "CryptoQuant: 47,300 BTC moved to exchanges at a loss as Bitcoin nears $74,000",
+    "url": "https://en.coin-turk.com/cryptoquant-47300-btc-moved-to-exchanges-at-a-loss-as-bitcoin-nears-74000/?utm_source=rss&utm_medium=rss&utm_campaign=cryptoquant-47300-btc-moved-to-exchanges-at-a-loss-as-bitcoin-nears-74000",
+    "tone": "bearish"
+   },
+   {
+    "title": "Stablecoin supply contracts by $14.2 billion, Bitcoin investors realize $3.6 billion loss",
+    "url": "https://en.coin-turk.com/stablecoin-supply-contracts-by-14-2-billion-bitcoin-investors-realize-3-6-billion-loss/?utm_source=rss&utm_medium=rss&utm_campaign=stablecoin-supply-contracts-by-14-2-billion-bitcoin-investors-realize-3-6-billion-loss",
+    "tone": "bearish"
+   },
+   {
+    "title": "BREAKING: Fears Confirmed—Bad News for Bitcoin Giant Strategy",
+    "url": "https://en.bitcoinsistemi.com/breaking-fears-confirmed-bad-news-for-bitcoin-giant-strategy/",
+    "tone": "bearish"
    }
   ],
   "news_view": {
-   "role": "Sentimen berita berpengaruh -0,9 poin persentase pada skor model, mendorongnya ke arah turun (urutan ke-9 dari 13 fitur); arah prediksi ini tidak terutama dibentuk oleh berita.",
+   "role": "Sentimen berita berpengaruh -1,5 poin persentase pada skor model, mendorongnya ke arah turun (urutan ke-8 dari 13 fitur); arah prediksi ini tidak terutama dibentuk oleh berita.",
    "summary": {
-    "text": "Bitcoin mengalami penurunan harga dan turun di bawah tingkat tertentu setelah data inflasi yang lebih tinggi dari ekspektasi dirilis bersamaan dengan pernyataan hawkish dari seorang pejabat Federal Reserve.",
+    "text": "Bitcoin berada dalam kondisi tertekan dengan sejumlah faktor penghambat, termasuk meningkatnya ekspektasi kenaikan suku bunga dari Federal Reserve, penemuan kerentanan keamanan serius pada Bitcoin Core yang dapat menghentikan node penambangan, serta aktivitas transfer Bitcoin ke bursa oleh pihak yang mengalami kerugian. Selain itu, pasokan stablecoin mengalami penyusutan sementara investor Bitcoin merealisasikan kerugian signifikan di pasar.",
+    "source": "llm"
+   },
+   "digest": {
+    "text": "Hari ini pemberitaan seputar Bitcoin didominasi oleh beberapa isu yang membuat pergerakan harga menjadi terbatas, termasuk meningkatnya ekspektasi terhadap kebijakan suku bunga dan peluncuran peringatan keamanan serius pada Bitcoin Core yang berpotensi menghentikan operasi node penambangan. Sejumlah investor dilaporkan memindahkan bitcoin ke bursa dengan kerugian, sementara pasokan stablecoin mengalami kontraksi yang disertai dengan realisasi kerugian di kalangan investor bitcoin. Nada pemberitaannya adalah campuran, dengan fokus pada tantangan teknis dan tekanan pasar, meski tanpa indikasi yang jelas mengenai arahan pergerakan harga ke depan.",
     "source": "llm"
    }
   },
   "sentiment": {
    "has_news": true,
    "scores": {
-    "pemahaman": -3,
-    "detail": 1,
-    "bullbear": 2,
-    "mean": 0.0
+    "pemahaman": -6,
+    "detail": -5,
+    "bullbear": -4,
+    "mean": -5.0
    },
-   "used": 0.0
+   "used": -5.0
   },
   "contributions": [
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "delta_pp": -14.419
+    "delta_pp": -15.478
    },
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "delta_pp": -11.781
+    "delta_pp": -12.387
    },
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "delta_pp": -11.551
+    "delta_pp": -12.246
    },
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "delta_pp": -4.543
+    "delta_pp": -4.479
    },
    {
     "feature": "MACD",
     "label": "MACD",
-    "delta_pp": 2.7
+    "delta_pp": 3.361
    },
    {
     "feature": "MACD_Signal",
     "label": "Sinyal MACD",
-    "delta_pp": 2.169
+    "delta_pp": 2.401
    },
    {
     "feature": "RSI14",
     "label": "RSI 14 hari",
-    "delta_pp": 1.595
-   },
-   {
-    "feature": "MACD_Histogram",
-    "label": "Histogram MACD",
-    "delta_pp": -1.314
+    "delta_pp": 1.757
    },
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "delta_pp": -0.904
+    "delta_pp": -1.544
    },
    {
-    "feature": "BB_width",
-    "label": "Lebar Bollinger",
-    "delta_pp": -0.558
+    "feature": "MACD_Histogram",
+    "label": "Histogram MACD",
+    "delta_pp": -0.734
    },
    {
     "feature": "daily_return",
     "label": "Return harian",
-    "delta_pp": 0.501
+    "delta_pp": 0.36
    },
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "delta_pp": -0.057
+    "delta_pp": -0.237
+   },
+   {
+    "feature": "BB_width",
+    "label": "Lebar Bollinger",
+    "delta_pp": -0.175
    },
    {
     "feature": "fear_greed_index_scaled",
     "label": "Fear & Greed Index",
-    "delta_pp": -0.004
+    "delta_pp": 0.045
    }
   ],
   "features": [
    {
     "feature": "daily_return",
     "label": "Return harian",
-    "value": -0.019958819337542177,
-    "value_text": "-2,00%",
-    "percentile": 20,
-    "category": "rendah",
+    "value": 0.001961916037531708,
+    "value_text": "+0,20%",
+    "percentile": 52,
+    "category": "sedang",
     "outside_train_range": false
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "value": 75947.35724757034,
-    "value_text": "US$75.947",
+    "value": 74992.77640564667,
+    "value_text": "US$74.993",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -199,8 +203,8 @@
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "value": 79467.04525768274,
-    "value_text": "US$79.467",
+    "value": 79200.39070214564,
+    "value_text": "US$79.200",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -208,8 +212,8 @@
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "value": 78998.14139930552,
-    "value_text": "US$78.998",
+    "value": 79113.81377351131,
+    "value_text": "US$79.114",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -217,17 +221,17 @@
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "value": 0.0284744128561142,
-    "value_text": "2,85%",
-    "percentile": 50,
-    "category": "sedang",
+    "value": 0.021887413824431327,
+    "value_text": "2,19%",
+    "percentile": 32,
+    "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "value": 0.018643366079894173,
-    "value_text": "1,86%",
+    "value": 0.018362733648457637,
+    "value_text": "1,84%",
     "percentile": 10,
     "category": "rendah",
     "outside_train_range": false
@@ -235,17 +239,17 @@
    {
     "feature": "RSI14",
     "label": "RSI 14 hari",
-    "value": 33.56373810102119,
-    "value_text": "33,6",
-    "percentile": 8,
+    "value": 34.223117347780374,
+    "value_text": "34,2",
+    "percentile": 10,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "MACD",
     "label": "MACD",
-    "value": -1801.8207807941944,
-    "value_text": "US$-1.801,8",
+    "value": -1884.6140031182877,
+    "value_text": "US$-1.884,6",
     "percentile": 6,
     "category": "rendah",
     "outside_train_range": false
@@ -253,17 +257,17 @@
    {
     "feature": "MACD_Signal",
     "label": "Sinyal MACD",
-    "value": -1418.5822303369514,
-    "value_text": "US$-1.418,6",
-    "percentile": 8,
+    "value": -1511.7885848932187,
+    "value_text": "US$-1.511,8",
+    "percentile": 6,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "MACD_Histogram",
     "label": "Histogram MACD",
-    "value": -383.23855045724304,
-    "value_text": "US$-383,2",
+    "value": -372.8254182250689,
+    "value_text": "US$-372,8",
     "percentile": 8,
     "category": "rendah",
     "outside_train_range": false
@@ -271,8 +275,8 @@
    {
     "feature": "BB_width",
     "label": "Lebar Bollinger",
-    "value": 0.12472924162522733,
-    "value_text": "12,5%",
+    "value": 0.12834316508410376,
+    "value_text": "12,8%",
     "percentile": 24,
     "category": "rendah",
     "outside_train_range": false
@@ -280,26 +284,26 @@
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "value": 0.0,
-    "value_text": "+0,00",
-    "percentile": 46,
-    "category": "sedang",
+    "value": -5.0,
+    "value_text": "-5,00",
+    "percentile": 3,
+    "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "fear_greed_index_scaled",
     "label": "Fear & Greed Index",
-    "value": 0.32,
-    "value_text": "32 dari 100",
-    "percentile": 37,
-    "category": "sedang",
+    "value": 0.29,
+    "value_text": "29 dari 100",
+    "percentile": 32,
+    "category": "rendah",
     "outside_train_range": false
    }
   ],
   "level": "tinggi",
   "narrative": {
-   "text": "Pada 10 November 2026, Model F memberi probabilitas naik 0,4058 terhadap ambang keputusan 0,4768, sehingga prediksinya turun untuk 11 November 2026. Tingkat keyakinannya tinggi. Fitur yang paling memengaruhi skor adalah Rata-rata harga 7 hari (-14,4 poin persentase), Rata-rata harga 30 hari (-11,8 poin persentase), dan Rata-rata harga 90 hari (-11,6 poin persentase). Model belum terbukti lebih baik dari tebakan acak pada data uji, sehingga hasil ini tidak pasti dan bisa keliru. Ini bukan saran investasi.",
-   "source": "template",
+   "text": "Model penelitian memprediksi arah TURUN untuk Bitcoin pada 12 November 2026 dengan skor 0,4068 dan tingkat keyakinan tinggi. Fitur paling memengaruhi skor model adalah rata-rata harga 7 hari (US$74.993) dengan pengaruh -15,5 poin persentase, rata-rata harga 30 hari (US$79.200) dengan pengaruh -12,4 poin persentase, dan rata-rata harga 90 hari (US$79.114) dengan pengaruh -12,2 poin persentase. Ketiga fitur menunjukkan level harga historis yang tinggi. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi. Hasil prediksi tidak pasti dan dapat keliru.",
+   "source": "llm",
    "attempts": 3,
    "temperature": null
   },
