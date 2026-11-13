@@ -939,5 +939,28 @@
    "https://en.bitcoinsistemi.com/breaking-fears-confirmed-bad-news-for-bitcoin-giant-strategy/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-12": {
+  "titles": [
+   "Bitcoin hits over 12-week low; Strategy sinks on MSCI index removal",
+   "Tim Draper predicts Bitcoin will integrate altcoin innovations, boost market dominance",
+   "MSCI Confirms Strategy (MicroStrategy) (MSTR) Exit, a $2.8B Overhang for Bitcoin (BTC)",
+   "Power Landlords Are Highlighting Bitcoin Mining Roots During AI Rout",
+   "Strategy stock sheds 5% amid MSCI index removal, Bitcoin sell-off"
+  ],
+  "scores": {
+   "pemahaman": -6,
+   "detail": -4,
+   "bullbear": -4,
+   "mean": -4.666666666666667
+  },
+  "urls": [
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-slips-to-736k-strategy-drops-on-msci-index-removal-5020451",
+   "https://en.coin-turk.com/tim-draper-predicts-bitcoin-will-integrate-altcoin-innovations-boost-market-dominance/?utm_source=rss&utm_medium=rss&utm_campaign=tim-draper-predicts-bitcoin-will-integrate-altcoin-innovations-boost-market-dominance",
+   "https://en.coinotag.com/msci-confirms-strategy-mstr-index-exit-bitcoin-btc-overhang",
+   "https://www.bloomberg.com/news/newsletters/2026-11-12/power-landlords-are-highlighting-bitcoin-mining-roots-during-ai-rout",
+   "https://cointelegraph.com/markets/strategy-shares-fall-5-msci-index-removal-bitcoin?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound"
+  ],
+  "source": "cryptocompare"
  }
 }
