@@ -962,5 +962,28 @@
    "https://cointelegraph.com/markets/strategy-shares-fall-5-msci-index-removal-bitcoin?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-13": {
+  "titles": [
+   "Bitcoin miners pay Paraguay $350 million a year, but AI is pushing them out",
+   "Bitcoin set for worst week since early June after more than 10% slide",
+   "Grayscale Sees New Crypto Opportunities as Bitcoin’s Grip Weakens",
+   "Bitcoin rebounded from $57,000 to $82,000 in under 90 days, says Joe Carlasare",
+   "TSMC Confirms Employee Data Leak as Hackers Try to Sell 46,000 Records for Bitcoin"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": -2,
+   "bullbear": -3,
+   "mean": -2.6666666666666665
+  },
+  "urls": [
+   "https://www.coindesk.com/tech/2026/11/13/bitcoin-miners-pay-paraguay-usd350-million-a-year-but-ai-is-pushing-them-out",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-drops-below-70k-as-crypto-appetite-sours-5024070",
+   "https://news.bitcoin.com/market-updates/grayscale-sees-new-crypto-opportunities-bitcoin-grip-weakens/",
+   "https://en.coin-turk.com/bitcoin-rebounded-from-57000-to-82000-in-under-90-days-says-joe-carlasare/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-rebounded-from-57000-to-82000-in-under-90-days-says-joe-carlasare",
+   "https://cryptopotato.com/tsmc-confirms-employee-data-leak-as-hackers-try-to-sell-46000-records-for-bitcoin/"
+  ],
+  "source": "cryptocompare"
  }
 }
