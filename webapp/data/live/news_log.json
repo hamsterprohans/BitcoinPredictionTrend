@@ -985,5 +985,28 @@
    "https://cryptopotato.com/tsmc-confirms-employee-data-leak-as-hackers-try-to-sell-46000-records-for-bitcoin/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-14": {
+  "titles": [
+   "Bitcoin Tumbles to Three-Month Low as Liquidations Accelerate",
+   "Why Is XRP Crashing Today? Ripple Token Falls 18% in a Week as Bitcoin and Ethereum Selloff Deepens",
+   "WLFI falls 11% as US midterm election hits Trump-linked tokens, Bitcoin rebounds",
+   "Fidelity FBTC leads $74.6 million inflows as Bitcoin ETFs end $1.16 billion outflow streak",
+   "Ethereum (ETH) Slides 9.3% in 24 Hours, Outpacing Bitcoin's Drop"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": -3,
+   "bullbear": -4,
+   "mean": -3.3333333333333335
+  },
+  "urls": [
+   "https://www.bloomberg.com/news/articles/2026-11-14/bitcoin-tumbles-to-three-month-low-as-liquidations-accelerate",
+   "https://coinpaper.com/38867/why-is-xrp-crashing-today-ripple-token-falls-18-in-a-week-as-bitcoin-and-ethereum-selloff-deepens",
+   "https://en.coin-turk.com/wlfi-falls-11yuzde-as-us-midterm-election-hits-trump-linked-tokens-bitcoin-rebounds/?utm_source=rss&utm_medium=rss&utm_campaign=wlfi-falls-11yuzde-as-us-midterm-election-hits-trump-linked-tokens-bitcoin-rebounds",
+   "https://en.coin-turk.com/fidelity-fbtc-leads-74-6-million-inflows-as-bitcoin-etfs-end-1-16-billion-outflow-streak/?utm_source=rss&utm_medium=rss&utm_campaign=fidelity-fbtc-leads-74-6-million-inflows-as-bitcoin-etfs-end-1-16-billion-outflow-streak",
+   "https://en.coinotag.com/ethereum-eth-slides-9-3-in-24-hours-outpacing-bitcoin"
+  ],
+  "source": "cryptocompare"
  }
 }
