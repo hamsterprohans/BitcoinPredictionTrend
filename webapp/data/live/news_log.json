@@ -1008,5 +1008,28 @@
    "https://en.coinotag.com/ethereum-eth-slides-9-3-in-24-hours-outpacing-bitcoin"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-15": {
+  "titles": [
+   "IBIT's SEC Filing Shows Bitcoin (BTC) ETF Trading Volume Is Not Net Inflow",
+   "Michael Saylor Flags Bitcoin (BTC) 4.4% Below 200-Week Average as Floor Test",
+   "CZ Denies Binance Sold Bitcoin (BTC) After Dip to $62,006",
+   "US sellers drive Bitcoin crash, Jensen plots Nvidia comeback: Hodler’s Digest",
+   "Bitcoin May Never See a New ATH Again, Peter Brandt Floats Grim Scenario as Bearish Pattern Emerges"
+  ],
+  "scores": {
+   "pemahaman": -4,
+   "detail": -3,
+   "bullbear": -3,
+   "mean": -3.3333333333333335
+  },
+  "urls": [
+   "https://en.coinotag.com/ibit-sec-filing-bitcoin-etf-volume-vs-net-inflows",
+   "https://en.coinotag.com/saylor-bitcoin-200-week-average-floor-test",
+   "https://en.coinotag.com/cz-denies-binance-sold-bitcoin-62006-dip",
+   "https://cointelegraph.com/magazine/us-sellers-drive-bitcoin-crash-jensen-plots-comeback-hodlers-digest?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+   "https://zycrypto.com/bitcoin-may-never-see-a-new-ath-again-peter-brandt-floats-grim-scenario-as-bearish-pattern-emerges/"
+  ],
+  "source": "cryptocompare"
  }
 }
