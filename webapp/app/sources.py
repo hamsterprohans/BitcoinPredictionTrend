@@ -47,11 +47,31 @@ def read_price_tsv(path) -> pd.DataFrame:
     return df.dropna().sort_values("date").reset_index(drop=True)
 
 
-def fetch_prices(http: httpx.Client, start: date) -> pd.DataFrame:
-    r = http.get(CM_URL, params={"assets": "btc", "metrics": "PriceUSD", "frequency": "1d",
-                                 "start_time": start.isoformat(), "page_size": 10000},
-                 headers=UA)
-    r.raise_for_status()
+PRICE_RETRY_WAITS = (15, 45, 120)   # detik; 4 percobaan semuanya (muat dalam batas waktu job)
+
+
+def fetch_prices(http: httpx.Client, start: date, sleep=time.sleep) -> pd.DataFrame:
+    """Harga penutupan harian dari Coin Metrics.
+
+    Gangguan sesaat di sisi mereka (mis. HTTP 526 dari Cloudflare, 5xx, 429, jaringan putus) diulang dengan jeda yang naik.
+    Tanpa ini satu galat tepat setelah 00:00 UTC mematikan job harian dan hari itu tertunda berjam-jam. Galat 4xx lain
+    (permintaan salah) tidak diulang.
+    """
+    for attempt in range(len(PRICE_RETRY_WAITS) + 1):
+        try:
+            r = http.get(CM_URL, params={"assets": "btc", "metrics": "PriceUSD", "frequency": "1d",
+                                         "start_time": start.isoformat(), "page_size": 10000},
+                         headers=UA)
+            r.raise_for_status()
+            break
+        except httpx.HTTPStatusError as e:
+            code = e.response.status_code
+            if (code < 500 and code != 429) or attempt == len(PRICE_RETRY_WAITS):
+                raise
+        except httpx.TransportError:
+            if attempt == len(PRICE_RETRY_WAITS):
+                raise
+        sleep(PRICE_RETRY_WAITS[attempt])
     rows = []
     for x in r.json()["data"]:
         if x.get("PriceUSD") in (None, ""):
