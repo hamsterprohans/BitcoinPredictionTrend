@@ -36,6 +36,53 @@ def test_fetch_prices_parses_and_drops_missing():
     assert df["close"].tolist() == [100.5, 102.0]
 
 
+OK_PRICES = {"data": [{"asset": "btc", "time": "2026-11-16T00:00:00.000000000Z", "PriceUSD": "64942.5"}]}
+
+
+def test_fetch_prices_retries_transient_server_errors_then_succeeds():
+    calls, waits = [], []
+
+    def handler(req):
+        calls.append(1)
+        return httpx.Response(526) if len(calls) < 3 else httpx.Response(200, json=OK_PRICES)
+    df = fetch_prices(client(handler), date(2026, 11, 16), sleep=waits.append)
+    assert df["close"].tolist() == [64942.5]
+    assert len(calls) == 3 and len(waits) == 2 and waits[0] < waits[1]   # jeda naik
+
+
+def test_fetch_prices_retries_network_errors():
+    calls = []
+
+    def handler(req):
+        calls.append(1)
+        if len(calls) == 1:
+            raise httpx.ConnectError("putus", request=req)
+        return httpx.Response(200, json=OK_PRICES)
+    assert len(fetch_prices(client(handler), date(2026, 11, 16), sleep=lambda s: None)) == 1
+
+
+def test_fetch_prices_gives_up_after_limited_attempts():
+    calls = []
+
+    def handler(req):
+        calls.append(1)
+        return httpx.Response(503)
+    with pytest.raises(httpx.HTTPStatusError):
+        fetch_prices(client(handler), date(2026, 11, 16), sleep=lambda s: None)
+    assert len(calls) == 4
+
+
+def test_fetch_prices_does_not_retry_client_errors():
+    calls = []
+
+    def handler(req):
+        calls.append(1)
+        return httpx.Response(400)
+    with pytest.raises(httpx.HTTPStatusError):
+        fetch_prices(client(handler), date(2026, 11, 16), sleep=lambda s: None)
+    assert len(calls) == 1
+
+
 def test_fetch_fear_greed():
     def handler(req):
         return httpx.Response(200, json={"data": [
