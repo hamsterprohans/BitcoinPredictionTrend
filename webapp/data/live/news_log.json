@@ -1031,5 +1031,28 @@
    "https://zycrypto.com/bitcoin-may-never-see-a-new-ath-again-peter-brandt-floats-grim-scenario-as-bearish-pattern-emerges/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-16": {
+  "titles": [
+   "AnchorWatch CEO Rob Hamilton says AI boom pulls liquidity from Bitcoin",
+   "Fed Hike Bets Hardened by 0.4% CPI Leave Bitcoin Down 18.7% in a Month",
+   "Bitcoin Price Holiday Forecast: Claude and ChatGPT See Red, Grok Goes Green",
+   "Bitcoin muted at $65.2k as crypto sentiment dithers, ETF outflows persist",
+   "German parliament approves asset freeze bill targeting crypto, 49,858 BTC seized"
+  ],
+  "scores": {
+   "pemahaman": -6,
+   "detail": -5,
+   "bullbear": -6,
+   "mean": -5.666666666666667
+  },
+  "urls": [
+   "https://en.coin-turk.com/anchorwatch-ceo-rob-hamilton-says-ai-boom-pulls-liquidity-from-bitcoin/?utm_source=rss&utm_medium=rss&utm_campaign=anchorwatch-ceo-rob-hamilton-says-ai-boom-pulls-liquidity-from-bitcoin",
+   "https://en.coinotag.com/fed-hike-bets-0-4-cpi-bitcoin-18-7",
+   "https://news.bitcoin.com/price-predictions/bitcoins-holiday-forecast-claude-chatgpt-see-red-grok-goes-green/",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-pinned-below-65k-as-crypto-sentiment-dithers-etf-outflows-persist-5028381",
+   "https://en.coin-turk.com/german-parliament-approves-asset-freeze-bill-targeting-crypto-49858-btc-seized/?utm_source=rss&utm_medium=rss&utm_campaign=german-parliament-approves-asset-freeze-bill-targeting-crypto-49858-btc-seized"
+  ],
+  "source": "cryptocompare"
  }
 }
