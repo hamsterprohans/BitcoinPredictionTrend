@@ -1054,5 +1054,28 @@
    "https://en.coin-turk.com/german-parliament-approves-asset-freeze-bill-targeting-crypto-49858-btc-seized/?utm_source=rss&utm_medium=rss&utm_campaign=german-parliament-approves-asset-freeze-bill-targeting-crypto-49858-btc-seized"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-17": {
+  "titles": [
+   "Super League Enterprise Bought 8 More Bitcoin (BTC), Total at 39",
+   "Glassnode Flags Bitcoin (BTC) Capitulation After 66,000 BTC Absorption",
+   "Bitcoin (BTC) Holds a Narrow Band Near $65,000 as Won-Market Altcoin Rotation Intensifies",
+   "Bitcoin slips to $64.7k amid ht to risk sentiment; Strategy buys more coins",
+   "Mark Yusko warns Bitcoin under pressure, $58,000 crucial for trend"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": -1,
+   "bullbear": -2,
+   "mean": -2.0
+  },
+  "urls": [
+   "https://en.coinotag.com/super-league-enterprise-buys-8-bitcoin-btc-holdings-39",
+   "https://en.coinotag.com/bitcoin-btc-capitulation-realized-losses-bottom-levels",
+   "https://en.coinotag.com/bitcoin-holds-near-65000-won-market-altcoin-rotation",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-pinned-below-65k-amid-rate-hike-fears-strategy-buys-more-coins-5031772",
+   "https://en.coin-turk.com/mark-yusko-warns-bitcoin-under-pressure-58000-crucial-for-trend/?utm_source=rss&utm_medium=rss&utm_campaign=mark-yusko-warns-bitcoin-under-pressure-58000-crucial-for-trend"
+  ],
+  "source": "cryptocompare"
  }
 }
