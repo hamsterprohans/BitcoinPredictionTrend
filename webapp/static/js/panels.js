@@ -130,5 +130,7 @@ export function renderNarrative(root, narrative, digest) {
     p.append(el("strong", "Rangkuman berita hari ini: "), document.createTextNode(digest.text));
     root.append(p);
     root.append(el("p", "Rangkuman ditulis oleh LLM dari judul-judul berita hari itu. Ini bukan penyebab prediksi, dan model hanya memakai skor sentimen rata-rata.", "muted small"));
+  } else if (digest?.source === "unavailable") {
+    root.append(el("p", "Rangkuman berita hari ini tidak tersedia: keluaran LLM tidak lolos pemeriksaan otomatis. Daftar judul ada di panel berita.", "muted small"));
   }
 }

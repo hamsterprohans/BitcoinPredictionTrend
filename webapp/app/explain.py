@@ -382,9 +382,39 @@ JUDUL:
 Tulis rangkumannya sekarang."""
 
 
-def _summary_ok(text: str, max_words: int = 70) -> bool:
-    return bool(text) and not re.search(r"\d", text) and not _FORBIDDEN_RE.search(text) \
-        and not re.search(r"(?m)^\s*#|\*|^\s*-\s", text) and len(text.split()) <= max_words
+_SUMMARY_FORBIDDEN_RE = re.compile(
+    r"\b(?:jual|beli|juallah|belilah|buy|sell|short|long|hodl|posisi|disarankan|dianjurkan|anjuran|rekomendasi|sebaiknya"
+    r"|dijamin|garansi|karena|menyebabkan|mengakibatkan|akibat|disebabkan|penyebab|saran)\b|\bpasti\w*", re.I)   # "penjualan" dan "dijual" boleh: itu pelaporan, bukan ajakan
+
+
+def _digits(token: str) -> str:
+    return re.sub(r"\D", "", token)
+
+
+def _summary_problem(text: str, max_words: int = 70, titles=()):
+    """Alasan penolakan (kalimat singkat) atau None bila lolos. Angka boleh hanya bila juga ada di judul sumber."""
+    if not text:
+        return "teks kosong"
+    allowed = {_digits(n) for t in titles for n in _NUM_RE.findall(t)}
+    extra = sorted({n for n in _NUM_RE.findall(text) if _digits(n) not in allowed})
+    if extra:
+        return "memuat angka yang tidak ada di judul: " + ", ".join(extra)
+    m = _SUMMARY_FORBIDDEN_RE.search(text)
+    if m:
+        return f"memuat kata terlarang «{m.group(0)}» (ajakan, saran, atau sebab-akibat)"
+    if re.search(r"(?m)^\s*#|\*|^\s*-\s", text):
+        return "memuat format markdown"
+    if len(text.split()) > max_words:
+        return f"terlalu panjang (maksimal {max_words} kata)"
+    return None
+
+
+def _summary_ok(text: str, max_words: int = 70, titles=()) -> bool:
+    return _summary_problem(text, max_words, titles) is None
+
+
+def _feedback(problem):
+    return "" if not problem else f"\nPERCOBAAN SEBELUMNYA DITOLAK: {problem}. Perbaiki sesuai aturan.\n"
 
 
 def bearish_summary(client, bearish_titles: list, retries: int = 2) -> dict:
@@ -392,16 +422,18 @@ def bearish_summary(client, bearish_titles: list, retries: int = 2) -> dict:
     if not bearish_titles:
         return {"text": "Tidak ada judul yang dinilai bernada bearish pada hari ini.", "source": "template"}
     prompt = SUMMARY_PROMPT.replace("{titles}", "\n".join(f"- {t}" for t in bearish_titles))
+    problem = None
     for _ in range(retries):
         try:
             resp = client.messages.create(model=MODEL, max_tokens=250,
-                                          messages=[{"role": "user", "content": prompt.replace("{feedback}", "")}])
+                                          messages=[{"role": "user", "content": prompt.replace("{feedback}", _feedback(problem))}])
         except Exception as e:  # noqa: BLE001
             if _is_fatal(e):
                 raise FatalAPIError(str(e)) from e
             continue
         text = resp.content[0].text.strip()
-        if _summary_ok(text):
+        problem = _summary_problem(text, titles=bearish_titles)
+        if problem is None:
             return {"text": text, "source": "llm"}
     return {"text": "Judul bernada bearish: " + "; ".join(f"«{t}»" for t in bearish_titles) + ".", "source": "template"}
 
@@ -411,32 +443,36 @@ Tulis rangkuman 3 sampai 4 kalimat tentang apa saja yang dilaporkan hari ini, da
 
 ATURAN KETAT:
 - Hanya isi judul; jangan menambah fakta.
-- Jangan memakai angka sama sekali (gunakan kata seperti "sejumlah" bila perlu).
+- Angka hanya boleh yang tertulis di judul; jangan menghitung atau menambah angka baru (lebih aman: gunakan kata seperti "sejumlah").
 - Jangan menyatakan sebab-akibat, dan jangan menyatakan bahwa berita ini memprediksi atau menentukan arah harga.
-- Jangan mengajak membeli atau menjual. Tanpa markdown, tanpa judul, satu paragraf.
+- Melaporkan peristiwa (misalnya penjualan atau likuidasi) boleh; jangan mengajak membeli atau menjual. Tanpa markdown, tanpa judul, satu paragraf.
 
 JUDUL:
 {titles}
-
+{feedback}
 Tulis rangkumannya sekarang."""
 
 
 def news_digest(client, titles: list, retries: int = 2):
-    """Rangkuman seluruh berita hari itu. None bila tidak ada judul atau teks LLM tak lolos pemeriksaan (daftar judul sudah tampil di panel)."""
+    """Rangkuman seluruh berita hari itu. None bila tidak ada judul; {"text": None, "source": "unavailable"} bila teks LLM
+    tak lolos pemeriksaan (panel menampilkan catatan, bukan menghilang diam-diam)."""
     if not titles:
         return None
-    prompt = DIGEST_PROMPT.replace("{titles}", "\n".join(f"- {t}" for t in titles))
+    base = DIGEST_PROMPT.replace("{titles}", "\n".join(f"- {t}" for t in titles))
+    problem = None
     for _ in range(retries):
         try:
-            resp = client.messages.create(model=MODEL, max_tokens=400, messages=[{"role": "user", "content": prompt}])
+            resp = client.messages.create(model=MODEL, max_tokens=400,
+                                          messages=[{"role": "user", "content": base.replace("{feedback}", _feedback(problem))}])
         except Exception as e:  # noqa: BLE001
             if _is_fatal(e):
                 raise FatalAPIError(str(e)) from e
             continue
         text = resp.content[0].text.strip()
-        if _summary_ok(text, max_words=110):
+        problem = _summary_problem(text, max_words=110, titles=titles)
+        if problem is None:
             return {"text": text, "source": "llm"}
-    return None
+    return {"text": None, "source": "unavailable"}
 
 
 def build_live_explain(*, predictor, frame, pred, news, as_of, stats, series=None, client=None) -> dict:

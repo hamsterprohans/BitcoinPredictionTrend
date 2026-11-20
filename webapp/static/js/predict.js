@@ -118,11 +118,11 @@ function renderHistory(focusPager = false) {
       h.actual ? `${arrow(h.actual)} ${h.actual} ${h.correct ? "✓" : "✗"}` : "menunggu"];
     cells.forEach((t, i) => {
       const td = document.createElement("td");
-      if (i === 0) {                                             // yang diprediksi (target) + asal data penutupan di baris kecil
-        td.textContent = fmtDateShort(target);
+      if (i === 0) {                                             // tanggal terbit (penutupan asal) + tanggal target di baris kecil
+        td.textContent = fmtDateShort(e.date);
         const sub = document.createElement("small");
         sub.className = "muted hist-src";
-        sub.textContent = `dari penutupan ${fmtDateShort(e.date)}${e.backfilled ? " · dihitung susulan" : ""}`;
+        sub.textContent = `untuk ${fmtDateShort(target)}${e.backfilled ? " · dihitung susulan" : ""}`;
         td.append(document.createElement("br"), sub);
         if (e.backfilled) td.title = "Dihitung setelah harinya lewat dari data tersimpan; bukan prediksi yang terbit pada hari itu";
       } else {

@@ -304,6 +304,17 @@ def test_explanation_includes_the_daily_news_digest_with_a_non_causal_note(page,
     assert "bukan penyebab prediksi" in text
 
 
+def test_narrative_says_so_when_the_news_digest_is_unavailable(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#live-narrative .narr")
+    page.evaluate("""async () => {
+      const m = await import('/static/js/panels.js');
+      m.renderNarrative(document.querySelector('#live-narrative'), {text: 'Model memprediksi naik.', source: 'llm'}, {text: null, source: 'unavailable'});
+    }""")
+    text = page.inner_text("#live-narrative")
+    assert "Rangkuman berita hari ini tidak tersedia" in text and "tidak lolos pemeriksaan otomatis" in text
+
+
 def test_narrative_hides_a_leftover_markdown_heading(page, server):
     page.goto(server + "/")
     page.wait_for_selector("#live-narrative .narr")
@@ -337,17 +348,32 @@ def test_explanation_panel_stays_single_column_on_phone(browser, server):
     ctx.close()
 
 
-def test_history_rows_are_labeled_by_the_date_they_predict_with_the_source_close_shown(page, server):
+def test_history_rows_are_labeled_by_the_issue_date_with_the_target_shown(page, server):
     page.goto(server + "/")
     page.wait_for_selector("#history-body tr")
-    assert page.locator("#sec-hist thead th").first.inner_text() == "Prediksi untuk"        # bukan 'Tanggal prediksi' (ambigu)
+    assert page.locator("#sec-hist thead th").first.inner_text() == "Diterbitkan"          # tanggal prediksi dibuat (penutupan)
     hist = page.evaluate("fetch('/api/prediction/history').then(r => r.json())")
     first = max((e for e in hist if e["horizons"].get('1')), key=lambda e: e["date"])
     fmt = "(d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'})"
     target = page.evaluate("(d) => new Date(new Date(d + 'T00:00:00Z').getTime() + 86400000).toISOString().slice(0, 10)", first["date"])
-    cell = page.locator("#history-body tr").first.locator("td").first.inner_text()
-    assert page.evaluate(fmt, target) in cell                                              # tanggal TARGET (hari yang diprediksi) di baris teratas
-    assert f"dari penutupan {page.evaluate(fmt, first['date'])}" in cell                   # asal data penutupan tetap jelas
+    cell = page.locator("#history-body tr").first.locator("td").first
+    assert page.evaluate(fmt, first["date"]) == cell.inner_text().splitlines()[0]          # tanggal terbit = judul baris
+    assert f"untuk {page.evaluate(fmt, target)}" in cell.inner_text()                       # tanggal target tetap terlihat
+
+
+def test_history_oldest_row_is_the_first_issue_date_for_every_horizon(page, server):
+    page.goto(server + "/")
+    page.wait_for_selector("#history-body tr")
+    hist = page.evaluate("fetch('/api/prediction/history').then(r => r.json())")
+    oldest = min(e["date"] for e in hist)
+    fmt = "(d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'})"
+    for h in ("1", "7"):
+        page.click(f"#horizon-tabs [role=tab]:has-text('{h} hari')")
+        older = page.locator("#hist-pager button:has-text('Lebih lama')")
+        while older.count() and older.is_enabled():
+            older.click()
+        last = page.locator("#history-body tr").last.locator("td").first.inner_text().splitlines()[0]
+        assert last == page.evaluate(fmt, oldest)                                           # riwayat dimulai dari tanggal terbit pertama
 
 
 def test_history_target_date_follows_the_selected_horizon(page, server):
@@ -358,7 +384,7 @@ def test_history_target_date_follows_the_selected_horizon(page, server):
     first = max((e for e in hist if e["horizons"].get('7')), key=lambda e: e["date"])
     target = page.evaluate("(d) => new Date(new Date(d + 'T00:00:00Z').getTime() + 7 * 86400000).toISOString().slice(0, 10)", first["date"])
     expected = page.evaluate("(d) => new Date(d + 'T00:00:00Z').toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'})", target)
-    assert expected in page.locator("#history-body tr").first.locator("td").first.inner_text()
+    assert f"untuk {expected}" in page.locator("#history-body tr").first.locator("td").first.inner_text()
 
 
 def _with_news_source(page, source):
@@ -476,17 +502,17 @@ def test_history_is_paged_ten_rows_each_newest_first(page, server):
     first = lambda: page.locator("#history-body tr td:first-child").all_inner_texts()      # noqa: E731
     cells = first()
     assert len(cells) == 10
-    assert cells[0].startswith("26 Okt 2026") and cells[-1].startswith("17 Okt 2026")      # target = asal + 1 hari; terbaru di atas
+    assert cells[0].startswith("25 Okt 2026") and cells[-1].startswith("16 Okt 2026")      # tanggal terbit; terbaru di atas
     assert "Hari ke-1–10 dari 25" in page.inner_text("#hist-pager")
     assert page.locator("#hist-pager .pg[aria-current]").inner_text() == "1"
     assert page.locator("#hist-pager button", has_text="Lebih baru").is_disabled()
     page.locator("#hist-pager .pg", has_text="Lebih lama").click()                          # halaman 2: yang lebih lama
     cells = first()
-    assert len(cells) == 10 and cells[0].startswith("16 Okt 2026") and cells[-1].startswith("7 Okt 2026")
+    assert len(cells) == 10 and cells[0].startswith("15 Okt 2026") and cells[-1].startswith("6 Okt 2026")
     assert page.evaluate("document.activeElement.getAttribute('aria-current')") == "page"   # fokus tetap di pager setelah pindah halaman
     page.locator("#hist-pager .pg", has_text="3").click()                                   # halaman terakhir: sisa 5 hari tertua
     cells = first()
-    assert len(cells) == 5 and cells[0].startswith("6 Okt 2026") and cells[-1].startswith("2 Okt 2026")
+    assert len(cells) == 5 and cells[0].startswith("5 Okt 2026") and cells[-1].startswith("1 Okt 2026")
     assert page.locator("#hist-pager button", has_text="Lebih lama").is_disabled()
 
 
