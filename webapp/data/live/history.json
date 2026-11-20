@@ -149,7 +149,10 @@
    "35": {
     "prob": 0.42065301537513733,
     "direction": "TURUN",
-    "threshold": 0.42857804894447327
+    "threshold": 0.42857804894447327,
+    "actual": "TURUN",
+    "correct": true,
+    "locked": true
    }
   },
   "backfilled": true,
@@ -522,7 +525,10 @@
    "30": {
     "prob": 0.4396369556585948,
     "direction": "TURUN",
-    "threshold": 0.4812179505825043
+    "threshold": 0.4812179505825043,
+    "actual": "TURUN",
+    "correct": true,
+    "locked": true
    },
    "35": {
     "prob": 0.4202870925267537,
@@ -880,7 +886,10 @@
    "25": {
     "prob": 0.4367020825544993,
     "direction": "TURUN",
-    "threshold": 0.4579542577266693
+    "threshold": 0.4579542577266693,
+    "actual": "TURUN",
+    "correct": true,
+    "locked": true
    },
    "30": {
     "prob": 0.447654922803243,
@@ -1222,7 +1231,10 @@
    "20": {
     "prob": 0.4470547338326772,
     "direction": "TURUN",
-    "threshold": 0.4715519845485687
+    "threshold": 0.4715519845485687,
+    "actual": "TURUN",
+    "correct": true,
+    "locked": true
    },
    "25": {
     "prob": 0.4333621859550476,
@@ -1549,7 +1561,10 @@
    "15": {
     "prob": 0.45178558429082233,
     "direction": "TURUN",
-    "threshold": 0.45957493782043457
+    "threshold": 0.45957493782043457,
+    "actual": "TURUN",
+    "correct": true,
+    "locked": true
    },
    "20": {
     "prob": 0.44594864050547284,
@@ -2053,7 +2068,10 @@
    "7": {
     "prob": 0.4507150451342265,
     "direction": "TURUN",
-    "threshold": 0.47223278880119324
+    "threshold": 0.47223278880119324,
+    "actual": "TURUN",
+    "correct": true,
+    "locked": true
    },
    "15": {
     "prob": 0.45486700534820557,
@@ -2167,7 +2185,10 @@
    "5": {
     "prob": 0.48241332173347473,
     "direction": "NAIK",
-    "threshold": 0.47828808426856995
+    "threshold": 0.47828808426856995,
+    "actual": "TURUN",
+    "correct": false,
+    "locked": true
    },
    "7": {
     "prob": 0.4515170753002167,
@@ -2275,7 +2296,10 @@
    "3": {
     "prob": 0.522145688533783,
     "direction": "NAIK",
-    "threshold": 0.5177493095397949
+    "threshold": 0.5177493095397949,
+    "actual": "TURUN",
+    "correct": false,
+    "locked": true
    },
    "5": {
     "prob": 0.4899422327677409,
@@ -2377,7 +2401,10 @@
    "1": {
     "prob": 0.6278160810470581,
     "direction": "NAIK",
-    "threshold": 0.4768124222755432
+    "threshold": 0.4768124222755432,
+    "actual": "TURUN",
+    "correct": false,
+    "locked": true
    },
    "3": {
     "prob": 0.5306078294912974,
@@ -2416,6 +2443,58 @@
    },
    "35": {
     "prob": 0.45872384309768677,
+    "direction": "NAIK",
+    "threshold": 0.42857804894447327
+   }
+  }
+ },
+ {
+  "date": "2026-11-19",
+  "close": 61881.16,
+  "model_version": "v3_align",
+  "horizons": {
+   "1": {
+    "prob": 0.6375097632408142,
+    "direction": "NAIK",
+    "threshold": 0.4768124222755432
+   },
+   "3": {
+    "prob": 0.5309997896353403,
+    "direction": "NAIK",
+    "threshold": 0.5177493095397949
+   },
+   "5": {
+    "prob": 0.4933052758375804,
+    "direction": "NAIK",
+    "threshold": 0.47828808426856995
+   },
+   "7": {
+    "prob": 0.4690740207831065,
+    "direction": "TURUN",
+    "threshold": 0.47223278880119324
+   },
+   "15": {
+    "prob": 0.4520887037118276,
+    "direction": "TURUN",
+    "threshold": 0.45957493782043457
+   },
+   "20": {
+    "prob": 0.4619913597901662,
+    "direction": "TURUN",
+    "threshold": 0.4715519845485687
+   },
+   "25": {
+    "prob": 0.4495031038920085,
+    "direction": "TURUN",
+    "threshold": 0.4579542577266693
+   },
+   "30": {
+    "prob": 0.4786094129085541,
+    "direction": "TURUN",
+    "threshold": 0.4812179505825043
+   },
+   "35": {
+    "prob": 0.4593975742657979,
     "direction": "NAIK",
     "threshold": 0.42857804894447327
    }

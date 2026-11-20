@@ -1100,5 +1100,28 @@
    "https://en.coin-turk.com/saifedean-ammous-warns-ai-firms-may-be-overvalued-sees-bitcoin-poised-for-rally/?utm_source=rss&utm_medium=rss&utm_campaign=saifedean-ammous-warns-ai-firms-may-be-overvalued-sees-bitcoin-poised-for-rally"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-19": {
+  "titles": [
+   "Bitcoin drops to $61,350, its lowest price since early July",
+   "Bitcoin holds $60,000 as $2 billion in liquidations hit, Anchorage Digital reports",
+   "Anchorage Digital's Lawant Ties 60% of Early Bitcoin (BTC) Selling to Coinbase",
+   "Ripple CEO links Bitcoin and XRP weakness to Anthropic IPO liquidity shift",
+   "Bitcoin dips, hovers at over four-month low amid rate hike bets, stocks rout"
+  ],
+  "scores": {
+   "pemahaman": -7,
+   "detail": -4,
+   "bullbear": -5,
+   "mean": -5.333333333333333
+  },
+  "urls": [
+   "https://www.cryptopolitan.com/bitcoin-breaks-weekend-floor-july-levels/",
+   "https://en.coin-turk.com/bitcoin-holds-60000-as-2-billion-in-liquidations-hit-anchorage-digital-reports/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-holds-60000-as-2-billion-in-liquidations-hit-anchorage-digital-reports",
+   "https://en.coinotag.com/bitcoin-lawant-coinbase-60-percent-early-selling",
+   "https://en.coin-turk.com/ripple-ceo-links-bitcoin-and-xrp-weakness-to-anthropic-ipo-liquidity-shift/?utm_source=rss&utm_medium=rss&utm_campaign=ripple-ceo-links-bitcoin-and-xrp-weakness-to-anthropic-ipo-liquidity-shift",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-down-to-635k-amid-little-relief-from-rate-hike-jitters-5037873"
+  ],
+  "source": "cryptocompare"
  }
 }
