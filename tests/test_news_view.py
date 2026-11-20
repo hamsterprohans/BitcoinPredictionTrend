@@ -81,12 +81,44 @@ def test_digest_uses_all_headlines_and_accepts_a_clean_text():
     "Harga turun karena berita buruk hari ini.",
     "**Ringkasan** berita hari ini.",
 ])
-def test_digest_returns_none_when_llm_text_never_validates(bad):
+def test_digest_reports_unavailable_when_llm_text_never_validates(bad):
     from app.explain import news_digest
-    assert news_digest(FakeLLM([bad, bad]), ["x"]) is None
+    assert news_digest(FakeLLM([bad, bad]), ["x"]) == {"text": None, "source": "unavailable"}
 
 
 def test_digest_is_none_without_headlines_and_makes_no_call():
     from app.explain import news_digest
     llm = FakeLLM([])
     assert news_digest(llm, []) is None and llm.calls == []
+
+
+REAL_TITLES = ["Bitcoin drops to $61,350, its lowest price since early July",
+               "Bitcoin holds $60,000 as $2 billion in liquidations hit, Anchorage Digital reports",
+               "Lawant Ties 60% of Early Bitcoin (BTC) Selling to Coinbase"]
+
+
+def test_digest_allows_numbers_and_selling_words_that_come_from_the_headlines():
+    from app.explain import news_digest
+    text = ("Harga Bitcoin turun ke 61.350 dolar, terendah sejak awal Juli, sementara bertahan di sekitar 60.000 dolar "
+            "saat likuidasi 2 miliar dolar terjadi. Penjualan awal Bitcoin sebesar 60% dikaitkan dengan Coinbase. Nada pemberitaan condong negatif.")
+    assert news_digest(FakeLLM([text]), REAL_TITLES) == {"text": text, "source": "llm"}
+
+
+@pytest.mark.parametrize("bad", [
+    "Harga Bitcoin turun 7 persen hari ini.",                              # angka yang tidak ada di judul
+    "Sebaiknya beli Bitcoin saat harga turun.",                            # ajakan
+    "Harga turun akibat likuidasi.",                                        # sebab-akibat
+])
+def test_digest_still_rejects_invented_numbers_calls_to_trade_and_causation(bad):
+    from app.explain import news_digest
+    assert news_digest(FakeLLM([bad, bad]), REAL_TITLES)["source"] == "unavailable"
+
+
+def test_digest_retry_tells_the_llm_why_the_first_text_was_rejected():
+    from app.explain import news_digest
+    llm = FakeLLM(["Harga turun 7 persen.", GOOD_DIGEST])
+    out = news_digest(llm, REAL_TITLES)
+    assert out["source"] == "llm"
+    retry_prompt = llm.calls[1]["messages"][0]["content"]
+    assert "DITOLAK" in retry_prompt and "angka yang tidak ada di judul: 7" in retry_prompt
+    assert "DITOLAK" not in llm.calls[0]["messages"][0]["content"]
