@@ -1123,5 +1123,28 @@
    "https://www.investing.com/news/cryptocurrency-news/bitcoin-down-to-635k-amid-little-relief-from-rate-hike-jitters-5037873"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-20": {
+  "titles": [
+   "Bitcoin (BTC) Mining Difficulty Seen Up 8.39% to 8.52% at Nov. 27 Adjustment",
+   "Bitcoin on track for longest weekly losing streak since May 2022 amid AI rout",
+   "Twenty One Capital Buys 172.25 Bitcoin (BTC), Holdings Reach 43,841",
+   "Robert Kiyosaki Welcomes Bitcoin (BTC) Crash, Cites Its 21 Million Coin Cap",
+   "Strategy, Coinbase Shares Battered as Bitcoin Price Hits 2-Year Low and AI Stocks Bleed"
+  ],
+  "scores": {
+   "pemahaman": -6,
+   "detail": -4,
+   "bullbear": -5,
+   "mean": -5.0
+  },
+  "urls": [
+   "https://en.coinotag.com/bitcoin-btc-mining-difficulty-seen-up-8-39-at-nov-27-adjustment",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-hits-near-5mth-low-below-62k-as-ai-rout-batters-risk-appetite-5040746",
+   "https://en.coinotag.com/twenty-one-capital-buys-172-25-bitcoin-holdings-43841",
+   "https://en.coinotag.com/robert-kiyosaki-welcomes-bitcoin-btc-crash-21-million-coin-cap",
+   "https://news.bitcoin.com/market-updates/strategy-coinbase-shares-battered-bitcoin-price-2-year-low-ai-stocks-bleed/"
+  ],
+  "source": "cryptocompare"
  }
 }

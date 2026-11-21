@@ -1,198 +1,201 @@
 {
- "as_of": "2026-11-19",
- "generated_at": "2026-11-20T00:31:48+00:00",
- "close": 61881.16,
- "change_pct": -1.61,
+ "as_of": "2026-11-20",
+ "generated_at": "2026-11-21T00:31:47+00:00",
+ "close": 58851.02,
+ "change_pct": -4.9,
  "inputs": {
-  "news_sentiment": -5.333,
-  "news_sentiment_raw": -5.333,
-  "headline_count": 41,
-  "fear_greed_index": 10.0
+  "news_sentiment": -5.0,
+  "news_sentiment_raw": -5.0,
+  "headline_count": 42,
+  "fear_greed_index": 12.0
  },
  "horizons": {
   "1": {
-   "prob": 0.6375097632408142,
+   "prob": 0.6448330879211426,
    "threshold": 0.4768124222755432,
    "direction": "NAIK",
-   "target_date": "2026-11-20"
+   "target_date": "2026-11-21"
   },
   "3": {
-   "prob": 0.5309997896353403,
+   "prob": 0.5320608019828796,
    "threshold": 0.5177493095397949,
    "direction": "NAIK",
-   "target_date": "2026-11-22"
+   "target_date": "2026-11-23"
   },
   "5": {
-   "prob": 0.4933052758375804,
+   "prob": 0.4934231738249461,
    "threshold": 0.47828808426856995,
    "direction": "NAIK",
-   "target_date": "2026-11-24"
+   "target_date": "2026-11-25"
   },
   "7": {
-   "prob": 0.4690740207831065,
+   "prob": 0.47145047783851624,
    "threshold": 0.47223278880119324,
    "direction": "TURUN",
-   "target_date": "2026-11-26"
+   "target_date": "2026-11-27"
   },
   "15": {
-   "prob": 0.4520887037118276,
+   "prob": 0.45265910029411316,
    "threshold": 0.45957493782043457,
    "direction": "TURUN",
-   "target_date": "2026-12-04"
+   "target_date": "2026-12-05"
   },
   "20": {
-   "prob": 0.4619913597901662,
+   "prob": 0.46325089534123737,
    "threshold": 0.4715519845485687,
    "direction": "TURUN",
-   "target_date": "2026-12-09"
+   "target_date": "2026-12-10"
   },
   "25": {
-   "prob": 0.4495031038920085,
+   "prob": 0.4511129558086395,
    "threshold": 0.4579542577266693,
    "direction": "TURUN",
-   "target_date": "2026-12-14"
+   "target_date": "2026-12-15"
   },
   "30": {
-   "prob": 0.4786094129085541,
+   "prob": 0.4784689247608185,
    "threshold": 0.4812179505825043,
    "direction": "TURUN",
-   "target_date": "2026-12-19"
+   "target_date": "2026-12-20"
   },
   "35": {
-   "prob": 0.4593975742657979,
+   "prob": 0.46019406119982403,
    "threshold": 0.42857804894447327,
    "direction": "NAIK",
-   "target_date": "2026-12-24"
+   "target_date": "2026-12-25"
   }
  },
  "explain": {
   "headlines": [
    {
-    "title": "Bitcoin drops to $61,350, its lowest price since early July",
-    "url": "https://www.cryptopolitan.com/bitcoin-breaks-weekend-floor-july-levels/",
+    "title": "Bitcoin (BTC) Mining Difficulty Seen Up 8.39% to 8.52% at Nov. 27 Adjustment",
+    "url": "https://en.coinotag.com/bitcoin-btc-mining-difficulty-seen-up-8-39-at-nov-27-adjustment",
+    "tone": "netral"
+   },
+   {
+    "title": "Bitcoin on track for longest weekly losing streak since May 2022 amid AI rout",
+    "url": "https://www.investing.com/news/cryptocurrency-news/bitcoin-hits-near-5mth-low-below-62k-as-ai-rout-batters-risk-appetite-5040746",
     "tone": "bearish"
    },
    {
-    "title": "Bitcoin holds $60,000 as $2 billion in liquidations hit, Anchorage Digital reports",
-    "url": "https://en.coin-turk.com/bitcoin-holds-60000-as-2-billion-in-liquidations-hit-anchorage-digital-reports/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-holds-60000-as-2-billion-in-liquidations-hit-anchorage-digital-reports",
-    "tone": "bearish"
+    "title": "Twenty One Capital Buys 172.25 Bitcoin (BTC), Holdings Reach 43,841",
+    "url": "https://en.coinotag.com/twenty-one-capital-buys-172-25-bitcoin-holdings-43841",
+    "tone": "bullish"
    },
    {
-    "title": "Anchorage Digital's Lawant Ties 60% of Early Bitcoin (BTC) Selling to Coinbase",
-    "url": "https://en.coinotag.com/bitcoin-lawant-coinbase-60-percent-early-selling",
-    "tone": "bearish"
+    "title": "Robert Kiyosaki Welcomes Bitcoin (BTC) Crash, Cites Its 21 Million Coin Cap",
+    "url": "https://en.coinotag.com/robert-kiyosaki-welcomes-bitcoin-btc-crash-21-million-coin-cap",
+    "tone": "bullish"
    },
    {
-    "title": "Ripple CEO links Bitcoin and XRP weakness to Anthropic IPO liquidity shift",
-    "url": "https://en.coin-turk.com/ripple-ceo-links-bitcoin-and-xrp-weakness-to-anthropic-ipo-liquidity-shift/?utm_source=rss&utm_medium=rss&utm_campaign=ripple-ceo-links-bitcoin-and-xrp-weakness-to-anthropic-ipo-liquidity-shift",
-    "tone": "bearish"
-   },
-   {
-    "title": "Bitcoin dips, hovers at over four-month low amid rate hike bets, stocks rout",
-    "url": "https://www.investing.com/news/cryptocurrency-news/bitcoin-down-to-635k-amid-little-relief-from-rate-hike-jitters-5037873",
+    "title": "Strategy, Coinbase Shares Battered as Bitcoin Price Hits 2-Year Low and AI Stocks Bleed",
+    "url": "https://news.bitcoin.com/market-updates/strategy-coinbase-shares-battered-bitcoin-price-2-year-low-ai-stocks-bleed/",
     "tone": "bearish"
    }
   ],
   "news_view": {
-   "role": "Sentimen berita berpengaruh +4,3 poin persentase pada skor model, mendorongnya ke arah naik (urutan ke-5 dari 13 fitur); arah prediksi ini tidak terutama dibentuk oleh berita.",
+   "role": "Sentimen berita berpengaruh +3,8 poin persentase pada skor model, mendorongnya ke arah naik (urutan ke-5 dari 13 fitur); arah prediksi ini tidak terutama dibentuk oleh berita.",
    "summary": {
-    "text": "Judul bernada bearish: «Bitcoin drops to $61,350, its lowest price since early July»; «Bitcoin holds $60,000 as $2 billion in liquidations hit, Anchorage Digital reports»; «Anchorage Digital's Lawant Ties 60% of Early Bitcoin (BTC) Selling to Coinbase»; «Ripple CEO links Bitcoin and XRP weakness to Anthropic IPO liquidity shift»; «Bitcoin dips, hovers at over four-month low amid rate hike bets, stocks rout».",
-    "source": "template"
+    "text": "Bitcoin sedang mengalami serangkaian kerugian mingguan yang belum terjadi sejak beberapa tahun lalu, sementara saham-saham terkait kripto seperti Coinbase juga mengalami penurunan seiring dengan melemahnya sektor teknologi AI secara keseluruhan.",
+    "source": "llm"
    },
-   "digest": null
+   "digest": {
+    "text": "Berita Bitcoin hari ini melaporkan sejumlah perkembangan teknis dan pasar sekaligus aktivitas investor. Tingkat kesulitan pertambangan Bitcoin diprediksi naik pada penyesuaian 27 November, sementara harga Bitcoin mengalami tekanan dengan potensi mencatat rekor minggu penurunan terpanjang sejak Mei 2022. Di sisi lain, Twenty One Capital melakukan pembelian Bitcoin dan Robert Kiyosaki menyampaikan pandangannya positif terhadap situasi pasar. Nada pemberitaannya campuran, menggabungkan tantangan harga dengan aktivitas investasi berkelanjutan.",
+    "source": "llm"
+   }
   },
   "sentiment": {
    "has_news": true,
    "scores": {
-    "pemahaman": -7,
+    "pemahaman": -6,
     "detail": -4,
     "bullbear": -5,
-    "mean": -5.333333333333333
+    "mean": -5.0
    },
-   "used": -5.333333333333333
+   "used": -5.0
   },
   "contributions": [
    {
-    "feature": "MACD_Signal",
-    "label": "Sinyal MACD",
-    "delta_pp": 8.775
-   },
-   {
     "feature": "MACD",
     "label": "MACD",
-    "delta_pp": 8.159
+    "delta_pp": 8.847
    },
    {
-    "feature": "MACD_Histogram",
-    "label": "Histogram MACD",
-    "delta_pp": 7.982
+    "feature": "MACD_Signal",
+    "label": "Sinyal MACD",
+    "delta_pp": 8.406
    },
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "delta_pp": 7.053
+    "delta_pp": 7.571
+   },
+   {
+    "feature": "MACD_Histogram",
+    "label": "Histogram MACD",
+    "delta_pp": 6.554
    },
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "delta_pp": 4.302
+    "delta_pp": 3.819
    },
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "delta_pp": 2.58
-   },
-   {
-    "feature": "RSI14",
-    "label": "RSI 14 hari",
-    "delta_pp": 1.326
+    "delta_pp": 2.934
    },
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "delta_pp": -1.245
+    "delta_pp": -1.236
+   },
+   {
+    "feature": "RSI14",
+    "label": "RSI 14 hari",
+    "delta_pp": 1.056
    },
    {
     "feature": "BB_width",
     "label": "Lebar Bollinger",
-    "delta_pp": -0.543
-   },
-   {
-    "feature": "daily_return",
-    "label": "Return harian",
-    "delta_pp": 0.424
+    "delta_pp": -0.783
    },
    {
     "feature": "fear_greed_index_scaled",
     "label": "Fear & Greed Index",
-    "delta_pp": -0.336
+    "delta_pp": -0.286
+   },
+   {
+    "feature": "daily_return",
+    "label": "Return harian",
+    "delta_pp": 0.263
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "delta_pp": -0.248
+    "delta_pp": 0.192
    },
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "delta_pp": 0.052
+    "delta_pp": 0.049
    }
   ],
   "features": [
    {
     "feature": "daily_return",
     "label": "Return harian",
-    "value": -0.0161498407987285,
-    "value_text": "-1,61%",
-    "percentile": 22,
+    "value": -0.048967074794168286,
+    "value_text": "-4,90%",
+    "percentile": 6,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "MA7",
     "label": "Rata-rata harga 7 hari",
-    "value": 64533.562022681384,
-    "value_text": "US$64.534",
+    "value": 63212.80586316732,
+    "value_text": "US$63.213",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": false
@@ -200,8 +203,8 @@
    {
     "feature": "MA30",
     "label": "Rata-rata harga 30 hari",
-    "value": 74757.04611178278,
-    "value_text": "US$74.757",
+    "value": 73912.87743656321,
+    "value_text": "US$73.913",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -209,8 +212,8 @@
    {
     "feature": "MA90",
     "label": "Rata-rata harga 90 hari",
-    "value": 78940.58660250659,
-    "value_text": "US$78.941",
+    "value": 78738.70758673766,
+    "value_text": "US$78.739",
     "percentile": 100,
     "category": "tinggi",
     "outside_train_range": true
@@ -218,17 +221,17 @@
    {
     "feature": "Vol_7",
     "label": "Volatilitas 7 hari",
-    "value": 0.028674737698966817,
-    "value_text": "2,87%",
-    "percentile": 52,
+    "value": 0.02933824921716406,
+    "value_text": "2,93%",
+    "percentile": 54,
     "category": "sedang",
     "outside_train_range": false
    },
    {
     "feature": "Vol_30",
     "label": "Volatilitas 30 hari",
-    "value": 0.0229249276690447,
-    "value_text": "2,29%",
+    "value": 0.02352390337640053,
+    "value_text": "2,35%",
     "percentile": 20,
     "category": "rendah",
     "outside_train_range": false
@@ -236,8 +239,8 @@
    {
     "feature": "RSI14",
     "label": "RSI 14 hari",
-    "value": 20.199965147526925,
-    "value_text": "20,2",
+    "value": 17.19490452894317,
+    "value_text": "17,2",
     "percentile": 0,
     "category": "rendah",
     "outside_train_range": false
@@ -245,8 +248,8 @@
    {
     "feature": "MACD",
     "label": "MACD",
-    "value": -4438.444259649375,
-    "value_text": "US$-4.438,4",
+    "value": -4804.306962550603,
+    "value_text": "US$-4.804,3",
     "percentile": 0,
     "category": "rendah",
     "outside_train_range": false
@@ -254,8 +257,8 @@
    {
     "feature": "MACD_Signal",
     "label": "Sinyal MACD",
-    "value": -3437.7285489804053,
-    "value_text": "US$-3.437,7",
+    "value": -3711.0442316944454,
+    "value_text": "US$-3.711,0",
     "percentile": 0,
     "category": "rendah",
     "outside_train_range": false
@@ -263,43 +266,43 @@
    {
     "feature": "MACD_Histogram",
     "label": "Histogram MACD",
-    "value": -1000.7157106689701,
-    "value_text": "US$-1.000,7",
-    "percentile": 2,
+    "value": -1093.2627308561578,
+    "value_text": "US$-1.093,3",
+    "percentile": 0,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "BB_width",
     "label": "Lebar Bollinger",
-    "value": 0.3314711159545207,
-    "value_text": "33,1%",
-    "percentile": 80,
+    "value": 0.3652200232529431,
+    "value_text": "36,5%",
+    "percentile": 84,
     "category": "tinggi",
     "outside_train_range": false
    },
    {
     "feature": "news_sentiment",
     "label": "Sentimen berita",
-    "value": -5.333333333333333,
-    "value_text": "-5,33",
-    "percentile": 2,
+    "value": -5.0,
+    "value_text": "-5,00",
+    "percentile": 3,
     "category": "rendah",
     "outside_train_range": false
    },
    {
     "feature": "fear_greed_index_scaled",
     "label": "Fear & Greed Index",
-    "value": 0.1,
-    "value_text": "10 dari 100",
-    "percentile": 1,
+    "value": 0.12,
+    "value_text": "12 dari 100",
+    "percentile": 3,
     "category": "rendah",
     "outside_train_range": false
    }
   ],
   "level": "tinggi",
   "narrative": {
-   "text": "Model penelitian memprediksi Bitcoin akan naik pada 20 November 2026, dengan skor probabilitas 0,6375 (ambang: 0,4768) dan tingkat keyakinan tinggi. Fitur paling berpengaruh adalah Sinyal MACD dengan pengaruh +8,8 poin persentase, diikuti MACD dengan pengaruh +8,2 poin persentase dan Histogram MACD dengan pengaruh +8,0 poin persentase. Ketiga fitur berada dalam kategori rendah. Hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
+   "text": "Model penelitian memprediksi Bitcoin mengalami NAIK pada 21 November 2026, dengan probabilitas 0,6448 dan tingkat keyakinan tinggi. Fitur yang paling memengaruhi skor model adalah MACD dengan pengaruh +8,8 poin persentase, Sinyal MACD dengan pengaruh +8,4 poin persentase, dan Rata-rata harga 90 hari dengan pengaruh +7,6 poin persentase. Namun, hasil ini tidak pasti dan bisa keliru. Model belum terbukti lebih baik dari tebakan acak. Ini bukan saran investasi.",
    "source": "llm",
    "attempts": 1,
    "temperature": null
