@@ -1146,5 +1146,28 @@
    "https://news.bitcoin.com/market-updates/strategy-coinbase-shares-battered-bitcoin-price-2-year-low-ai-stocks-bleed/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-21": {
+  "titles": [
+   "Jiang Zhuoer: Bitcoin (BTC) Needs 2-3 Month Bottom After $57,800 Floor Broke",
+   "30K Bitcoin and A LOT of noise — It’s what a Tesla-SpaceX merger really means for crypto",
+   "Behind Closed Doors, Central Banks Build a Case for Bitcoin—But With Gold",
+   "Bitcoin Proof-of-Work Can Help Stop AI Cyberattacks: Ex-Space Force Director",
+   "Bitcoin Has Rebounded by More Than 8 Percent From Its Two-Year Low"
+  ],
+  "scores": {
+   "pemahaman": -3,
+   "detail": 2,
+   "bullbear": 2,
+   "mean": 0.3333333333333333
+  },
+  "urls": [
+   "https://en.coinotag.com/jiang-zhuoer-bitcoin-btc-bear-market-bottom-2-3-months",
+   "https://ambcrypto.com/tesla-spacex-and-all-about-the-merger-that-could-prove-they-view-bitcoin-as-pocket-change/",
+   "https://news.bitcoin.com/finance/behind-closed-doors-central-banks-build-case-bitcoin-gold/",
+   "https://news.bitcoin.com/security/bitcoin-proof-work-stop-ai-cyberattacks-ex-space-force-director/",
+   "https://en.bitcoinsistemi.com/bitcoin-has-rebounded-by-more-than-8-percent-from-its-two-year-low/"
+  ],
+  "source": "cryptocompare"
  }
 }
