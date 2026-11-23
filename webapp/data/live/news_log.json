@@ -1169,5 +1169,28 @@
    "https://en.bitcoinsistemi.com/bitcoin-has-rebounded-by-more-than-8-percent-from-its-two-year-low/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-22": {
+  "titles": [
+   "Will Bitcoin’s big rebound hold? More tampered Ledgers found: Hodler’s Digest",
+   "Bitcoin makes tentative rebound, rising over 1% to reclaim $60,000",
+   "Cysic CEO Leo Fan Warns Over 6 Million Bitcoin (BTC) Public Keys Exposed",
+   "Bitcoin Price Takes a Beating as November Rout Erases Summer Gains",
+   "Bitcoin’s Big Holders Signal Strength, But One Red Flag Looms"
+  ],
+  "scores": {
+   "pemahaman": -2,
+   "detail": 1,
+   "bullbear": 2,
+   "mean": 0.3333333333333333
+  },
+  "urls": [
+   "https://cointelegraph.com/magazine/will-bitcoins-big-rebound-hold-more-tampered-ledgers-found-hodlers-digest?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-struggles-below-60000-as-mining-profits-plunge-security-risks-grow-5043790",
+   "https://en.coinotag.com/cysic-ceo-leo-fan-6-million-bitcoin-public-keys-exposed",
+   "https://news.bitcoin.com/market-updates/bitcoin-price-takes-a-beating-as-november-rout-erases-summer-gains/",
+   "https://cryptopotato.com/bitcoins-big-holders-signal-strength-but-one-red-flag-looms/"
+  ],
+  "source": "cryptocompare"
  }
 }
