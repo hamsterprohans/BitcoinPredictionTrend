@@ -1192,5 +1192,28 @@
    "https://cryptopotato.com/bitcoins-big-holders-signal-strength-but-one-red-flag-looms/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-23": {
+  "titles": [
+   "CFTC staff say exchanges can count Bitcoin toward operating reserves",
+   "42 million ETH and 7.16 million BTC sit behind exposed keys as the migration bill comes due",
+   "Bitcoin cuts gains sparked by AI trade rally on Wall Street, remains above $61,000",
+   "Bitcoin Price Recovery Faces Weak Demand After $4.7B Leverage Wipeout",
+   "Here is Why Bitcoin (BTC) Erased Nvidia-induced Gains Today"
+  ],
+  "scores": {
+   "pemahaman": 3,
+   "detail": 1,
+   "bullbear": 3,
+   "mean": 2.3333333333333335
+  },
+  "urls": [
+   "https://cointelegraph.com/news/cftc-staff-say-exchanges-can-count-bitcoin-toward-operating-reserves?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+   "https://www.cryptopolitan.com/42-million-eth-7-16-million-btc-exposed-keys/",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-rebounds-above-61000-after-liquidationdriven-selloff-5044501",
+   "https://news.bitcoin.com/market-updates/bitcoin-price-recovery-faces-weak-demand-after-4-7b-leverage-wipeout/",
+   "https://coinpedia.org/price-analysis/here-is-why-bitcoin-btc-erased-nvidia-induced-gains-today/"
+  ],
+  "source": "cryptocompare"
  }
 }
