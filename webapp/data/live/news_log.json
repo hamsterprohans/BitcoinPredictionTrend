@@ -1215,5 +1215,28 @@
    "https://coinpedia.org/price-analysis/here-is-why-bitcoin-btc-erased-nvidia-induced-gains-today/"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-24": {
+  "titles": [
+   "If Bitcoin (BTC) Hits $57,500 in November, Polymarket Odds Now Say 51%",
+   "Van de Poppe predicts Bitcoin to repeat 2017 bull cycle, targets $100K by 2027",
+   "Bitcoin (BTC) Miner CleanSpark Posts $987 Million Fiscal-Year Loss",
+   "Bitcoin falls to $55,000, Grayscale cites oversold market as AI risks dominate",
+   "Bitcoin (BTC) Near $60K Tests Six-Year Moving Average Only FTX Ever Broke"
+  ],
+  "scores": {
+   "pemahaman": -1,
+   "detail": 1,
+   "bullbear": 2,
+   "mean": 0.6666666666666666
+  },
+  "urls": [
+   "https://en.coinotag.com/bitcoin-btc-57500-november-odds-51-polymarket",
+   "https://en.coin-turk.com/van-de-poppe-predicts-bitcoin-to-repeat-2017-bull-cycle-targets-100k-by-2027/?utm_source=rss&utm_medium=rss&utm_campaign=van-de-poppe-predicts-bitcoin-to-repeat-2017-bull-cycle-targets-100k-by-2027",
+   "https://en.coinotag.com/cleanspark-987-million-fiscal-2026-loss-bitcoin-btc",
+   "https://en.coin-turk.com/bitcoin-falls-to-55000-grayscale-cites-oversold-market-as-ai-risks-dominate/?utm_source=rss&utm_medium=rss&utm_campaign=bitcoin-falls-to-55000-grayscale-cites-oversold-market-as-ai-risks-dominate",
+   "https://en.coinotag.com/bitcoin-btc-near-60k-tests-six-year-moving-average-only-ftx-broke"
+  ],
+  "source": "cryptocompare"
  }
 }
