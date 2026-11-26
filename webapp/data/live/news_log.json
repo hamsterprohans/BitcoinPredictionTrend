@@ -1238,5 +1238,28 @@
    "https://en.coinotag.com/bitcoin-btc-near-60k-tests-six-year-moving-average-only-ftx-broke"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-25": {
+  "titles": [
+   "Bitwise raises Bitcoin 2036 price target to $1.6 million",
+   "Bitcoin recovers after hit from ETF outflows, AI rout, and hot U.S. economic data",
+   "Top 7 Signs to Watch That Could Signal a Bitcoin Price Reversal",
+   "Stanford Team Publishes 66-Page Bitcoin (BTC) Witness Encryption Paper on November 21",
+   "Coinbase CEO Brian Armstrong sees Bitcoin investors returning after Anthropic $93.5 billion IPO"
+  ],
+  "scores": {
+   "pemahaman": 6,
+   "detail": 6,
+   "bullbear": 5,
+   "mean": 5.666666666666667
+  },
+  "urls": [
+   "https://en.coin-turk.com/bitwise-raises-bitcoin-2036-price-target-to-1-6-million/?utm_source=rss&utm_medium=rss&utm_campaign=bitwise-raises-bitcoin-2036-price-target-to-1-6-million",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-extends-losses-below-59000-as-etf-outflows-weigh-5049793",
+   "https://news.bitcoin.com/opinion-and-analysis/top-7-signs-to-watch-that-could-signal-a-bitcoin-price-reversal/",
+   "https://en.coinotag.com/stanford-byzantine-praxis-bitcoin-witness-encryption-paper",
+   "https://en.coin-turk.com/coinbase-ceo-brian-armstrong-sees-bitcoin-investors-returning-after-anthropic-93-5-billion-ipo/?utm_source=rss&utm_medium=rss&utm_campaign=coinbase-ceo-brian-armstrong-sees-bitcoin-investors-returning-after-anthropic-93-5-billion-ipo"
+  ],
+  "source": "cryptocompare"
  }
 }
