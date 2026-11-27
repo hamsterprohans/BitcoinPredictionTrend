@@ -1261,5 +1261,28 @@
    "https://en.coin-turk.com/coinbase-ceo-brian-armstrong-sees-bitcoin-investors-returning-after-anthropic-93-5-billion-ipo/?utm_source=rss&utm_medium=rss&utm_campaign=coinbase-ceo-brian-armstrong-sees-bitcoin-investors-returning-after-anthropic-93-5-billion-ipo"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-26": {
+  "titles": [
+   "Bitcoin (BTC) Trades 20% Below Active Investor Cost Basis",
+   "House committee advances US Strategic Bitcoin Reserve bill, 20-year holding plan",
+   "Galaxy Abandons BTC Bottom Call, Warns Bear Market Is Far From Over",
+   "Bitcoin stays afloat above $60.5k, but rates, regulatory fears persist",
+   "Bitcoin (BTC) Miners Go 98 Minutes Without Finding a Block"
+  ],
+  "scores": {
+   "pemahaman": -4,
+   "detail": -1,
+   "bullbear": 2,
+   "mean": -1.0
+  },
+  "urls": [
+   "https://en.coinotag.com/bitcoin-btc-20-below-active-investor-cost-basis",
+   "https://en.coin-turk.com/house-committee-advances-us-strategic-bitcoin-reserve-bill-20-year-holding-plan/?utm_source=rss&utm_medium=rss&utm_campaign=house-committee-advances-us-strategic-bitcoin-reserve-bill-20-year-holding-plan",
+   "https://news.bitcoin.com/featured/galaxy-abandons-btc-bottom-call-warns-bear-market-is-far-from-over/",
+   "https://www.investing.com/news/cryptocurrency-news/bitcoin-recovers-to-605k-but-rates-regulatory-fears-persist-5052101",
+   "https://en.coinotag.com/bitcoin-miners-98-minute-block-gap"
+  ],
+  "source": "cryptocompare"
  }
 }
