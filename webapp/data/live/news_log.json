@@ -1284,5 +1284,28 @@
    "https://en.coinotag.com/bitcoin-miners-98-minute-block-gap"
   ],
   "source": "cryptocompare"
+ },
+ "2026-11-27": {
+  "titles": [
+   "VTB Opens Bitcoin (BTC) Trading on November 27 After US Sanctions Blacklist",
+   "Michael Saylor Backs Bitcoin (BTC) Savings Case With 851,305 BTC",
+   "Scaramucci claims JPMorgan could spend up to $1 billion building Bitcoin business",
+   "Alphafractal's Joao Wedson Calls Bitcoin (BTC) Quantum Fears Largely FUD",
+   "Abraxas Capital left Hyperliquid and moved over $1B of Bitcoin — Why?"
+  ],
+  "scores": {
+   "pemahaman": 6,
+   "detail": 5,
+   "bullbear": 5,
+   "mean": 5.333333333333333
+  },
+  "urls": [
+   "https://en.coinotag.com/vtb-opens-bitcoin-btc-trading-november-27-us-sanctions-blacklist",
+   "https://en.coinotag.com/saylor-defends-bitcoin-btc-savings-tucker-critic",
+   "https://en.coin-turk.com/scaramucci-claims-jpmorgan-could-spend-up-to-1-billion-building-bitcoin-business/?utm_source=rss&utm_medium=rss&utm_campaign=scaramucci-claims-jpmorgan-could-spend-up-to-1-billion-building-bitcoin-business",
+   "https://en.coinotag.com/alphafractal-wedson-bitcoin-quantum-fears-fud",
+   "https://ambcrypto.com/abraxas-capital-left-hyperliquid-and-moved-over-1b-of-bitcoin-why/"
+  ],
+  "source": "cryptocompare"
  }
 }
